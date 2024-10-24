@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useNotification, styled, Typography, Stack } from '@semoss/ui';
 
@@ -9,6 +9,7 @@ import {
     WorkspaceStore,
     MigrationManager,
     STATE_VERSION,
+    DesignerStore,
 } from '@/stores';
 import { DefaultCells } from '@/components/cell-defaults';
 import { DefaultBlocks } from '@/components/block-defaults';
@@ -21,6 +22,14 @@ import { BlocksWorkspaceActions } from './BlocksWorkspaceActions';
 import { BlocksWorkspaceDev } from './BlocksWorkspaceDev';
 import { ConstructionOutlined } from '@mui/icons-material';
 import { BlocksWorkspaceTabs } from './BlocksWorkspaceTabs';
+import { LayersMenu } from '../designer/LayersMenu';
+import { SelectedMenu } from '../designer/SelectedMenu';
+import { AddBlocksMenu } from '../designer/AddBlocksMenu';
+import {
+    DEFAULT_MENU,
+    VISUALIZATION_MENU,
+} from '../designer/designer.constants';
+import { DesignerContext } from '@/contexts';
 
 const StyledMain = styled('div')(({ theme }) => ({
     height: '100%',
@@ -41,8 +50,6 @@ const StyledFooter = styled('div')(({ theme }) => ({
     background: 'rgba(253, 237, 225, 1)',
 }));
 
-const ACTIVE = 'page-1';
-
 const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
     layout: {
         selected: 'builder',
@@ -61,6 +68,30 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                     type: 'tab',
                                     name: 'Variables',
                                     component: 'variables',
+                                    config: {},
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Layers',
+                                    component: 'layers',
+                                    config: {},
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Blocks',
+                                    component: 'blocks',
+                                    config: {},
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Selected UI',
+                                    component: 'selected',
+                                    config: {},
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Viz',
+                                    component: 'viz',
                                     config: {},
                                 },
                             ],
@@ -182,10 +213,25 @@ const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (node) => {
         return <VariablesPanel />;
     } else if (component === 'settings') {
         return <Settings />;
+    } else if (component === 'layers') {
+        return <LayersMenu />;
+    } else if (component === 'selected') {
+        return <SelectedMenu />;
+    } else if (component === 'blocks') {
+        return <AddBlocksMenu title={'Add Blocks'} items={DEFAULT_MENU} />;
+    } else if (component === 'viz') {
+        return (
+            <AddBlocksMenu
+                title={'Add Visualization'}
+                items={VISUALIZATION_MENU}
+            />
+        );
     }
 
     return <>{component}</>;
 };
+
+const ACTIVE = 'page-1';
 
 interface BlocksWorkspaceProps {
     /** Workspace to render */
@@ -269,39 +315,60 @@ export const BlocksWorkspace = observer((props: BlocksWorkspaceProps) => {
             });
     }, []);
 
+    /**
+     * Have the designer control the blocks
+     */
+    const designer = useMemo(() => {
+        // return the store
+        if (state) {
+            return new DesignerStore(state, {
+                rendered: ACTIVE,
+            });
+        }
+    }, [state]);
+
     if (!state) {
         return <LoadingScreen.Trigger />;
     }
 
     return (
         <Blocks state={state} registry={DefaultBlocks}>
-            <Workspace
-                workspace={workspace}
-                startTopbar={<BlocksWorkspaceTabs />}
-                endTopbar={<BlocksWorkspaceActions />}
-                footer={
-                    <StyledFooter>
-                        <Stack
-                            direction="row"
-                            padding={0}
-                            spacing={0.5}
-                            alignItems={'center'}
-                        >
-                            <ConstructionOutlined
-                                fontSize="small"
-                                color={'warning'}
-                            />
-                            <Typography variant={'caption'} fontWeight="bold">
-                                Note:
-                            </Typography>
-                            <Typography variant={'caption'}>
-                                This feature is currently in alpha.
-                            </Typography>
-                        </Stack>
-                    </StyledFooter>
-                }
-                factory={FACTORY}
-            />
+            <DesignerContext.Provider
+                value={{
+                    designer: designer,
+                }}
+            >
+                <Workspace
+                    workspace={workspace}
+                    startTopbar={<BlocksWorkspaceTabs />}
+                    endTopbar={<BlocksWorkspaceActions />}
+                    footer={
+                        <StyledFooter>
+                            <Stack
+                                direction="row"
+                                padding={0}
+                                spacing={0.5}
+                                alignItems={'center'}
+                            >
+                                <ConstructionOutlined
+                                    fontSize="small"
+                                    color={'warning'}
+                                />
+                                <Typography
+                                    variant={'caption'}
+                                    fontWeight="bold"
+                                >
+                                    Note:
+                                </Typography>
+                                <Typography variant={'caption'}>
+                                    This feature is currently in alpha.
+                                </Typography>
+                            </Stack>
+                        </StyledFooter>
+                    }
+                    factory={FACTORY}
+                />
+            </DesignerContext.Provider>
         </Blocks>
     );
 });
