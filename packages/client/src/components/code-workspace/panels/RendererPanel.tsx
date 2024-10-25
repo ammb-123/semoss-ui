@@ -1,83 +1,50 @@
-import { useNotification, styled } from '@semoss/ui';
+import { useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { Refresh } from '@mui/icons-material';
+import { styled, IconButton } from '@semoss/ui';
 
-import { useWorkspace, useRootStore } from '@/hooks';
-import { AppEditor } from '@/components/common';
+import { useWorkspace } from '@/hooks';
 
-const StyledContainer = styled('div')(({ theme }) => ({
+import { CodeRenderer } from '../CodeRenderer';
+
+const StyledPanel = styled('div')(() => ({
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
     height: '100%',
-    // height: 'calc(100% - 42px)',
+    width: '100%',
 }));
 
-interface RenderPanelProps {
-    width: number;
-}
+const StyledActions = styled('div')(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '100%',
+    backgroundColor: theme.palette.secondary.light,
+}));
 
-export const RendererPanel = (props: RenderPanelProps) => {
-    const { width } = props;
-
-    const { monolithStore } = useRootStore();
-    const notification = useNotification();
-
+export const RendererPanel = observer(() => {
+    // App ID Needed for pixel calls
     const { workspace } = useWorkspace();
 
-    /**
-     * TODO Reusability
-     * but first see if this is the order of operations that is needed to refresh app with new changes
-     */
-    const reloadAndPublish = async () => {
-        // turn on loading
-        workspace.setLoading(true);
-
-        try {
-            // Load the insight classes
-            await monolithStore.runQuery(
-                `ReloadInsightClasses('${workspace.appId}');`,
-            );
-
-            // set the app portal
-            await monolithStore.setProjectPortal(
-                false,
-                workspace.appId,
-                true,
-                'public',
-            );
-
-            // Publish the app the insight classes
-            await monolithStore.runQuery(
-                `PublishProject('${workspace.appId}', release=true);`,
-            );
-
-            // close it
-            // refreshApp();
-        } catch (e) {
-            console.error(e);
-
-            notification.add({
-                color: 'error',
-                message: e.message,
-            });
-        } finally {
-            // turn of loading
-            workspace.setLoading(false);
-        }
-    };
+    // temporary fix for dead refresh button should be removed
+    const [counter, setCounter] = useState(0);
 
     return (
-        <StyledContainer>
-            <AppEditor
-                appId={workspace.appId}
-                width={width}
-                onSave={(success: boolean) => {
-                    // Succesfully Saved Asset, refresh portal
-                    if (success) {
-                        reloadAndPublish();
-                    }
-                }}
-            />
-        </StyledContainer>
+        <StyledPanel>
+            <StyledActions>
+                <IconButton
+                    size={'small'}
+                    color={'default'}
+                    title={'Refresh'}
+                    onClick={() => {
+                        // refreshApp();
+                        setCounter(counter + 1);
+                    }}
+                >
+                    <Refresh fontSize="inherit" />
+                </IconButton>
+            </StyledActions>
+            <CodeRenderer appId={workspace.appId} key={counter} />
+        </StyledPanel>
     );
-};
+});

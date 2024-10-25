@@ -116,7 +116,7 @@ export const QueryMenu = observer((): JSX.Element => {
 
                         if (newQueryId) {
                             // select the active panel
-                            workspace.selectPanel('notebook');
+                            // workspace.selectPanel('notebook');
 
                             // select the query
                             notebook.selectQuery(newQueryId);

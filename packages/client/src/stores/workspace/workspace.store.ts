@@ -4,7 +4,7 @@ import { Role } from '@/types';
 import { RootStore } from '@/stores';
 
 import { AppMetadata } from '@/components/app';
-import { IJsonModel } from 'flexlayout-react';
+import { IJsonModel, Model } from 'flexlayout-react';
 
 export interface WorkspaceStoreInterface {
     /**
@@ -28,6 +28,11 @@ export interface WorkspaceStoreInterface {
     metadata: AppMetadata;
 
     /**
+     * Optional Model Engine to use
+     */
+    agentModelEngine: string;
+
+    /**
      * Type of the app
      */
     type: 'BLOCKS' | 'CODE';
@@ -49,8 +54,8 @@ export interface WorkspaceStoreInterface {
             /** name of the layout */
             name: string;
 
-            /** Data associated with the layout */
-            data: IJsonModel;
+            /** Model associated with the layout */
+            model: Model;
         }[];
     };
 
@@ -110,6 +115,7 @@ export class WorkspaceStore {
         isLoading: false,
         role: 'READ_ONLY',
         type: 'CODE',
+        agentModelEngine: '',
         metadata: {
             project_id: '',
             project_name: '',
@@ -166,10 +172,24 @@ export class WorkspaceStore {
     }
 
     /**
+     * Get the agentModelEngine
+     */
+    get agentModelEngine() {
+        return this._store.agentModelEngine;
+    }
+
+    /**
      * Get if the app is loading
      */
     get isLoading() {
         return this._store.isLoading;
+    }
+
+    /**
+     * Get layout
+     */
+    get layout() {
+        return this._store.layout;
     }
 
     /**
@@ -222,16 +242,36 @@ export class WorkspaceStore {
     /**
      * Actions
      */
-
     /**
      * Configure the worksapce based on the settings
-     * @param settings - settings to configure the workspace with
+     * @param options - options to configure the workspace with
      */
-    configure = (settings: {
+    configure = (options: {
         /** Initial View */
-        layout: WorkspaceStoreInterface['layout'];
+        layout: {
+            selected: string;
+            available: {
+                /** id of the layout */
+                id: string;
+
+                /** name of the layout */
+                name: string;
+
+                /** Data associated with the layout */
+                data: IJsonModel;
+            }[];
+        };
     }) => {
-        this._store.layout = settings.layout;
+        // create the layout
+        this._store.layout = {
+            selected: options.layout.selected,
+            available: options.layout.available.map((l) => {
+                return {
+                    ...l,
+                    model: Model.fromJson(l.data),
+                };
+            }),
+        };
     };
     /**
      * Set the loading screen for the app
@@ -249,10 +289,16 @@ export class WorkspaceStore {
     };
 
     /**
-     * Activate a panel
+     * Select the layout
      */
-    selectPanel = (panelId: string) => {
-        console.log('TODO: select the active panel');
+    updateLayout = (
+        layout: string,
+        options: Partial<WorkspaceStore['layout']['available'][number]>,
+    ) => {
+        this._store.layout.available[layout] = {
+            ...this._store.layout.available[layout],
+            ...options,
+        };
     };
 
     /**

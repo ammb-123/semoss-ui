@@ -6,7 +6,7 @@ import { WorkspaceStore } from '@/stores';
 import { Workspace, SettingsPanel } from '@/components/workspace';
 
 import { CodeWorkspaceActions } from './CodeWorkspaceActions';
-import { EditorPanel, RendererPanel } from './panels';
+import { FileExplorerPanel, FileViewerPanel, RendererPanel } from './panels';
 
 const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
     layout: {
@@ -16,8 +16,25 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                 id: 'code',
                 name: 'Code',
                 data: {
-                    global: { tabEnableClose: false },
-                    borders: [],
+                    global: {
+                        tabEnableClose: false,
+                    },
+                    borders: [
+                        {
+                            type: 'border',
+                            location: 'left',
+                            selected: 0,
+                            children: [
+                                {
+                                    id: 'file-explorer',
+                                    type: 'tab',
+                                    name: 'File Explorer',
+                                    component: 'file-explorer',
+                                    config: {},
+                                },
+                            ],
+                        },
+                    ],
                     layout: {
                         type: 'row',
                         weight: 100,
@@ -26,26 +43,13 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                 type: 'tabset',
                                 weight: 50,
                                 selected: 0,
-                                enableTabStrip: false,
+                                enableTabStrip: true,
                                 children: [
                                     {
+                                        id: 'render',
                                         type: 'tab',
                                         name: 'App',
                                         component: 'renderer',
-                                        config: {},
-                                    },
-                                ],
-                            },
-                            {
-                                type: 'tabset',
-                                weight: 50,
-                                selected: 0,
-                                enableTabStrip: false,
-                                children: [
-                                    {
-                                        type: 'tab',
-                                        name: 'Editor',
-                                        component: 'code',
                                         config: {},
                                     },
                                 ],
@@ -88,12 +92,14 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
 
 const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (node) => {
     const component = node.getComponent();
-    const rect = node.getRect();
+    const config = node.getConfig();
 
-    if (component === 'code') {
-        return <EditorPanel />;
+    if (component === 'file-explorer') {
+        return <FileExplorerPanel node={node} />;
+    } else if (component === 'file-viewer') {
+        return <FileViewerPanel path={config.path} />;
     } else if (component === 'renderer') {
-        return <RendererPanel width={rect.width} />;
+        return <RendererPanel />;
     } else if (component === 'settings') {
         return <SettingsPanel />;
     }
@@ -114,9 +120,7 @@ export const CodeWorkspace = observer((props: CodeWorkspaceProps) => {
 
     useEffect(() => {
         // set the initial settings
-        workspace.configure({
-            ...CONFIG,
-        });
+        workspace.configure(JSON.parse(JSON.stringify(CONFIG)));
     }, []);
 
     return (
@@ -125,7 +129,7 @@ export const CodeWorkspace = observer((props: CodeWorkspaceProps) => {
                 workspace={workspace}
                 endTopbar={<CodeWorkspaceActions />}
                 factory={FACTORY}
-            ></Workspace>
+            />
         </>
     );
 });
