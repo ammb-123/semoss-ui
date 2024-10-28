@@ -62,14 +62,14 @@ export const CreateFileModal = (props: CreateFileModalProps) => {
                 path = `${uploadPath}${name}`;
 
                 if (mode === 'file') {
-                    pixel = `
-                   SaveAsset(fileName=["${path}"], content=["<encode></encode>"], space=[${space}]);
-                   CommitAsset(filePath=["${path}"], comment=["Creating file"], space=[${space}]);
-                   `;
+                    pixel = `SaveAsset(fileName=["${path}"], content=["<encode></encode>"], space=["${space}"]);CommitAsset(filePath=["${path}"], comment=["Creating file"], space=["${space}"]);`;
                 } else if (mode === 'directory') {
-                    pixel = `
-                   MakeDirectory(filePath=["${path}"], space=[${space}]);
-                    `;
+                    // add in the /
+                    if (path.slice(-1) !== '/') {
+                        path = `${path}/`;
+                    }
+
+                    pixel = `MakeDirectory(filePath=["${path}"], space=["${space}"]);`;
                 }
             } else {
                 throw new Error('TODO');
@@ -125,10 +125,10 @@ export const CreateFileModal = (props: CreateFileModalProps) => {
                 </Button>
                 <Button
                     variant={'contained'}
-                    disabled={isLoading || !!name}
+                    disabled={isLoading || !name}
                     onClick={() => createFile()}
                 >
-                    Upload
+                    Create
                 </Button>
             </Modal.Actions>
             {isLoading && <LinearProgress />}

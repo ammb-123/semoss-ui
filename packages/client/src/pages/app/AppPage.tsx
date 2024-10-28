@@ -20,7 +20,10 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                 id: 'renderer',
                 name: 'App',
                 data: {
-                    global: { tabEnableClose: false },
+                    global: {
+                        tabEnableClose: false,
+                        tabEnableRename: false,
+                    },
                     borders: [],
                     layout: {
                         type: 'row',

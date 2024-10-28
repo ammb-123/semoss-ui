@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Modal, FileDropzone, Typography, Stack } from '@semoss/ui';
+import { Button, Modal, Typography } from '@semoss/ui';
 import { useRootStore } from '@/hooks';
 
 interface DeleteFileModalProps {
@@ -31,7 +31,6 @@ export const DeleteFileModal = (props: DeleteFileModalProps) => {
     const { monolithStore } = useRootStore();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [uploadFile, setUploadFiles] = useState<File>(null);
 
     const fileName = fileDeletePath.split('/').pop();
 
@@ -55,7 +54,6 @@ export const DeleteFileModal = (props: DeleteFileModalProps) => {
             console.error(e);
         } finally {
             setIsLoading(false);
-            setUploadFiles(null);
         }
     };
 
@@ -63,19 +61,9 @@ export const DeleteFileModal = (props: DeleteFileModalProps) => {
         <Modal open={open}>
             <Modal.Title>Are you sure?</Modal.Title>
             <Modal.Content>
-                <Stack direction={'column'} spacing={2}>
-                    <Typography variant="body2">
-                        This will delete <b>{fileName}</b>
-                    </Typography>
-                    <FileDropzone
-                        multiple={false}
-                        value={uploadFile}
-                        disabled={isLoading}
-                        onChange={(newValue: File) => {
-                            setUploadFiles(newValue);
-                        }}
-                    />
-                </Stack>
+                <Typography variant="body2">
+                    This will delete <b>{fileName}</b>
+                </Typography>
             </Modal.Content>
             <Modal.Actions>
                 <Button
@@ -87,13 +75,14 @@ export const DeleteFileModal = (props: DeleteFileModalProps) => {
                     Close
                 </Button>
                 <Button
+                    disabled={isLoading}
                     color={'error'}
                     variant={'contained'}
                     onClick={() => {
                         deleteFile();
                     }}
                 >
-                    Confirm
+                    Delete
                 </Button>
             </Modal.Actions>
         </Modal>
