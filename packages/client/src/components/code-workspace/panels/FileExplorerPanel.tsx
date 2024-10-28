@@ -4,13 +4,7 @@ import { useNotification } from '@semoss/ui';
 import { useWorkspace } from '@/hooks';
 import { FileExplorer } from '@/components/common';
 
-interface FileExplorerPanelProps {
-    /** Access the underlying model */
-    node: TabNode;
-}
-
-export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
-    const { node } = props;
+export const FileExplorerPanel = () => {
     const { workspace } = useWorkspace();
 
     const notification = useNotification();
@@ -161,7 +155,7 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
 
                     // path and space need to match
                     const config = node.getConfig();
-                    if (config.path.indexOf(path) === 0) {
+                    if (config.path.indexOf(path) !== 0) {
                         return;
                     }
 

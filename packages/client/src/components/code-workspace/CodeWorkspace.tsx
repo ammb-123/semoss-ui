@@ -18,6 +18,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                 data: {
                     global: {
                         tabEnableClose: false,
+                        tabEnableRename: false,
                     },
                     borders: [
                         {
@@ -95,7 +96,7 @@ const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (node) => {
     const config = node.getConfig();
 
     if (component === 'file-explorer') {
-        return <FileExplorerPanel node={node} />;
+        return <FileExplorerPanel />;
     } else if (component === 'file-viewer') {
         return <FileViewerPanel path={config.path} />;
     } else if (component === 'renderer') {

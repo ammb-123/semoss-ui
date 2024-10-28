@@ -116,29 +116,43 @@ export const FileExplorer = (props: FileExplorerProps) => {
         }
 
         // if selected, get the directory
-        if (selected[0]) {
-            if (path.slice(-1) === '/') {
-                path = selected[0];
+        const s = selected[0];
+        if (s) {
+            if (s.slice(-1) === '/') {
+                path = s;
             } else {
                 // try to remove the file name and get the directory
-                path = selected[0].split('/').slice(0, -1).join('/');
+                path = s.split('/').slice(0, -1).join('/');
             }
         }
+
+        console.log(path);
 
         setFileUploadPath(path);
     }, [selected]);
 
     /**
+     * Refresh content
+     */
+    const refreshContent = () => {
+        // refresh the assets
+        getAssets.refresh();
+
+        // increment the counter
+        setCounter(counter + 1);
+    };
+
+    /**
      * Open the add modal
      */
-    const handleOpenAddFile = async () => {
+    const handleOpenAddFile = () => {
         setIsAddFileOpen(true);
     };
 
     /**
      * Open the add modal
      */
-    const handleCreateAddFile = async (
+    const handleCreateAddFile = (
         /** Mode of add file */
         mode: 'directory' | 'file',
     ) => {
@@ -149,7 +163,7 @@ export const FileExplorer = (props: FileExplorerProps) => {
     /**
      * Open the delete modal
      */
-    const handleOnTrashClick = async (path: string) => {
+    const handleOnTrashClick = (path: string) => {
         setFileToBeDeleted(path);
         setIsDeleteFileOpen(true);
     };
@@ -183,7 +197,11 @@ export const FileExplorer = (props: FileExplorerProps) => {
     const handleOnAddFile = (success: boolean, uploadPath: string) => {
         if (success) {
             onAddFile(uploadPath);
+
+            // refresh the content
+            refreshContent();
         }
+
         // reset
         setIsAddFileOpen(false);
     };
@@ -196,7 +214,11 @@ export const FileExplorer = (props: FileExplorerProps) => {
     const handleOnCreateFile = (success: boolean, uploadPath: string) => {
         if (success) {
             onAddFile(uploadPath);
+
+            // refresh the content
+            refreshContent();
         }
+
         // reset
         setIsCreateFileOpen(false);
     };
@@ -208,6 +230,9 @@ export const FileExplorer = (props: FileExplorerProps) => {
         if (success) {
             // trigger the delete file callback if successful
             onDeleteFile(fileToBeDeleted);
+
+            // refresh the content
+            refreshContent();
         }
 
         // reset
@@ -222,14 +247,14 @@ export const FileExplorer = (props: FileExplorerProps) => {
     }
 
     return (
-        <StyledContainer key={counter}>
+        <StyledContainer>
             <StyledActions>
                 <IconButton
                     size={'small'}
                     color={'default'}
                     title={'Refresh'}
                     onClick={() => {
-                        setCounter(counter + 1);
+                        refreshContent();
                     }}
                 >
                     <Refresh fontSize="inherit" />
@@ -270,7 +295,7 @@ export const FileExplorer = (props: FileExplorerProps) => {
                     </IconButton>
                 </Stack>
             </StyledActions>
-            <StyledContent>
+            <StyledContent key={counter}>
                 <StyledTreeView
                     multiSelect
                     expanded={expanded}
