@@ -17,8 +17,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { usePixel } from '@/hooks';
 import { Layout, TabNode } from 'flexlayout-react';
-import 'flexlayout-react/style/light.css';
 import { WorkspaceTabs } from './WorkspaceTabs';
+import 'flexlayout-react/style/light.css';
+import './horizontal-text-tabs.css';
 
 const StyledMain = styled('div')(() => ({
     display: 'flex',
@@ -90,6 +91,8 @@ export const Workspace = observer((props: WorkspaceProps) => {
 
     // build the model from the layout
     const model = workspace.selectedLayout?.model;
+
+    console.log('mod', workspace.selectedLayout);
 
     const validateDependencies = usePixel(
         'ValidateUserProjectDependencies(project="' + workspace.appId + '");',

@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useNotification, styled, Typography, Stack } from '@semoss/ui';
-import { ConstructionOutlined } from '@mui/icons-material';
-
 import { runPixel } from '@/api';
 import {
     SerializedState,
@@ -10,6 +8,7 @@ import {
     WorkspaceStore,
     MigrationManager,
     STATE_VERSION,
+    DesignerStore,
 } from '@/stores';
 import { DefaultCells } from '@/components/cell-defaults';
 import { DefaultBlocks } from '@/components/block-defaults';
@@ -19,7 +18,25 @@ import { Designer } from '@/components/designer';
 import { Workspace, SettingsPanel } from '@/components/workspace';
 import { LoadingScreen } from '@/components/ui';
 import { BlocksWorkspaceActions } from './BlocksWorkspaceActions';
-import { VariablesPanel } from './panels';
+import { BlocksWorkspaceDev } from './BlocksWorkspaceDev';
+import { ConstructionOutlined } from '@mui/icons-material';
+import {
+    DEFAULT_MENU,
+    VISUALIZATION_MENU,
+} from '../designer/designer.constants';
+import { DesignerContext } from '@/contexts';
+import {
+    VariablesPanel,
+    BlocksMenuPanel,
+    LayersPanel,
+    SelectedBlockPanel,
+} from './panels';
+
+const StyledMain = styled('div')(({ theme }) => ({
+    height: '100%',
+    width: '100%',
+    overflow: 'hidden',
+}));
 
 const StyledFooter = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -47,12 +64,42 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                         {
                             type: 'border',
                             location: 'left',
+                            className: 'horizontal-text-tabs',
                             children: [
                                 {
                                     type: 'tab',
                                     name: 'Variables',
                                     component: 'variables',
                                     config: {},
+                                    enableDrag: false,
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Layers',
+                                    component: 'layers',
+                                    config: {},
+                                    enableDrag: false,
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Blocks',
+                                    component: 'blocks',
+                                    config: {},
+                                    enableDrag: false,
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Selected UI',
+                                    component: 'selected',
+                                    config: {},
+                                    enableDrag: false,
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Viz',
+                                    component: 'viz',
+                                    config: {},
+                                    enableDrag: false,
                                 },
                             ],
                         },
@@ -173,10 +220,25 @@ const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (node) => {
         return <VariablesPanel />;
     } else if (component === 'settings') {
         return <SettingsPanel />;
+    } else if (component === 'layers') {
+        return <LayersPanel />;
+    } else if (component === 'selected') {
+        return <SelectedBlockPanel />;
+    } else if (component === 'blocks') {
+        return <BlocksMenuPanel title={'Add Blocks'} items={DEFAULT_MENU} />;
+    } else if (component === 'viz') {
+        return (
+            <BlocksMenuPanel
+                title={'Add Visualization'}
+                items={VISUALIZATION_MENU}
+            />
+        );
     }
 
     return <>{component}</>;
 };
+
+const ACTIVE = 'page-1';
 
 interface BlocksWorkspaceProps {
     /** Workspace to render */
@@ -259,38 +321,60 @@ export const BlocksWorkspace = observer((props: BlocksWorkspaceProps) => {
             });
     }, []);
 
+    /**
+     * Have the designer control the blocks
+     */
+    const designer = useMemo(() => {
+        // return the store
+        if (state) {
+            return new DesignerStore(state, {
+                rendered: ACTIVE,
+            });
+        }
+    }, [state]);
+
     if (!state) {
         return <LoadingScreen.Trigger />;
     }
 
     return (
         <Blocks state={state} registry={DefaultBlocks}>
-            <Workspace
-                workspace={workspace}
-                endTopbar={<BlocksWorkspaceActions />}
-                footer={
-                    <StyledFooter>
-                        <Stack
-                            direction="row"
-                            padding={0}
-                            spacing={0.5}
-                            alignItems={'center'}
-                        >
-                            <ConstructionOutlined
-                                fontSize="small"
-                                color={'warning'}
-                            />
-                            <Typography variant={'caption'} fontWeight="bold">
-                                Note:
-                            </Typography>
-                            <Typography variant={'caption'}>
-                                This feature is currently in alpha.
-                            </Typography>
-                        </Stack>
-                    </StyledFooter>
-                }
-                factory={FACTORY}
-            />
+            <DesignerContext.Provider
+                value={{
+                    designer: designer,
+                }}
+            >
+                <Workspace
+                    workspace={workspace}
+                    // startTopbar={<BlocksWorkspaceTabs />}
+                    endTopbar={<BlocksWorkspaceActions />}
+                    footer={
+                        <StyledFooter>
+                            <Stack
+                                direction="row"
+                                padding={0}
+                                spacing={0.5}
+                                alignItems={'center'}
+                            >
+                                <ConstructionOutlined
+                                    fontSize="small"
+                                    color={'warning'}
+                                />
+                                <Typography
+                                    variant={'caption'}
+                                    fontWeight="bold"
+                                >
+                                    Note:
+                                </Typography>
+                                <Typography variant={'caption'}>
+                                    This feature is currently in alpha.
+                                </Typography>
+                            </Stack>
+                        </StyledFooter>
+                    }
+                    factory={FACTORY}
+                />
+            </DesignerContext.Provider>
         </Blocks>
     );
 });

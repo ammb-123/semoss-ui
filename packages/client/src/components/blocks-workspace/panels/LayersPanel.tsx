@@ -22,7 +22,7 @@ import {
     SearchOff,
 } from '@mui/icons-material/';
 import { INPUT_BLOCK_TYPES } from '@/stores';
-import { AddVariableModal } from '../notebook/AddVariableModal';
+import { AddVariableModal } from '../../notebook/AddVariableModal';
 
 const StyledMenu = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -110,9 +110,9 @@ const StyledTreeItemMessage = styled('div')(() => ({
 }));
 
 /**
- * Render the LayersMenu
+ * Render the Layers
  */
-export const LayersMenu = observer((): JSX.Element => {
+export const LayersPanel = observer((): JSX.Element => {
     // get the store
     const { registry, state } = useBlocks();
     const { designer } = useDesigner();
