@@ -1,10 +1,17 @@
-import { Actions, DockLocation, TabNode } from 'flexlayout-react';
+import { Actions, DockLocation, Layout, TabNode } from 'flexlayout-react';
 import { useNotification } from '@semoss/ui';
 
 import { useWorkspace } from '@/hooks';
 import { FileExplorer } from '@/components/common';
 
-export const FileExplorerPanel = () => {
+interface FileExplorerPanelProps {
+    /** Current layoutobject */
+    layout: Layout;
+}
+
+export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
+    const { layout } = props;
+
     const { workspace } = useWorkspace();
 
     const notification = useNotification();
@@ -176,6 +183,43 @@ export const FileExplorerPanel = () => {
         }
     };
 
+    /**
+     * Start dragging a panel
+     */
+    const onPanelDrag = (path: string) => {
+        try {
+            // can can only drag in files into the workspace
+            if (path.slice(-1) === '/') {
+                return;
+            }
+
+            // get the model
+            const model = workspace.selectedLayout?.model;
+            if (!model) {
+                throw new Error('Missing model');
+            }
+
+            // get the name
+            const name = path.split('/').pop();
+
+            // add to layout
+            layout.addTabWithDragAndDrop(name, {
+                type: 'tab',
+                name: name,
+                component: 'file-viewer',
+                config: {
+                    path: path,
+                },
+                enableClose: true,
+            });
+        } catch (e) {
+            notification.add({
+                color: 'error',
+                message: e,
+            });
+        }
+    };
+
     return (
         <FileExplorer
             type={'app'}
@@ -188,6 +232,9 @@ export const FileExplorerPanel = () => {
             }}
             onDeleteFile={(path) => {
                 removePanel(path);
+            }}
+            onDragFileStart={(path) => {
+                onPanelDrag(path);
             }}
         />
     );

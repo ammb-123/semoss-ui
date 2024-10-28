@@ -14,7 +14,7 @@ import { WorkspaceLoading } from './WorkspaceLoading';
 import { WorkspaceContext } from '@/contexts';
 import { WorkspaceStore } from '@/stores';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { usePixel } from '@/hooks';
 import { Layout, TabNode } from 'flexlayout-react';
 import 'flexlayout-react/style/light.css';
@@ -70,7 +70,7 @@ type WorkspaceProps = {
     workspace: WorkspaceStore;
 
     /** Factor method */
-    factory: (node: TabNode) => React.ReactNode;
+    factory: (node: TabNode, layout: Layout) => React.ReactNode;
 };
 
 export const Workspace = observer((props: WorkspaceProps) => {
@@ -80,11 +80,13 @@ export const Workspace = observer((props: WorkspaceProps) => {
         endTopbar: endTopbar = null,
         footer = null,
         workspace,
-        factory,
+        factory = () => null,
     } = props;
 
     const { pathname } = useLocation();
     const navigate = useNavigate();
+
+    const layoutRef = useRef<Layout>(null);
 
     // build the model from the layout
     const model = workspace.selectedLayout?.model;
@@ -179,7 +181,15 @@ export const Workspace = observer((props: WorkspaceProps) => {
                         </Alert>
                     )} */}
                     <WorkspaceLoading />
-                    {model ? <Layout model={model} factory={factory} /> : null}
+                    {model ? (
+                        <Layout
+                            ref={layoutRef}
+                            model={model}
+                            factory={(node) => {
+                                return factory(node, layoutRef.current);
+                            }}
+                        />
+                    ) : null}
                 </StyledContent>
                 {footer}
             </StyledMain>

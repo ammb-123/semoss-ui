@@ -15,7 +15,7 @@ import { LoadingScreen } from '@/components/ui';
 import { AddFileModal } from './AddFileModal';
 import { CreateFileModal } from './CreateFileModal';
 import { DeleteFileModal } from './DeleteFileModal';
-import { FileNode } from './FileNode';
+import { FileExplorerNode } from './FileExplorerNode';
 
 const StyledContainer = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -55,14 +55,17 @@ interface FileExplorerProps {
     /** Space where the file is located */
     space: string;
 
-    /** Trigger a callback when a asset is added */
+    /** Trigger a callback when a file is added */
     onAddFile: (path: string) => void;
 
-    /** Trigger a callback when an asset is selected */
+    /** Trigger a callback when an file is selected */
     onSelectFile: (path: string) => void;
 
-    /** Trigger a callback when an asset is deleted */
+    /** Trigger a callback when an file is deleted */
     onDeleteFile: (path: string) => void;
+
+    /** Trigger a callback when a file starts dragging */
+    onDragFileStart: (path: string) => void;
 }
 
 export const FileExplorer = (props: FileExplorerProps) => {
@@ -72,6 +75,7 @@ export const FileExplorer = (props: FileExplorerProps) => {
         onAddFile = () => null,
         onSelectFile = () => null,
         onDeleteFile = () => null,
+        onDragFileStart = () => null,
     } = props;
 
     const getAssets = usePixel<
@@ -125,8 +129,6 @@ export const FileExplorer = (props: FileExplorerProps) => {
                 path = s.split('/').slice(0, -1).join('/');
             }
         }
-
-        console.log(path);
 
         setFileUploadPath(path);
     }, [selected]);
@@ -324,7 +326,7 @@ export const FileExplorer = (props: FileExplorerProps) => {
                         ) : getAssets.status === 'SUCCESS' ? (
                             getAssets.data.map((n) => {
                                 return (
-                                    <FileNode
+                                    <FileExplorerNode
                                         key={n.path}
                                         type={type}
                                         space={space}
@@ -334,6 +336,9 @@ export const FileExplorer = (props: FileExplorerProps) => {
                                         lastModified={n.lastModified}
                                         expanded={expanded}
                                         selected={selected}
+                                        onDragStart={(filePath) => {
+                                            onDragFileStart(filePath);
+                                        }}
                                         onTrashClick={(filePath) => {
                                             handleOnTrashClick(filePath);
                                         }}

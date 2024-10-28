@@ -91,12 +91,15 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
     },
 };
 
-const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (node) => {
+const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (
+    node,
+    layout,
+) => {
     const component = node.getComponent();
     const config = node.getConfig();
 
     if (component === 'file-explorer') {
-        return <FileExplorerPanel />;
+        return <FileExplorerPanel layout={layout} />;
     } else if (component === 'file-viewer') {
         return <FileViewerPanel path={config.path} />;
     } else if (component === 'renderer') {

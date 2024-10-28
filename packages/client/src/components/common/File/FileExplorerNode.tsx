@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
     DeleteOutline,
     FolderOutlined,
@@ -21,13 +21,18 @@ const StyledNode = styled(TreeView.Item)(({ theme }) => ({
     },
 }));
 
-const StyledLabel = styled('div')(({ theme }) => ({
+const StyledLabel = styled('div', {
+    shouldForwardProp: (prop) => prop !== 'isDragging',
+})<{
+    isDragging: boolean;
+}>(({ theme, isDragging }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     height: theme.spacing(3),
     width: '100%',
     gap: theme.spacing(1),
+    opacity: isDragging ? 0.5 : 1,
 }));
 
 const StyledTypography = styled(Typography)(() => ({
@@ -37,7 +42,7 @@ const StyledTypography = styled(Typography)(() => ({
     flex: '1',
 }));
 
-interface FileNodeProps {
+interface FileExplorerNodeProps {
     /** Type of file opened */
     type: 'app' | 'insight';
 
@@ -54,11 +59,14 @@ interface FileNodeProps {
     expanded: string[];
     selected: string[];
 
+    /** Triggered when the Label starts dragging */
+    onDragStart: (filePath: string) => void;
+
     /** Triggered when the Track Icon is clicked */
     onTrashClick: (filePath: string) => void;
 }
 
-export const FileNode = (props: FileNodeProps) => {
+export const FileExplorerNode = (props: FileExplorerNodeProps) => {
     const {
         type,
         space,
@@ -67,9 +75,11 @@ export const FileNode = (props: FileNodeProps) => {
         isDirectory,
         expanded,
         selected,
+        onDragStart = () => null,
         onTrashClick = () => null,
     } = props;
     const [isHovered, setIsHovered] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
 
     const isOpen = expanded.indexOf(path) > -1;
     const isSelected = selected.indexOf(path) > -1;
@@ -89,15 +99,33 @@ export const FileNode = (props: FileNodeProps) => {
             : '',
     );
 
+    const nodeRef = useCallback((ele) => {
+        ele?.addEventListener('focusin', (e) => {
+            e.stopImmediatePropagation();
+        });
+    }, []);
+
     return (
         <StyledNode
+            ref={nodeRef}
             key={path}
             nodeId={path}
             title={name}
             label={
                 <StyledLabel
+                    draggable={true}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
+                    isDragging={isDragging}
+                    onDragStart={() => {
+                        setIsDragging(true);
+
+                        // trigger the callback
+                        onDragStart(path);
+                    }}
+                    onDragEnd={() => {
+                        setIsDragging(false);
+                    }}
                 >
                     <Icon color={'disabled'} fontSize="small">
                         {isDirectory ? (
@@ -137,7 +165,7 @@ export const FileNode = (props: FileNodeProps) => {
                     {getAssets.status === 'SUCCESS'
                         ? getAssets.data.map((n) => {
                               return (
-                                  <FileNode
+                                  <FileExplorerNode
                                       key={n.path}
                                       type={type}
                                       space={space}
@@ -149,6 +177,9 @@ export const FileNode = (props: FileNodeProps) => {
                                       selected={selected}
                                       onTrashClick={(path) => {
                                           onTrashClick(path);
+                                      }}
+                                      onDragStart={(path) => {
+                                          onDragStart(path);
                                       }}
                                   />
                               );
