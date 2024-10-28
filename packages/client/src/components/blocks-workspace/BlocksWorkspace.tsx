@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useNotification, styled, Typography, Stack } from '@semoss/ui';
-
 import { runPixel } from '@/api';
 import {
     SerializedState,
@@ -16,20 +15,22 @@ import { DefaultBlocks } from '@/components/block-defaults';
 import { Blocks } from '@/components/blocks';
 import { Notebook } from '@/components/notebook';
 import { Designer } from '@/components/designer';
-import { Workspace, Settings, VariablesPanel } from '@/components/workspace';
+import { Workspace, SettingsPanel } from '@/components/workspace';
 import { LoadingScreen } from '@/components/ui';
 import { BlocksWorkspaceActions } from './BlocksWorkspaceActions';
 import { BlocksWorkspaceDev } from './BlocksWorkspaceDev';
 import { ConstructionOutlined } from '@mui/icons-material';
-import { BlocksWorkspaceTabs } from './BlocksWorkspaceTabs';
-import { LayersMenu } from '../designer/LayersMenu';
-import { SelectedMenu } from '../designer/SelectedMenu';
-import { AddBlocksMenu } from '../designer/AddBlocksMenu';
 import {
     DEFAULT_MENU,
     VISUALIZATION_MENU,
 } from '../designer/designer.constants';
 import { DesignerContext } from '@/contexts';
+import {
+    VariablesPanel,
+    BlocksMenuPanel,
+    LayersPanel,
+    SelectedBlockPanel,
+} from './panels';
 
 const StyledMain = styled('div')(({ theme }) => ({
     height: '100%',
@@ -63,36 +64,42 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                         {
                             type: 'border',
                             location: 'left',
+                            className: 'horizontal-text-tabs',
                             children: [
                                 {
                                     type: 'tab',
                                     name: 'Variables',
                                     component: 'variables',
                                     config: {},
+                                    enableDrag: false,
                                 },
                                 {
                                     type: 'tab',
                                     name: 'Layers',
                                     component: 'layers',
                                     config: {},
+                                    enableDrag: false,
                                 },
                                 {
                                     type: 'tab',
                                     name: 'Blocks',
                                     component: 'blocks',
                                     config: {},
+                                    enableDrag: false,
                                 },
                                 {
                                     type: 'tab',
                                     name: 'Selected UI',
                                     component: 'selected',
                                     config: {},
+                                    enableDrag: false,
                                 },
                                 {
                                     type: 'tab',
                                     name: 'Viz',
                                     component: 'viz',
                                     config: {},
+                                    enableDrag: false,
                                 },
                             ],
                         },
@@ -184,7 +191,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                 type: 'tabset',
                                 weight: 100,
                                 selected: 0,
-                                enableTabStrip: true,
+                                enableTabStrip: false,
                                 children: [
                                     {
                                         type: 'tab',
@@ -212,16 +219,16 @@ const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (node) => {
     } else if (component === 'variables') {
         return <VariablesPanel />;
     } else if (component === 'settings') {
-        return <Settings />;
+        return <SettingsPanel />;
     } else if (component === 'layers') {
-        return <LayersMenu />;
+        return <LayersPanel />;
     } else if (component === 'selected') {
-        return <SelectedMenu />;
+        return <SelectedBlockPanel />;
     } else if (component === 'blocks') {
-        return <AddBlocksMenu title={'Add Blocks'} items={DEFAULT_MENU} />;
+        return <BlocksMenuPanel title={'Add Blocks'} items={DEFAULT_MENU} />;
     } else if (component === 'viz') {
         return (
-            <AddBlocksMenu
+            <BlocksMenuPanel
                 title={'Add Visualization'}
                 items={VISUALIZATION_MENU}
             />
@@ -306,7 +313,6 @@ export const BlocksWorkspace = observer((props: BlocksWorkspaceProps) => {
                     color: 'error',
                     message: e.message,
                 });
-
                 console.error(e);
             })
             .finally(() => {
@@ -340,7 +346,7 @@ export const BlocksWorkspace = observer((props: BlocksWorkspaceProps) => {
             >
                 <Workspace
                     workspace={workspace}
-                    startTopbar={<BlocksWorkspaceTabs />}
+                    // startTopbar={<BlocksWorkspaceTabs />}
                     endTopbar={<BlocksWorkspaceActions />}
                     footer={
                         <StyledFooter>

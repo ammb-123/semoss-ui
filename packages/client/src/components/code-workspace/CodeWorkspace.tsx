@@ -3,11 +3,10 @@ import { observer } from 'mobx-react-lite';
 
 import { WorkspaceStore } from '@/stores';
 
-import { Workspace, SettingsView } from '@/components/workspace';
+import { Workspace, SettingsPanel } from '@/components/workspace';
 
 import { CodeWorkspaceActions } from './CodeWorkspaceActions';
-import { CodeEditor } from './CodeEditor';
-import { CodeWorkspaceTabs } from './CodeWorkspaceTabs';
+import { FileExplorerPanel, FileViewerPanel, RendererPanel } from './panels';
 
 const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
     layout: {
@@ -17,22 +16,40 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                 id: 'code',
                 name: 'Code',
                 data: {
-                    global: { tabEnableClose: false },
-                    borders: [],
+                    global: {
+                        tabEnableClose: false,
+                    },
+                    borders: [
+                        {
+                            type: 'border',
+                            location: 'left',
+                            selected: 0,
+                            children: [
+                                {
+                                    id: 'file-explorer',
+                                    type: 'tab',
+                                    name: 'File Explorer',
+                                    component: 'file-explorer',
+                                    config: {},
+                                },
+                            ],
+                        },
+                    ],
                     layout: {
                         type: 'row',
                         weight: 100,
                         children: [
                             {
                                 type: 'tabset',
-                                weight: 100,
+                                weight: 50,
                                 selected: 0,
                                 enableTabStrip: true,
                                 children: [
                                     {
+                                        id: 'render',
                                         type: 'tab',
-                                        name: 'Editor',
-                                        component: 'editor',
+                                        name: 'App',
+                                        component: 'renderer',
                                         config: {},
                                     },
                                 ],
@@ -55,12 +72,12 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                 type: 'tabset',
                                 weight: 100,
                                 selected: 0,
-                                enableTabStrip: true,
+                                enableTabStrip: false,
                                 children: [
                                     {
                                         type: 'tab',
-                                        name: 'Editor',
-                                        component: 'editor',
+                                        name: 'Settings',
+                                        component: 'settings',
                                         config: {},
                                     },
                                 ],
@@ -75,11 +92,16 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
 
 const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (node) => {
     const component = node.getComponent();
+    const config = node.getConfig();
 
-    if (component === 'editor') {
-        return <CodeEditor />;
+    if (component === 'file-explorer') {
+        return <FileExplorerPanel node={node} />;
+    } else if (component === 'file-viewer') {
+        return <FileViewerPanel path={config.path} />;
+    } else if (component === 'renderer') {
+        return <RendererPanel />;
     } else if (component === 'settings') {
-        return <SettingsView />;
+        return <SettingsPanel />;
     }
 
     return <>{component}</>;
@@ -98,19 +120,16 @@ export const CodeWorkspace = observer((props: CodeWorkspaceProps) => {
 
     useEffect(() => {
         // set the initial settings
-        workspace.configure({
-            ...CONFIG,
-        });
+        workspace.configure(JSON.parse(JSON.stringify(CONFIG)));
     }, []);
 
     return (
         <>
             <Workspace
                 workspace={workspace}
-                startTopbar={<CodeWorkspaceTabs />}
                 endTopbar={<CodeWorkspaceActions />}
                 factory={FACTORY}
-            ></Workspace>
+            />
         </>
     );
 });

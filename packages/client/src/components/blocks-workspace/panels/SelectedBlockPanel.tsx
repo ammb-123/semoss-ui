@@ -17,11 +17,11 @@ import {
     Search,
     SearchOff,
 } from '@mui/icons-material';
-import { BlockAvatar } from './BlockAvatar';
-import { SelectedMenuSection } from './SelectedMenuSection';
+import { BlockAvatar } from '../../designer/BlockAvatar';
+import { SelectedMenuSection } from '../../designer/SelectedMenuSection';
 // import { getIconForMenuItemByKey } from './designer.constants';
-import { getIconForBlock } from '../block-defaults';
-import { AddVariableModal } from '../notebook/AddVariableModal';
+import { getIconForBlock } from '../../block-defaults';
+import { AddVariableModal } from '../../notebook/AddVariableModal';
 import { INPUT_BLOCK_TYPES } from '@/stores';
 
 const StyledTitle = styled(Typography)(() => ({
@@ -65,7 +65,7 @@ const StyledMessage = styled('div')(({ theme }) => ({
     justifyContent: 'center',
 }));
 
-export const SelectedMenu = observer(() => {
+export const SelectedBlockPanel = observer(() => {
     const { designer } = useDesigner();
     const { state, registry } = useBlocks();
     const notification = useNotification();

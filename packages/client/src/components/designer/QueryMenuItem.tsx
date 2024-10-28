@@ -154,7 +154,7 @@ export const QueryMenuItem = (props: QueryMenuItemProps) => {
             <List.ItemButton
                 onClick={() => {
                     // select the active panel
-                    workspace.selectPanel('notebook');
+                    // workspace.selectPanel('notebook');
 
                     // select the query
                     notebook.selectQuery(query.id);

@@ -12,8 +12,8 @@ import {
 } from '@semoss/ui';
 import { Search, SearchOff } from '@mui/icons-material';
 
-import { AddBlocksMenuItem as AddBlocksMenuItem } from './designer.constants';
-import { AddBlocksMenuCard } from './AddBlocksMenuCard';
+import { AddBlocksMenuItem as AddBlocksMenuItem } from '../../designer/designer.constants';
+import { AddBlocksMenuCard } from '../../designer/AddBlocksMenuCard';
 
 const StyledHeader = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -48,9 +48,9 @@ export interface AddBlocksMenuProps {
 }
 
 /**
- * AddBlocks to the UI
+ * Add Blocks to the UI
  */
-export const AddBlocksMenu = observer((props: AddBlocksMenuProps) => {
+export const BlocksMenuPanel = observer((props: AddBlocksMenuProps) => {
     const { title, items } = props;
 
     const [search, setSearch] = useState('');

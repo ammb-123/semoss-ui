@@ -14,20 +14,12 @@ import { WorkspaceLoading } from './WorkspaceLoading';
 import { WorkspaceContext } from '@/contexts';
 import { WorkspaceStore } from '@/stores';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { usePixel } from '@/hooks';
-import { IJsonModel, Layout, Model, TabNode } from 'flexlayout-react';
+import { Layout, TabNode } from 'flexlayout-react';
+import { WorkspaceTabs } from './WorkspaceTabs';
 import 'flexlayout-react/style/light.css';
-import { computed } from 'mobx';
-
-const DEFAULT_MODEL: IJsonModel = {
-    global: {},
-    borders: [],
-    layout: {
-        type: 'row',
-        children: [],
-    },
-};
+import './horizontal-text-tabs.css';
 
 const StyledMain = styled('div')(() => ({
     display: 'flex',
@@ -69,9 +61,6 @@ const StyledContent = styled('div')(() => ({
 }));
 
 type WorkspaceProps = {
-    /** Start items to render in the top bar */
-    startTopbar?: React.ReactNode;
-
     /** End items to render in the top bar */
     endTopbar?: React.ReactNode;
 
@@ -89,7 +78,6 @@ export const Workspace = observer((props: WorkspaceProps) => {
     const notification = useNotification();
 
     const {
-        startTopbar: startTopbar = null,
         endTopbar: endTopbar = null,
         footer = null,
         workspace,
@@ -100,13 +88,9 @@ export const Workspace = observer((props: WorkspaceProps) => {
     const navigate = useNavigate();
 
     // build the model from the layout
-    const model = computed(() =>
-        Model.fromJson(
-            workspace.selectedLayout
-                ? workspace.selectedLayout.data
-                : DEFAULT_MODEL,
-        ),
-    ).get();
+    const model = workspace.selectedLayout?.model;
+
+    console.log('mod', workspace.selectedLayout);
 
     const validateDependencies = usePixel(
         'ValidateUserProjectDependencies(project="' + workspace.appId + '");',
@@ -184,8 +168,7 @@ export const Workspace = observer((props: WorkspaceProps) => {
                     >
                         <ArrowBack fontSize="medium" />
                     </IconButton>
-
-                    {startTopbar}
+                    <WorkspaceTabs />
                     <Stack flex={1} direction="row">
                         &nbsp;
                     </Stack>
@@ -199,7 +182,7 @@ export const Workspace = observer((props: WorkspaceProps) => {
                         </Alert>
                     )} */}
                     <WorkspaceLoading />
-                    <Layout model={model} factory={factory} />
+                    {model ? <Layout model={model} factory={factory} /> : null}
                 </StyledContent>
                 {footer}
             </StyledMain>
