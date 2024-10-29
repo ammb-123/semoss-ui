@@ -51,6 +51,11 @@ import {
 import { config as ModalBlockConfig, ModalBlockDef } from './modal-block';
 import { config as StepperBlockConfig, StepperBlockDef } from './stepper-block';
 
+import {
+    config as PDFViewerBlockConfig,
+    PDFViewerBlockDef,
+} from './pdfViewer-block';
+
 export type DefaultBlockDefinitions =
     | AudioBlockDef
     | BodyBlockDef
@@ -81,7 +86,8 @@ export type DefaultBlockDefinitions =
     | VegaVisualizationBlockDef
     | MermaidBlockDef
     | LLMComparisonBlockDef
-    | ModalBlockDef;
+    | ModalBlockDef
+    | PDFViewerBlockDef;
 
 export const DefaultBlocks: Registry<DefaultBlockDefinitions> = {
     [AudioBlockConfig.widget]: AudioBlockConfig,
@@ -107,6 +113,7 @@ export const DefaultBlocks: Registry<DefaultBlockDefinitions> = {
     [UploadBlockConfig.widget]: UploadBlockConfig,
     [VegaVisualizationBlockConfig.widget]: VegaVisualizationBlockConfig,
     [MermaidBlockConfig.widget]: MermaidBlockConfig,
+    [PDFViewerBlockConfig.widget]: PDFViewerBlockConfig,
 };
 
 export function getIconForBlock(widget: string) {
@@ -138,4 +145,5 @@ export {
     MermaidBlockConfig,
     CompareLLMBlockConfig,
     ModalBlockConfig,
+    PDFViewerBlockConfig,
 };
