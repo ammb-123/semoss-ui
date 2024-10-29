@@ -5133,17 +5133,7 @@ export const CONNECTION_OPTIONS = {
                         },
                         disabled: false,
                         rules: { required: true },
-                    },   
-                    {
-                        fieldName: 'requiredParameters',
-                        label: 'Function Required Parameters',
-                        defaultValue: 'filePath',
-                        options: {
-                            component: 'text-field',
-                        },
-                        disabled: false,
-                        rules: { required: true },
-                    },                 
+                    },                
                 ],
             },
         ],
@@ -5903,17 +5893,6 @@ export const CONNECTION_OPTIONS = {
                         rules: { required: false },
                         advanced: true,
                         helperText: '',
-                    },
-                    {
-                        fieldName: 'AZUREOCRENGINEID',
-                        label: 'AZURE OCR Function Engine Id',
-                        defaultValue: '',
-                        options: {
-                            component: 'text-field',
-                        },
-                        disabled: false,
-                        rules: { required: false },
-                        advanced: true,
                     }
                 ],
             },
@@ -6303,16 +6282,25 @@ export const CONNECTION_OPTIONS = {
                         rules: {},
                     },
                     {
-                        fieldName: 'AZUREOCRENGINEID',
-                        label: 'AZURE OCR Function Engine Id',
+                        fieldName: 'CUSTOM_DOCUMENT_PROCESSOR_FUNCTION_ID',
+                        label: 'OCR PROCESSOR FUNCTION ID',
                         defaultValue: '',
                         options: {
                             component: 'text-field',
                         },
                         disabled: false,
-                        rules: { required: false },
-                        advanced: true,
-                    }
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'CUSTOM_DOCUMENT_PROCESSOR',
+                        label: 'Boolean flag for document processor',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
                 ],
             },
         ],
