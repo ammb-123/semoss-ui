@@ -54,6 +54,9 @@ export interface WorkspaceStoreInterface {
             /** name of the layout */
             name: string;
 
+            /** tab associated with layout */
+            tab: () => JSX.Element;
+
             /** Model associated with the layout */
             model: Model;
         }[];
@@ -256,6 +259,9 @@ export class WorkspaceStore {
 
                 /** name of the layout */
                 name: string;
+
+                /** tab associated with layout */
+                tab: () => JSX.Element;
 
                 /** Data associated with the layout */
                 data: IJsonModel;

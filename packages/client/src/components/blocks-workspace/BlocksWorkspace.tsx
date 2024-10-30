@@ -18,8 +18,12 @@ import { Designer } from '@/components/designer';
 import { Workspace, SettingsPanel } from '@/components/workspace';
 import { LoadingScreen } from '@/components/ui';
 import { BlocksWorkspaceActions } from './BlocksWorkspaceActions';
-import { BlocksWorkspaceDev } from './BlocksWorkspaceDev';
-import { ConstructionOutlined } from '@mui/icons-material';
+import {
+    ConstructionOutlined,
+    DataObject,
+    Settings,
+    VerticalSplitOutlined,
+} from '@mui/icons-material';
 import {
     DEFAULT_MENU,
     VISUALIZATION_MENU,
@@ -58,6 +62,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
             {
                 id: 'builder',
                 name: 'Builder',
+                tab: () => <VerticalSplitOutlined fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
                     borders: [
@@ -134,6 +139,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
             {
                 id: 'data-science',
                 name: 'Data Science',
+                tab: () => <DataObject fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
                     borders: [
@@ -180,6 +186,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
             {
                 id: 'settings',
                 name: 'Settings',
+                tab: () => <Settings fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
                     borders: [],

@@ -1,19 +1,17 @@
 import { observer } from 'mobx-react-lite';
 import {
     styled,
-    IconButton,
     Stack,
     Typography,
     Tooltip,
     useNotification,
 } from '@semoss/ui';
-import { ArrowBack, InfoOutlined } from '@mui/icons-material';
+import { InfoOutlined } from '@mui/icons-material';
 
 import { WorkspaceOverlay } from './WorkspaceOverlay';
 import { WorkspaceLoading } from './WorkspaceLoading';
 import { WorkspaceContext } from '@/contexts';
 import { WorkspaceStore } from '@/stores';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { usePixel } from '@/hooks';
 import { Layout, TabNode } from 'flexlayout-react';
@@ -84,15 +82,10 @@ export const Workspace = observer((props: WorkspaceProps) => {
         factory = () => null,
     } = props;
 
-    const { pathname } = useLocation();
-    const navigate = useNavigate();
-
     const layoutRef = useRef<Layout>(null);
 
     // build the model from the layout
     const model = workspace.selectedLayout?.model;
-
-    console.log('mod', workspace.selectedLayout);
 
     const validateDependencies = usePixel(
         'ValidateUserProjectDependencies(project="' + workspace.appId + '");',
@@ -156,25 +149,10 @@ export const Workspace = observer((props: WorkspaceProps) => {
                             <InfoOutlined fontSize={'small'} />
                         </Tooltip>
                     </StyledHeaderTitle>
-                    <IconButton
-                        title="Go back"
-                        size="small"
-                        color="default"
-                        onClick={() => {
-                            if (pathname.includes('edit')) {
-                                navigate(`/app/${workspace.appId}`);
-                            } else {
-                                navigate('/');
-                            }
-                        }}
-                    >
-                        <ArrowBack fontSize="medium" />
-                    </IconButton>
                     <WorkspaceTabs />
                     <Stack flex={1} direction="row">
                         &nbsp;
                     </Stack>
-
                     {endTopbar}
                 </StyledHeader>
                 <StyledContent>

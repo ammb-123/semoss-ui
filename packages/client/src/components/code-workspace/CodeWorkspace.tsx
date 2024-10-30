@@ -7,6 +7,7 @@ import { Workspace, SettingsPanel } from '@/components/workspace';
 
 import { CodeWorkspaceActions } from './CodeWorkspaceActions';
 import { FileExplorerPanel, FileViewerPanel, RendererPanel } from './panels';
+import { Code, Settings } from '@mui/icons-material';
 
 const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
     layout: {
@@ -15,6 +16,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
             {
                 id: 'code',
                 name: 'Code',
+                tab: () => <Code fontSize="inherit" />,
                 data: {
                     global: {
                         tabEnableClose: false,
@@ -31,6 +33,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                     type: 'tab',
                                     name: 'File Explorer',
                                     component: 'file-explorer',
+                                    enableClose: false,
                                     config: {},
                                 },
                             ],
@@ -62,6 +65,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
             {
                 id: 'settings',
                 name: 'Settings',
+                tab: () => <Settings fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
                     borders: [],
@@ -124,7 +128,7 @@ export const CodeWorkspace = observer((props: CodeWorkspaceProps) => {
 
     useEffect(() => {
         // set the initial settings
-        workspace.configure(JSON.parse(JSON.stringify(CONFIG)));
+        workspace.configure(CONFIG);
     }, []);
 
     return (

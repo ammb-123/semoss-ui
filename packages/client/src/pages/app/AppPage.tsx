@@ -2,15 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Button, useNotification } from '@semoss/ui';
-
-import { useRootStore } from '@/hooks';
-import { LoadingScreen } from '@/components/ui';
-
-import { BlocksRenderer } from '@/components/blocks-workspace';
-import { CodeRenderer } from '@/components/code-workspace';
+import { LanguageOutlined } from '@mui/icons-material';
 
 import { WorkspaceStore } from '@/stores';
+import { useRootStore } from '@/hooks';
+import { LoadingScreen } from '@/components/ui';
 import { Workspace } from '@/components/workspace';
+import { BlocksRenderer } from '@/components/blocks-workspace';
+import { CodeRenderer } from '@/components/code-workspace';
 
 const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
     layout: {
@@ -19,6 +18,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
             {
                 id: 'renderer',
                 name: 'App',
+                tab: () => <LanguageOutlined fontSize="inherit" />,
                 data: {
                     global: {
                         tabEnableClose: false,
