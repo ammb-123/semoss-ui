@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import {
+    Avatar,
     styled,
     Stack,
     Typography,
@@ -16,8 +17,9 @@ import { useEffect, useRef } from 'react';
 import { usePixel } from '@/hooks';
 import { Layout, TabNode } from 'flexlayout-react';
 import { WorkspaceTabs } from './WorkspaceTabs';
+import { Env } from '@/env';
 import 'flexlayout-react/style/light.css';
-import './horizontal-text-tabs.css';
+import './flexlayout-tabs.css';
 
 const StyledMain = styled('div')(() => ({
     display: 'flex',
@@ -25,29 +27,6 @@ const StyledMain = styled('div')(() => ({
     height: '100%',
     width: '100%',
     overflow: 'hidden',
-}));
-
-const StyledHeader = styled('div')(({ theme }) => ({
-    position: 'relative',
-    flexShrink: 0,
-    height: theme.spacing(5.5),
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    overflow: 'hidden',
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(2),
-    gap: theme.spacing(2),
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.background.paper,
-    borderBottom: '1px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: theme.palette.divider,
-}));
-
-const StyledHeaderTitle = styled(Stack)(() => ({
-    position: 'absolute',
-    inset: '0',
 }));
 
 const StyledContent = styled('div')(() => ({
@@ -61,6 +40,9 @@ const StyledContent = styled('div')(() => ({
 type WorkspaceProps = {
     /** End items to render in the top bar */
     endTopbar?: React.ReactNode;
+
+    /** Alert to display in topbar */
+    alert?: React.ReactNode;
 
     /** Footer to render */
     footer?: React.ReactNode;
@@ -77,6 +59,7 @@ export const Workspace = observer((props: WorkspaceProps) => {
 
     const {
         endTopbar: endTopbar = null,
+        alert,
         footer = null,
         workspace,
         factory = () => null,
@@ -122,13 +105,24 @@ export const Workspace = observer((props: WorkspaceProps) => {
         >
             <WorkspaceOverlay />
             <StyledMain>
-                <StyledHeader>
-                    <StyledHeaderTitle
-                        direction="row"
+                <Stack
+                    direction={'row'}
+                    gap={1}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                    padding={1}
+                >
+                    <Stack
+                        direction={'row'}
+                        gap={1}
+                        justifyContent={'flex-start'}
                         alignItems={'center'}
-                        justifyContent={'center'}
-                        spacing={1}
+                        padding={0}
                     >
+                        <Avatar
+                            variant="rounded"
+                            src={`${Env.MODULE}/api/project-${workspace.appId}/projectImage/download`}
+                        />
                         <Typography variant={'h6'}>
                             {workspace.metadata.project_name}
                         </Typography>
@@ -148,19 +142,12 @@ export const Workspace = observer((props: WorkspaceProps) => {
                         >
                             <InfoOutlined fontSize={'small'} />
                         </Tooltip>
-                    </StyledHeaderTitle>
-                    <WorkspaceTabs />
-                    <Stack flex={1} direction="row">
-                        &nbsp;
+                        {alert}
+                        {/* <WorkspaceTabs /> */}
                     </Stack>
                     {endTopbar}
-                </StyledHeader>
+                </Stack>
                 <StyledContent>
-                    {/* {alertOpen && (
-                        <Alert severity="warning" icon={<ErrorOutlined />} onClose={() => {setAlertOpen(false)}}>
-                            {alertMessage}
-                        </Alert>
-                    )} */}
                     <WorkspaceLoading />
                     {model ? (
                         <Layout

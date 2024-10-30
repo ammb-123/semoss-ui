@@ -19,8 +19,14 @@ import { Workspace, SettingsPanel } from '@/components/workspace';
 import { LoadingScreen } from '@/components/ui';
 import { BlocksWorkspaceActions } from './BlocksWorkspaceActions';
 import {
+    BarChartRounded,
+    CodeRounded,
     ConstructionOutlined,
+    Dashboard,
+    DashboardRounded,
     DataObject,
+    Layers,
+    LayersRounded,
     Settings,
     VerticalSplitOutlined,
 } from '@mui/icons-material';
@@ -35,14 +41,9 @@ import {
     LayersPanel,
     SelectedBlockPanel,
 } from './panels';
+import { BlocksWorkspaceDev } from './BlocksWorkspaceDev';
 
-const StyledMain = styled('div')(({ theme }) => ({
-    height: '100%',
-    width: '100%',
-    overflow: 'hidden',
-}));
-
-const StyledFooter = styled('div')(({ theme }) => ({
+const StyledAlert = styled('div')(({ theme }) => ({
     position: 'relative',
     display: 'flex',
     alignItems: 'center',
@@ -51,7 +52,7 @@ const StyledFooter = styled('div')(({ theme }) => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     height: theme.spacing(4),
-    width: '100%',
+    borderRadius: '4px',
     background: 'rgba(253, 237, 225, 1)',
 }));
 
@@ -69,7 +70,6 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                         {
                             type: 'border',
                             location: 'left',
-                            className: 'horizontal-text-tabs',
                             children: [
                                 {
                                     type: 'tab',
@@ -123,12 +123,21 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                         name: 'Notebook',
                                         component: 'notebook',
                                         config: {},
+                                        enableClose: true,
                                     },
                                     {
                                         type: 'tab',
                                         name: 'Designer',
                                         component: 'designer',
                                         config: {},
+                                        enableClose: true,
+                                    },
+                                    {
+                                        type: 'tab',
+                                        name: 'Settings',
+                                        component: 'settings',
+                                        config: {},
+                                        enableClose: true,
                                     },
                                 ],
                             },
@@ -353,10 +362,9 @@ export const BlocksWorkspace = observer((props: BlocksWorkspaceProps) => {
             >
                 <Workspace
                     workspace={workspace}
-                    // startTopbar={<BlocksWorkspaceTabs />}
                     endTopbar={<BlocksWorkspaceActions />}
-                    footer={
-                        <StyledFooter>
+                    alert={
+                        <StyledAlert>
                             <Stack
                                 direction="row"
                                 padding={0}
@@ -377,10 +385,11 @@ export const BlocksWorkspace = observer((props: BlocksWorkspaceProps) => {
                                     This feature is currently in alpha.
                                 </Typography>
                             </Stack>
-                        </StyledFooter>
+                        </StyledAlert>
                     }
                     factory={FACTORY}
                 />
+                <BlocksWorkspaceDev />
             </DesignerContext.Provider>
         </Blocks>
     );
