@@ -135,7 +135,7 @@ export const FileViewer = (props: FileViewerProps) => {
             return 'css';
         } else if (ext === 'scss') {
             return 'scss';
-        } else if (ext === 'py' || ext === 'pythopn') {
+        } else if (ext === 'py' || ext === 'python') {
             return 'python';
         } else if (ext === 'java') {
             return 'java';
@@ -258,14 +258,14 @@ export const FileViewer = (props: FileViewerProps) => {
             let pixel = '';
             if (type === 'app') {
                 pixel = `
-                SaveAsset(filePath=["${path}"], content=["<encode>${content}</encode>"], space=["${space}"]); 
+                SaveAsset(fileName=["${path}"], content=["<encode>${content}</encode>"], space=["${space}"]); 
                 CommitAsset(filePath=["${path}"], comment=["Save from editor"], space=["${space}"])
             `;
             } else if (type === 'insight') {
                 throw Error('TODO');
                 // TODO: add insight
                 //     pixel = `
-                //     SaveAsset(filePath=["${path}"], content=["<encode>${content}</encode>"], space=["${id}"]);
+                //     SaveAsset(fileName=["${path}"], content=["<encode>${content}</encode>"], space=["${id}"]);
                 //     CommitAsset(filePath=["${path}"], comment=["Hardcoded comment from the App Page editor"], space=["${id}"])
                 // `;
             }
