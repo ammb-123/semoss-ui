@@ -19,14 +19,8 @@ import { Workspace, SettingsPanel } from '@/components/workspace';
 import { LoadingScreen } from '@/components/ui';
 import { BlocksWorkspaceActions } from './BlocksWorkspaceActions';
 import {
-    BarChartRounded,
-    CodeRounded,
     ConstructionOutlined,
-    Dashboard,
-    DashboardRounded,
     DataObject,
-    Layers,
-    LayersRounded,
     Settings,
     VerticalSplitOutlined,
 } from '@mui/icons-material';
@@ -42,6 +36,7 @@ import {
     SelectedBlockPanel,
 } from './panels';
 import { BlocksWorkspaceDev } from './BlocksWorkspaceDev';
+import { FileExplorerPanel, FileViewerPanel } from '../code-workspace/panels';
 
 const StyledAlert = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -73,10 +68,21 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                             children: [
                                 {
                                     type: 'tab',
-                                    name: 'Variables',
-                                    component: 'variables',
+                                    name: 'Blocks',
+                                    component: 'blocks',
                                     config: {},
                                     enableDrag: false,
+                                    helpText:
+                                        'UI components that can be used to display for your app',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Visualizations',
+                                    component: 'viz',
+                                    config: {},
+                                    enableDrag: false,
+                                    helpText:
+                                        'Visualizations to be used within the designer',
                                 },
                                 {
                                     type: 'tab',
@@ -84,27 +90,36 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                     component: 'layers',
                                     config: {},
                                     enableDrag: false,
+                                    helpText:
+                                        'Hierarchy for UI elements within the designer',
                                 },
                                 {
                                     type: 'tab',
-                                    name: 'Blocks',
-                                    component: 'blocks',
+                                    name: 'Variables',
+                                    component: 'variables',
                                     config: {},
                                     enableDrag: false,
+                                    helpText:
+                                        'Parameters that are used within blocks and notebooks',
                                 },
                                 {
                                     type: 'tab',
-                                    name: 'Selected UI',
+                                    name: 'File Explorer',
+                                    component: 'file-explorer',
+                                    config: {},
+                                    enableDrag: false,
+                                    helpText:
+                                        'Files that are stored at app level',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Block Settings',
                                     component: 'selected',
                                     config: {},
                                     enableDrag: false,
-                                },
-                                {
-                                    type: 'tab',
-                                    name: 'Viz',
-                                    component: 'viz',
-                                    config: {},
-                                    enableDrag: false,
+                                    helpText:
+                                        'Settings for UI component you have selected',
+                                    // icon: '@/assets/favicon.svg',
                                 },
                             ],
                         },
@@ -225,8 +240,12 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
     },
 };
 
-const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (node) => {
+const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (
+    node,
+    layout,
+) => {
     const component = node.getComponent();
+    const config = node.getConfig();
 
     if (component === 'designer') {
         return <Designer />;
@@ -249,6 +268,10 @@ const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (node) => {
                 items={VISUALIZATION_MENU}
             />
         );
+    } else if (component === 'file-explorer') {
+        return <FileExplorerPanel layout={layout} />;
+    } else if (component === 'file-viewer') {
+        return <FileViewerPanel path={config.path} />;
     }
 
     return <>{component}</>;
