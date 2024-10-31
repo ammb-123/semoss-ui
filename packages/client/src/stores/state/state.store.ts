@@ -724,9 +724,28 @@ export class StateStore {
         this._store.dependencies = state.dependencies ? state.dependencies : {};
 
         // store the execution order of notebooks
-        this._store.executionOrder = state.executionOrder
-            ? state.executionOrder
-            : [];
+        let order = [];
+        const sheets = Object.keys(this._store.queries);
+
+        if (state.executionOrder.length) {
+            order = state.executionOrder;
+        } else {
+            sheets.forEach((k) => {
+                order.push(k);
+            });
+        }
+
+        sheets.forEach(async (s) => {
+            const found = await order.find((o) => {
+                return o === s;
+            });
+
+            if (!found) {
+                order.push(s);
+            }
+        });
+
+        this._store.executionOrder = order;
 
         // Replace initial param values provided from URL
         if (initialParams) {

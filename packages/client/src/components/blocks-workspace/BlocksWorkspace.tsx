@@ -34,6 +34,8 @@ import {
     BlocksMenuPanel,
     LayersPanel,
     SelectedBlockPanel,
+    DesignerPanel,
+    NotebookPanel,
 } from './panels';
 import { BlocksWorkspaceDev } from './BlocksWorkspaceDev';
 import { FileExplorerPanel, FileViewerPanel } from '../code-workspace/panels';
@@ -51,6 +53,29 @@ const StyledAlert = styled('div')(({ theme }) => ({
     background: 'rgba(253, 237, 225, 1)',
 }));
 
+export const BLOCKS_WORKSPACE_PANEL_OPTIONS = [
+    {
+        type: 'tab',
+        name: 'Designer',
+        component: 'designer',
+        config: {},
+        enableClose: true,
+    },
+    {
+        type: 'tab',
+        name: 'Notebook',
+        component: 'notebook',
+        config: {},
+        enableClose: true,
+    },
+    {
+        type: 'tab',
+        name: 'Settings',
+        component: 'settings',
+        config: {},
+        enableClose: true,
+    },
+];
 const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
     layout: {
         selected: 'builder',
@@ -131,30 +156,8 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                             {
                                 type: 'tabset',
                                 weight: 100,
-                                selected: 1,
-                                children: [
-                                    {
-                                        type: 'tab',
-                                        name: 'Notebook',
-                                        component: 'notebook',
-                                        config: {},
-                                        enableClose: true,
-                                    },
-                                    {
-                                        type: 'tab',
-                                        name: 'Designer',
-                                        component: 'designer',
-                                        config: {},
-                                        enableClose: true,
-                                    },
-                                    {
-                                        type: 'tab',
-                                        name: 'Settings',
-                                        component: 'settings',
-                                        config: {},
-                                        enableClose: true,
-                                    },
-                                ],
+                                selected: 0,
+                                children: BLOCKS_WORKSPACE_PANEL_OPTIONS,
                             },
                         ],
                     },
@@ -248,9 +251,9 @@ const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (
     const config = node.getConfig();
 
     if (component === 'designer') {
-        return <Designer />;
+        return <DesignerPanel />;
     } else if (component === 'notebook') {
-        return <Notebook />;
+        return <NotebookPanel />;
     } else if (component === 'variables') {
         return <VariablesPanel />;
     } else if (component === 'settings') {
