@@ -1,15 +1,20 @@
 import { observer } from 'mobx-react-lite';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { styled } from '@semoss/ui';
 
 import { Navbar } from '@/components/ui';
+import { useMemo } from 'react';
 
 const NAV_HEIGHT = '48px';
 
-// background: var(--light-text-primary, rgba(0, 0, 0, 0.87));
-const StyledContent = styled('div')(() => ({
+const StyledContent = styled('div', {
+    shouldForwardProp: (prop) => prop !== 'showNav',
+})<{
+    /** Track if we show app navbar */
+    showNav: boolean;
+}>(({ theme, showNav }) => ({
     position: 'absolute',
-    paddingTop: NAV_HEIGHT,
+    paddingTop: showNav ? NAV_HEIGHT : '0px',
     height: '100%',
     width: '100%',
     overflow: 'hidden',
@@ -18,11 +23,13 @@ const StyledContent = styled('div')(() => ({
 /**
  * Wrap the routes with a header
  */
-export const HeaderLayout = observer(() => {
+export const HeaderLayout = observer((props) => {
+    const location = useLocation();
+    const showNav = location.pathname.includes('/detail');
     return (
         <>
-            <Navbar />
-            <StyledContent>
+            {showNav && <Navbar />}
+            <StyledContent showNav={showNav}>
                 <Outlet />
             </StyledContent>
         </>
