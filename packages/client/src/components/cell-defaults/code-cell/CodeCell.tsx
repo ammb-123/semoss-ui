@@ -738,7 +738,6 @@ export const CodeCell: CellComponent<CodeCellDef> = observer((props) => {
                                         color="inherit"
                                         fontSize="small"
                                     />
-                                    {language.name}
                                 </StyledSelectItem>
                             ),
                         )}

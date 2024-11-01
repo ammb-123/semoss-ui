@@ -56,6 +56,12 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                         component: 'renderer',
                                         config: {},
                                     },
+                                    {
+                                        type: 'tab',
+                                        name: 'Settings',
+                                        component: 'settings',
+                                        config: {},
+                                    },
                                 ],
                             },
                         ],

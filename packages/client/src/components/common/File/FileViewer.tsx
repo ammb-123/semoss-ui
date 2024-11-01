@@ -480,6 +480,12 @@ export const FileViewer = (props: FileViewerProps) => {
                         height={'100%'}
                         value={content}
                         language={fileLanguage}
+                        options={{
+                            readOnly:
+                                path === 'version/assets/portals/blocks.json'
+                                    ? true
+                                    : false,
+                        }}
                         onChange={(newValue) => {
                             setContent(newValue);
                         }}

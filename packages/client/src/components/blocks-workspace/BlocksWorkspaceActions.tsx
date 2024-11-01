@@ -9,6 +9,7 @@ import {
     Typography,
     Popover,
     Checkbox,
+    Box,
 } from '@semoss/ui';
 import {
     ShareRounded,
@@ -32,6 +33,8 @@ const StyledPresentIcon = styled(CoPresentRounded)(({ theme }) => ({
 
 const StyledEngineerIcon = styled(EngineeringRounded)(({ theme }) => ({
     color: 'rgba(0, 0, 0, 0.54)',
+    width: '8px',
+    height: '8px',
 }));
 
 export const BlocksWorkspaceActions = observer(() => {
@@ -209,7 +212,7 @@ export const BlocksWorkspaceActions = observer(() => {
                         setAnchorEl(e.currentTarget);
                     }}
                 >
-                    <StyledEngineerIcon />
+                    <StyledEngineerIcon fontSize="small" />
                 </IconButton>
             </Tooltip>
             <Tooltip title="Preview App">
@@ -220,7 +223,7 @@ export const BlocksWorkspaceActions = observer(() => {
                         previewApp();
                     }}
                 >
-                    <StyledPresentIcon />
+                    <StyledPresentIcon fontSize="small" />
                 </IconButton>
             </Tooltip>
             <Tooltip title={'Share App'}>
@@ -231,7 +234,7 @@ export const BlocksWorkspaceActions = observer(() => {
                         shareApp();
                     }}
                 >
-                    <StyledShareIcon />
+                    <StyledShareIcon fontSize="small" />
                 </IconButton>
             </Tooltip>
             <Tooltip
@@ -251,7 +254,7 @@ export const BlocksWorkspaceActions = observer(() => {
                         saveApp();
                     }}
                 >
-                    <Save />
+                    <Save fontSize="small" />
                 </IconButton>
             </Tooltip>
         </Stack>
@@ -347,8 +350,10 @@ const ViewPanelCheckbox = (props: ViewPanelCheckboxProps) => {
             justifyContent={'center'}
             alignItems={'center'}
         >
+            <Box sx={{ width: '56px' }}>
+                <Typography variant={'body2'}>{node.name}</Typography>
+            </Box>
             <Checkbox checked={isChecked} onChange={handleChange} />
-            <Typography variant={'body2'}>{node.name}</Typography>
         </Stack>
     );
 };
