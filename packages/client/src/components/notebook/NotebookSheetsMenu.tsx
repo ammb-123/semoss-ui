@@ -274,19 +274,6 @@ export const NotebookSheetsMenu = observer((): JSX.Element => {
 
     const sheets = useMemo(() => {
         const orderedRows = [];
-        const notebookSheets = Object.keys(state.queries);
-
-        notebookSheets.forEach((s) => {
-            const found = orderedRows.find((r) => {
-                return r.id === s;
-            });
-            if (!found) {
-                orderedRows.push({
-                    id: s,
-                    Parameters: '[]',
-                });
-            }
-        });
 
         const notebookSheets = Object.keys(state.queries);
 

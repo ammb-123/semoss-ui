@@ -1,7 +1,14 @@
 import { observer } from 'mobx-react-lite';
-import { ToggleButtonGroup, ToggleButton, Stack } from '@semoss/ui';
+import {
+    List,
+    ListItem,
+    ListItemText,
+    ListItemIcon,
+    Stack,
+} from '@mui/material';
 
 import { useWorkspace } from '@/hooks';
+import { Typography } from '@semoss/ui';
 
 export const WorkspaceTabs = observer(() => {
     const { workspace } = useWorkspace();
@@ -12,37 +19,29 @@ export const WorkspaceTabs = observer(() => {
     }
 
     return (
-        <>
-            <Stack direction="row" alignItems={'center'}>
-                <ToggleButtonGroup
-                    color="primary"
-                    size={'small'}
-                    value={workspace.selectedLayout?.id}
-                    exclusive={true}
-                >
-                    {workspace.availableLayouts.map((a) => {
-                        const Tab = a.tab;
+        <Stack direction="column">
+            <Typography variant={'body1'} fontWeight={'bold'}>
+                Perspectives
+            </Typography>
+            <List component="nav" aria-label="workspace layouts">
+                {workspace.availableLayouts.map((a) => {
+                    const Tab = a.tab;
 
-                        return (
-                            <ToggleButton
-                                key={a.id}
-                                size={'small'}
-                                value={a.id}
-                                onClick={() => workspace.selectLayout(a.id)}
-                            >
-                                <Stack
-                                    direction="row"
-                                    alignItems={'center'}
-                                    spacing={1}
-                                >
-                                    <Tab />
-                                    <span>{a.name}</span>
-                                </Stack>
-                            </ToggleButton>
-                        );
-                    })}
-                </ToggleButtonGroup>
-            </Stack>
-        </>
+                    return (
+                        <ListItem
+                            button
+                            key={a.id}
+                            selected={a.id === workspace.selectedLayout?.id}
+                            onClick={() => workspace.selectLayout(a.id)}
+                        >
+                            <ListItemIcon>
+                                <Tab />
+                            </ListItemIcon>
+                            <ListItemText primary={a.name} />
+                        </ListItem>
+                    );
+                })}
+            </List>
+        </Stack>
     );
 });

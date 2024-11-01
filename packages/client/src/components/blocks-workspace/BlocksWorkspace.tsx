@@ -13,13 +13,12 @@ import {
 import { DefaultCells } from '@/components/cell-defaults';
 import { DefaultBlocks } from '@/components/block-defaults';
 import { Blocks } from '@/components/blocks';
-import { Notebook } from '@/components/notebook';
-import { Designer } from '@/components/designer';
 import { Workspace, SettingsPanel } from '@/components/workspace';
 import { LoadingScreen } from '@/components/ui';
 import { BlocksWorkspaceActions } from './BlocksWorkspaceActions';
 import {
     ConstructionOutlined,
+    Dashboard,
     DataObject,
     Settings,
     VerticalSplitOutlined,
@@ -76,13 +75,14 @@ export const BLOCKS_WORKSPACE_PANEL_OPTIONS = [
         enableClose: true,
     },
 ];
+
 const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
     layout: {
         selected: 'builder',
         available: [
             {
                 id: 'builder',
-                name: 'Builder',
+                name: 'Pro Builder',
                 tab: () => <VerticalSplitOutlined fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
@@ -157,7 +157,103 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                 type: 'tabset',
                                 weight: 100,
                                 selected: 0,
-                                children: BLOCKS_WORKSPACE_PANEL_OPTIONS,
+                                children: [
+                                    {
+                                        type: 'tab',
+                                        name: 'Designer',
+                                        component: 'designer',
+                                        config: {},
+                                        enableClose: true,
+                                    },
+                                    {
+                                        type: 'tab',
+                                        name: 'Notebook',
+                                        component: 'notebook',
+                                        config: {},
+                                        enableClose: true,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                },
+            },
+            {
+                id: 'ui',
+                name: 'UI Focus',
+                tab: () => <Dashboard fontSize="inherit" />,
+                data: {
+                    global: { tabEnableClose: false },
+                    borders: [
+                        {
+                            type: 'border',
+                            location: 'left',
+                            children: [
+                                {
+                                    type: 'tab',
+                                    name: 'Blocks',
+                                    component: 'blocks',
+                                    config: {},
+                                    enableDrag: false,
+                                    helpText:
+                                        'UI components that can be used to display for your app',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Visualizations',
+                                    component: 'viz',
+                                    config: {},
+                                    enableDrag: false,
+                                    helpText:
+                                        'Visualizations to be used within the designer',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Layers',
+                                    component: 'layers',
+                                    config: {},
+                                    enableDrag: false,
+                                    helpText:
+                                        'Hierarchy for UI elements within the designer',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Variables',
+                                    component: 'variables',
+                                    config: {},
+                                    enableDrag: false,
+                                    helpText:
+                                        'Parameters that are used within blocks and notebooks',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Block Settings',
+                                    component: 'selected',
+                                    config: {},
+                                    enableDrag: false,
+                                    helpText:
+                                        'Settings for UI component you have selected',
+                                    // icon: '@/assets/favicon.svg',
+                                },
+                            ],
+                        },
+                    ],
+                    layout: {
+                        type: 'row',
+                        weight: 100,
+                        children: [
+                            {
+                                type: 'tabset',
+                                weight: 100,
+                                selected: 0,
+                                children: [
+                                    {
+                                        type: 'tab',
+                                        name: 'Designer',
+                                        component: 'designer',
+                                        config: {},
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -196,12 +292,6 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                         type: 'tab',
                                         name: 'Notebook',
                                         component: 'notebook',
-                                        config: {},
-                                    },
-                                    {
-                                        type: 'tab',
-                                        name: 'Designer',
-                                        component: 'designer',
                                         config: {},
                                     },
                                 ],
