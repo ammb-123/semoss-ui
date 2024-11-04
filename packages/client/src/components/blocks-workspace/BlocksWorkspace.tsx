@@ -276,6 +276,15 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                     component: 'variables',
                                     config: {},
                                 },
+                                {
+                                    type: 'tab',
+                                    name: 'File Explorer',
+                                    component: 'file-explorer',
+                                    config: {},
+                                    enableDrag: false,
+                                    helpText:
+                                        'Files that are stored at app level',
+                                },
                             ],
                         },
                     ],
