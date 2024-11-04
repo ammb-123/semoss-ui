@@ -25,23 +25,10 @@ import { Layout, TabNode } from 'flexlayout-react';
 import 'flexlayout-react/style/light.css';
 import './flexlayout-tabs.css';
 
-const StyledHeaderLogo = styled(Link)(({ theme }) => ({
-    height: '100%',
+const StyledViewport = styled('div')(() => ({
+    height: '100vh',
     display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(2),
-    color: 'inherit',
-    textDecoration: 'none',
-    // paddingTop: theme.spacing(1),
-    // paddingBottom: theme.spacing(1),
-    // paddingLeft: theme.spacing(2),
-    // paddingRight: theme.spacing(2),
-    cursor: 'pointer',
-}));
-
-const StyledHeaderLogoImg = styled('img')(({ theme }) => ({
-    width: theme.spacing(3),
-    // filter: 'brightness(0) invert(1)', // convert to white
+    flexDirection: 'column',
 }));
 
 const StyledMain = styled('div', {
@@ -52,6 +39,8 @@ const StyledMain = styled('div', {
     position: 'relative',
     flex: '1',
     height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
     width: drawerOpen ? 'calc(100% - 240px)' : '100%',
     marginLeft: drawerOpen ? '240px' : '0',
     transition: 'margin 0.3s ease, width 0.3s ease',
@@ -63,7 +52,8 @@ const StyledContent = styled('div')(() => ({
     flex: '1',
     height: '100%',
     width: '100%',
-    overflow: 'hidden',
+    overflow: 'auto',
+    minHeight: 0,
 }));
 
 const StyledMenuOpenIcon = styled(MenuOpen)(({ theme }) => ({
@@ -76,6 +66,20 @@ const StyledMenuIcon = styled(Menu)(({ theme }) => ({
 
 const StyledHomeIcon = styled(Home)(({ theme }) => ({
     color: 'rgba(0, 0, 0, 0.54)',
+}));
+
+const StyledHeaderLogo = styled(Link)(({ theme }) => ({
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    color: 'inherit',
+    textDecoration: 'none',
+    cursor: 'pointer',
+}));
+
+const StyledHeaderLogoImg = styled('img')(({ theme }) => ({
+    width: theme.spacing(3),
 }));
 
 type WorkspaceProps = {
@@ -174,85 +178,87 @@ export const Workspace = observer((props: WorkspaceProps) => {
             }}
         >
             <WorkspaceOverlay />
-            <StyledMain drawerOpen={drawerOpen}>
-                <Stack
-                    direction={'row'}
-                    gap={1}
-                    justifyContent={'space-between'}
-                    alignItems={'center'}
-                    padding={1}
-                >
+            <StyledViewport>
+                <StyledMain drawerOpen={drawerOpen}>
                     <Stack
                         direction={'row'}
                         gap={1}
-                        justifyContent={'flex-start'}
+                        justifyContent={'space-between'}
                         alignItems={'center'}
-                        padding={0}
+                        padding={1}
                     >
-                        {editMode ? (
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="menu"
-                                onClick={toggleDrawer(!drawerOpen)}
-                            >
-                                {drawerOpen ? (
-                                    <StyledMenuOpenIcon fontSize="small" />
-                                ) : (
-                                    <StyledMenuIcon fontSize="small" />
-                                )}
-                            </IconButton>
-                        ) : (
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="menu"
-                                onClick={() => navigate('/')}
-                            >
-                                <StyledHomeIcon />
-                            </IconButton>
-                        )}
-                        <Avatar
-                            variant="rounded"
-                            src={`${Env.MODULE}/api/project-${workspace.appId}/projectImage/download`}
-                        />
-                        <Typography variant={'h6'}>
-                            {workspace.metadata.project_name}
-                        </Typography>
-                        <Tooltip
-                            title={
-                                <Stack direction="column" spacing={0}>
-                                    <div>App ID: {workspace.appId}</div>
-                                    <div>
-                                        Created:
-                                        {
-                                            workspace.metadata
-                                                .project_date_created
-                                        }
-                                    </div>
-                                </Stack>
-                            }
+                        <Stack
+                            direction={'row'}
+                            gap={1}
+                            justifyContent={'flex-start'}
+                            alignItems={'center'}
+                            padding={0}
                         >
-                            <InfoOutlined fontSize={'small'} />
-                        </Tooltip>
-                        {alert}
+                            {editMode ? (
+                                <IconButton
+                                    edge="start"
+                                    color="inherit"
+                                    aria-label="menu"
+                                    onClick={toggleDrawer(!drawerOpen)}
+                                >
+                                    {drawerOpen ? (
+                                        <StyledMenuOpenIcon fontSize="small" />
+                                    ) : (
+                                        <StyledMenuIcon fontSize="small" />
+                                    )}
+                                </IconButton>
+                            ) : (
+                                <IconButton
+                                    edge="start"
+                                    color="inherit"
+                                    aria-label="menu"
+                                    onClick={() => navigate('/')}
+                                >
+                                    <StyledHomeIcon />
+                                </IconButton>
+                            )}
+                            <Avatar
+                                variant="rounded"
+                                src={`${Env.MODULE}/api/project-${workspace.appId}/projectImage/download`}
+                            />
+                            <Typography variant={'h6'}>
+                                {workspace.metadata.project_name}
+                            </Typography>
+                            <Tooltip
+                                title={
+                                    <Stack direction="column" spacing={0}>
+                                        <div>App ID: {workspace.appId}</div>
+                                        <div>
+                                            Created:
+                                            {
+                                                workspace.metadata
+                                                    .project_date_created
+                                            }
+                                        </div>
+                                    </Stack>
+                                }
+                            >
+                                <InfoOutlined fontSize={'small'} />
+                            </Tooltip>
+                            {alert}
+                        </Stack>
+                        {endTopbar}
                     </Stack>
-                    {endTopbar}
-                </Stack>
-                <StyledContent>
-                    <WorkspaceLoading />
-                    {model ? (
-                        <Layout
-                            ref={layoutRef}
-                            model={model}
-                            factory={(node) => {
-                                return factory(node, layoutRef.current);
-                            }}
-                        />
-                    ) : null}
-                </StyledContent>
-                {footer}
-            </StyledMain>
+                    <StyledContent>
+                        <WorkspaceLoading />
+                        {model ? (
+                            <Layout
+                                ref={layoutRef}
+                                model={model}
+                                factory={(node) => {
+                                    return factory(node, layoutRef.current);
+                                }}
+                            />
+                        ) : null}
+                    </StyledContent>
+                    {footer}
+                </StyledMain>
+            </StyledViewport>
             <Drawer
                 anchor="left"
                 open={drawerOpen}
