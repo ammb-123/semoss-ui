@@ -13,7 +13,12 @@ import {
 import { DefaultCells } from '@/components/cell-defaults';
 import { DefaultBlocks } from '@/components/block-defaults';
 import { Blocks } from '@/components/blocks';
-import { Workspace, SettingsPanel } from '@/components/workspace';
+import {
+    Workspace,
+    SettingsPanel,
+    FileExplorerPanel,
+    FileViewerPanel,
+} from '@/components/workspace';
 import { LoadingScreen } from '@/components/ui';
 import { BlocksWorkspaceActions } from './BlocksWorkspaceActions';
 import {
@@ -34,10 +39,10 @@ import {
     LayersPanel,
     SelectedBlockPanel,
     DesignerPanel,
-    NotebookPanel,
+    NotebookExplorerPanel,
+    NotebookViewerPanel,
 } from './panels';
 import { BlocksWorkspaceDev } from './BlocksWorkspaceDev';
-import { FileExplorerPanel, FileViewerPanel } from '../code-workspace/panels';
 
 const StyledAlert = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -52,135 +57,13 @@ const StyledAlert = styled('div')(({ theme }) => ({
     background: 'rgba(253, 237, 225, 1)',
 }));
 
-export const BLOCKS_WORKSPACE_PANEL_OPTIONS = [
-    {
-        type: 'tab',
-        name: 'Designer',
-        component: 'designer',
-        config: {},
-        enableClose: true,
-    },
-    {
-        type: 'tab',
-        name: 'Notebook',
-        component: 'notebook',
-        config: {},
-        enableClose: true,
-    },
-    {
-        type: 'tab',
-        name: 'Settings',
-        component: 'settings',
-        config: {},
-        enableClose: true,
-    },
-];
-
 const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
     layout: {
-        selected: 'builder',
+        selected: 'ui',
         available: [
             {
-                id: 'builder',
-                name: 'Pro Builder',
-                tab: () => <VerticalSplitOutlined fontSize="inherit" />,
-                data: {
-                    global: { tabEnableClose: false },
-                    borders: [
-                        {
-                            type: 'border',
-                            location: 'left',
-                            children: [
-                                {
-                                    type: 'tab',
-                                    name: 'Blocks',
-                                    component: 'blocks',
-                                    config: {},
-                                    enableDrag: false,
-                                    helpText:
-                                        'UI components that can be used to display for your app',
-                                },
-                                {
-                                    type: 'tab',
-                                    name: 'Visualizations',
-                                    component: 'viz',
-                                    config: {},
-                                    enableDrag: false,
-                                    helpText:
-                                        'Visualizations to be used within the designer',
-                                },
-                                {
-                                    type: 'tab',
-                                    name: 'Layers',
-                                    component: 'layers',
-                                    config: {},
-                                    enableDrag: false,
-                                    helpText:
-                                        'Hierarchy for UI elements within the designer',
-                                },
-                                {
-                                    type: 'tab',
-                                    name: 'Variables',
-                                    component: 'variables',
-                                    config: {},
-                                    enableDrag: false,
-                                    helpText:
-                                        'Parameters that are used within blocks and notebooks',
-                                },
-                                {
-                                    type: 'tab',
-                                    name: 'File Explorer',
-                                    component: 'file-explorer',
-                                    config: {},
-                                    enableDrag: false,
-                                    helpText:
-                                        'Files that are stored at app level',
-                                },
-                                {
-                                    type: 'tab',
-                                    name: 'Block Settings',
-                                    component: 'selected',
-                                    config: {},
-                                    enableDrag: false,
-                                    helpText:
-                                        'Settings for UI component you have selected',
-                                    // icon: '@/assets/favicon.svg',
-                                },
-                            ],
-                        },
-                    ],
-                    layout: {
-                        type: 'row',
-                        weight: 100,
-                        children: [
-                            {
-                                type: 'tabset',
-                                weight: 100,
-                                selected: 0,
-                                children: [
-                                    {
-                                        type: 'tab',
-                                        name: 'Designer',
-                                        component: 'designer',
-                                        config: {},
-                                        enableClose: true,
-                                    },
-                                    {
-                                        type: 'tab',
-                                        name: 'Notebook',
-                                        component: 'notebook',
-                                        config: {},
-                                        enableClose: true,
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                },
-            },
-            {
                 id: 'ui',
-                name: 'UI Focus',
+                name: 'UI',
                 tab: () => <Dashboard fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
@@ -188,6 +71,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                         {
                             type: 'border',
                             location: 'left',
+                            selected: 0,
                             children: [
                                 {
                                     type: 'tab',
@@ -261,8 +145,54 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
             },
             {
                 id: 'data-science',
-                name: 'Data Science',
+                name: 'Data',
                 tab: () => <DataObject fontSize="inherit" />,
+                data: {
+                    global: { tabEnableClose: false },
+                    borders: [
+                        {
+                            type: 'border',
+                            location: 'left',
+                            selected: 0,
+                            children: [
+                                {
+                                    type: 'tab',
+                                    name: 'Notebooks',
+                                    component: 'notebook-explorer',
+                                    config: {},
+                                    enableDrag: false,
+                                    helpText:
+                                        'Notebooks associated with the app',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Variables',
+                                    component: 'variables',
+                                    config: {},
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Files',
+                                    component: 'file-explorer',
+                                    config: {},
+                                    enableDrag: false,
+                                    helpText:
+                                        'Files that are stored at app level',
+                                },
+                            ],
+                        },
+                    ],
+                    layout: {
+                        type: 'row',
+                        weight: 100,
+                        children: [],
+                    },
+                },
+            },
+            {
+                id: 'custom',
+                name: 'Custom',
+                tab: () => <VerticalSplitOutlined fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
                     borders: [
@@ -272,18 +202,60 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                             children: [
                                 {
                                     type: 'tab',
-                                    name: 'Variables',
-                                    component: 'variables',
+                                    name: 'Blocks',
+                                    component: 'blocks',
                                     config: {},
+                                    helpText:
+                                        'UI components that can be used to display for your app',
                                 },
                                 {
                                     type: 'tab',
-                                    name: 'File Explorer',
+                                    name: 'Visualizations',
+                                    component: 'viz',
+                                    config: {},
+                                    helpText:
+                                        'Visualizations to be used within the designer',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Layers',
+                                    component: 'layers',
+                                    config: {},
+                                    helpText:
+                                        'Hierarchy for UI elements within the designer',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Variables',
+                                    component: 'variables',
+                                    config: {},
+                                    helpText:
+                                        'Parameters that are used within blocks and notebooks',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Files',
                                     component: 'file-explorer',
                                     config: {},
-                                    enableDrag: false,
                                     helpText:
                                         'Files that are stored at app level',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Notebooks',
+                                    component: 'notebook-explorer',
+                                    config: {},
+                                    helpText:
+                                        'Notebooks associated with the app',
+                                },
+                                {
+                                    type: 'tab',
+                                    name: 'Block Settings',
+                                    component: 'selected',
+                                    config: {},
+                                    helpText:
+                                        'Settings for UI component you have selected',
+                                    // icon: '@/assets/favicon.svg',
                                 },
                             ],
                         },
@@ -299,9 +271,10 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                 children: [
                                     {
                                         type: 'tab',
-                                        name: 'Notebook',
-                                        component: 'notebook',
+                                        name: 'Designer',
+                                        component: 'designer',
                                         config: {},
+                                        enableClose: true,
                                     },
                                 ],
                             },
@@ -351,8 +324,6 @@ const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (
 
     if (component === 'designer') {
         return <DesignerPanel />;
-    } else if (component === 'notebook') {
-        return <NotebookPanel />;
     } else if (component === 'variables') {
         return <VariablesPanel />;
     } else if (component === 'settings') {
@@ -374,6 +345,10 @@ const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (
         return <FileExplorerPanel layout={layout} />;
     } else if (component === 'file-viewer') {
         return <FileViewerPanel path={config.path} />;
+    } else if (component === 'notebook-explorer') {
+        return <NotebookExplorerPanel layout={layout} />;
+    } else if (component === 'notebook-viewer') {
+        return <NotebookViewerPanel id={config.id} />;
     }
 
     return <>{component}</>;

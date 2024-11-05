@@ -2,10 +2,7 @@ import { useState } from 'react';
 import { Button, Modal, Typography } from '@semoss/ui';
 import { useRootStore } from '@/hooks';
 
-interface DeleteFileModalProps {
-    /** Track if the model is open */
-    open: boolean;
-
+interface DeleteFileOverlayProps {
     /** Type of file opened */
     type: 'app' | 'insight';
 
@@ -19,14 +16,8 @@ interface DeleteFileModalProps {
     onClose: (success: boolean) => void;
 }
 
-export const DeleteFileModal = (props: DeleteFileModalProps) => {
-    const {
-        open,
-        type,
-        space,
-        fileDeletePath = '',
-        onClose = () => null,
-    } = props;
+export const DeleteFileOverlay = (props: DeleteFileOverlayProps) => {
+    const { type, space, fileDeletePath = '', onClose = () => null } = props;
 
     const { monolithStore } = useRootStore();
 
@@ -58,7 +49,7 @@ export const DeleteFileModal = (props: DeleteFileModalProps) => {
     };
 
     return (
-        <Modal open={open}>
+        <>
             <Modal.Title>Are you sure?</Modal.Title>
             <Modal.Content>
                 <Typography variant="body2">
@@ -85,6 +76,6 @@ export const DeleteFileModal = (props: DeleteFileModalProps) => {
                     Delete
                 </Button>
             </Modal.Actions>
-        </Modal>
+        </>
     );
 };

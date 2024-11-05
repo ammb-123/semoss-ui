@@ -42,7 +42,7 @@ const StyledTypography = styled(Typography)(() => ({
     flex: '1',
 }));
 
-interface FileExplorerNodeProps {
+interface FileExplorerItemProps {
     /** Type of file opened */
     type: 'app' | 'insight';
 
@@ -66,7 +66,7 @@ interface FileExplorerNodeProps {
     onTrashClick: (filePath: string) => void;
 }
 
-export const FileExplorerNode = (props: FileExplorerNodeProps) => {
+export const FileExplorerItem = (props: FileExplorerItemProps) => {
     const {
         type,
         space,
@@ -165,7 +165,7 @@ export const FileExplorerNode = (props: FileExplorerNodeProps) => {
                     {getAssets.status === 'SUCCESS'
                         ? getAssets.data.map((n) => {
                               return (
-                                  <FileExplorerNode
+                                  <FileExplorerItem
                                       key={n.path}
                                       type={type}
                                       space={space}

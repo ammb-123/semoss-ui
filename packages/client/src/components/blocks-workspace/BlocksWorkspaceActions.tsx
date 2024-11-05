@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import {
     styled,
@@ -7,21 +7,11 @@ import {
     useNotification,
     Tooltip,
     Typography,
-    Popover,
-    Checkbox,
-    Box,
 } from '@semoss/ui';
-import {
-    ShareRounded,
-    Save,
-    CoPresentRounded,
-    EngineeringRounded,
-} from '@mui/icons-material';
+import { ShareRounded, Save, CoPresentRounded } from '@mui/icons-material';
 
 import { useWorkspace, useRootStore, useBlocks } from '@/hooks';
 import { ShareOverlay, PreviewOverlay } from '@/components/workspace';
-import { BLOCKS_WORKSPACE_PANEL_OPTIONS } from './BlocksWorkspace';
-import { Actions, DockLocation, TabNode } from 'flexlayout-react';
 
 const StyledShareIcon = styled(ShareRounded)(({ theme }) => ({
     color: 'rgba(0, 0, 0, 0.54)',
@@ -31,12 +21,6 @@ const StyledPresentIcon = styled(CoPresentRounded)(({ theme }) => ({
     color: 'rgba(0, 0, 0, 0.54)',
 }));
 
-const StyledEngineerIcon = styled(EngineeringRounded)(({ theme }) => ({
-    color: 'rgba(0, 0, 0, 0.54)',
-    width: '8px',
-    height: '8px',
-}));
-
 export const BlocksWorkspaceActions = observer(() => {
     const { state } = useBlocks();
 
@@ -44,8 +28,6 @@ export const BlocksWorkspaceActions = observer(() => {
     const notification = useNotification();
     const { workspace } = useWorkspace();
 
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-    const openPopover = Boolean(anchorEl);
     /**
      * Preview the current App
      */
@@ -186,35 +168,6 @@ export const BlocksWorkspaceActions = observer(() => {
 
     return (
         <Stack direction="row" spacing={1} alignItems={'center'}>
-            <Popover
-                id={'filter-panel-view'}
-                open={openPopover}
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                onClose={() => {
-                    setAnchorEl(null);
-                }}
-            >
-                <Stack p={2} direction={'column'} gap={1}>
-                    {BLOCKS_WORKSPACE_PANEL_OPTIONS.map((node, i) => {
-                        return <ViewPanelCheckbox key={i} node={node} />;
-                    })}
-                </Stack>
-            </Popover>
-            <Tooltip title="Modify Panel View">
-                <IconButton
-                    size={'small'}
-                    color="inherit"
-                    onClick={(e) => {
-                        setAnchorEl(e.currentTarget);
-                    }}
-                >
-                    <StyledEngineerIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
             <Tooltip title="Preview App">
                 <IconButton
                     size={'small'}
@@ -260,100 +213,3 @@ export const BlocksWorkspaceActions = observer(() => {
         </Stack>
     );
 });
-
-interface ViewPanelCheckboxProps {
-    node: {
-        type: string;
-        name: string;
-        component: string;
-        config: Record<string, unknown>;
-        enableClose: boolean;
-    };
-}
-
-const ViewPanelCheckbox = (props: ViewPanelCheckboxProps) => {
-    const { node } = props;
-    const { workspace } = useWorkspace();
-    const [isChecked, setIsChecked] = useState(false);
-
-    useEffect(() => {
-        // Initial evaluation of the checked state
-        setIsChecked(foundPanel());
-    }, [node, workspace]);
-
-    const foundPanel = () => {
-        // get the model
-        const model = workspace.selectedLayout?.model;
-        let foundNode = null;
-
-        model.visitNodes((n) => {
-            if (n instanceof TabNode) {
-                const component = n.getComponent();
-                console.log('n', component);
-                if (node.component === component) {
-                    foundNode = n;
-                }
-            }
-        });
-        return foundNode ? true : false;
-    };
-
-    const handleChange = (e) => {
-        try {
-            // get the model
-            const model = workspace.selectedLayout?.model;
-
-            let foundNode = null;
-
-            model.visitNodes((n) => {
-                if (n instanceof TabNode) {
-                    const component = n.getComponent();
-                    if (node.component === component) {
-                        foundNode = n;
-                    }
-                }
-            });
-
-            if (foundNode) {
-                model.doAction(Actions.deleteTab(foundNode.getId()));
-            } else {
-                // where to add the node
-                const addId =
-                    model.getActiveTabset()?.getId() ||
-                    model.getRoot().getChildren()[0]?.getId() ||
-                    '';
-
-                const nodeToAdd = BLOCKS_WORKSPACE_PANEL_OPTIONS.find(
-                    (c) => c.component === node.component,
-                );
-                model.doAction(
-                    Actions.addNode(
-                        nodeToAdd,
-                        addId,
-                        DockLocation.CENTER,
-                        -1,
-                        true,
-                    ),
-                );
-            }
-
-            // Re-evaluate the checked state after the action
-            setIsChecked(foundPanel());
-        } catch (e) {
-            console.error(e);
-        }
-    };
-    return (
-        <Stack
-            direction={'row'}
-            gap={1}
-            justifyContent={'center'}
-            alignItems={'center'}
-        >
-            <Box sx={{ width: '56px' }}>
-                <Typography variant={'body2'}>{node.name}</Typography>
-            </Box>
-            <Checkbox checked={isChecked} onChange={handleChange} />
-        </Stack>
-    );
-};

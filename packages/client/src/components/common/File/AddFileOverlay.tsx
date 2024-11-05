@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     Button,
     Modal,
@@ -10,17 +10,13 @@ import {
 } from '@semoss/ui';
 import { useRootStore } from '@/hooks';
 
-interface AddFileModalProps {
-    /** Track if the model is open */
-    open: boolean;
-
+interface AddFileOverlayProps {
     /** Type of file opened */
     type: 'app' | 'insight';
 
     /** Space where the file is located */
     space: string;
 
-    /** Mode of the modal */
     /** Path where the file is being uploaded */
     uploadPath: string;
 
@@ -28,22 +24,14 @@ interface AddFileModalProps {
     onClose: (success: boolean, uploadPath: string) => void;
 }
 
-export const AddFileModal = (props: AddFileModalProps) => {
-    const { open, type, space, uploadPath, onClose = () => null } = props;
+export const AddFileOverlay = (props: AddFileOverlayProps) => {
+    const { type, space, uploadPath, onClose: onClose = () => null } = props;
 
     const { monolithStore, configStore } = useRootStore();
 
     const [isLoading, setIsLoading] = useState(false);
     const [uploadFile, setUploadFiles] = useState<File>(null);
     const [unzipFile, setUnzipFile] = useState<boolean>(false);
-
-    // reset whenever it closes
-    useEffect(() => {
-        if (!open) {
-            setUploadFiles(null);
-            setUnzipFile(false);
-        }
-    }, [open]);
 
     /**
      * Add the file to the app
@@ -85,11 +73,15 @@ export const AddFileModal = (props: AddFileModalProps) => {
             console.error(e);
         } finally {
             setIsLoading(false);
+
+            // reset state
+            setUploadFiles(null);
+            setUnzipFile(false);
         }
     };
 
     return (
-        <Modal open={open} fullWidth>
+        <>
             <Modal.Title>Upload Files</Modal.Title>
             <Modal.Content>
                 <Stack direction={'column'} spacing={2}>
@@ -130,6 +122,6 @@ export const AddFileModal = (props: AddFileModalProps) => {
                 </Button>
             </Modal.Actions>
             {isLoading && <LinearProgress />}
-        </Modal>
+        </>
     );
 };

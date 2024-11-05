@@ -3,10 +3,15 @@ import { observer } from 'mobx-react-lite';
 
 import { WorkspaceStore } from '@/stores';
 
-import { Workspace, SettingsPanel } from '@/components/workspace';
+import {
+    Workspace,
+    SettingsPanel,
+    FileExplorerPanel,
+    FileViewerPanel,
+} from '@/components/workspace';
 
 import { CodeWorkspaceActions } from './CodeWorkspaceActions';
-import { FileExplorerPanel, FileViewerPanel, RendererPanel } from './panels';
+import { RendererPanel } from './panels';
 import { Code, Settings } from '@mui/icons-material';
 
 const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
@@ -31,7 +36,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                                 {
                                     id: 'file-explorer',
                                     type: 'tab',
-                                    name: 'File Explorer',
+                                    name: 'Files',
                                     component: 'file-explorer',
                                     enableClose: false,
                                     config: {},

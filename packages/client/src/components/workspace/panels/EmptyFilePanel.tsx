@@ -44,11 +44,11 @@ export const EmptyFilePanel = () => {
                             {process.env.NODE_ENV == 'development' && 'or'}
                         </StyledTypography>
                     </div>
-                    {/* {process.env.NODE_ENV == 'development' && (
-                        <TextEditorCodeGenerationWrapper>
+                    {process.env.NODE_ENV == 'development' && (
+                        <div>
                             <TextEditorCodeGeneration />
-                        </TextEditorCodeGenerationWrapper>
-                    )} */}
+                        </div>
+                    )}
                 </StyledHeaderContainer>
                 <Container>
                     <Typography variant="h6">Github Documentation</Typography>

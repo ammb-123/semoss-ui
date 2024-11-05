@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     Button,
     Modal,
-    FileDropzone,
     LinearProgress,
     Typography,
     Stack,
@@ -10,10 +9,7 @@ import {
 } from '@semoss/ui';
 import { useRootStore } from '@/hooks';
 
-interface CreateFileModalProps {
-    /** Track if the model is open */
-    open: boolean;
-
+interface CreateFileOverlayProps {
     /** Type of file opened */
     type: 'app' | 'insight';
 
@@ -30,20 +26,13 @@ interface CreateFileModalProps {
     onClose: (success: boolean, uploadPath: string) => void;
 }
 
-export const CreateFileModal = (props: CreateFileModalProps) => {
-    const { open, type, space, mode, uploadPath, onClose = () => null } = props;
+export const CreateFileOverlay = (props: CreateFileOverlayProps) => {
+    const { type, space, mode, uploadPath, onClose = () => null } = props;
 
     const { monolithStore } = useRootStore();
 
     const [isLoading, setIsLoading] = useState(false);
     const [name, setName] = useState<string>('');
-
-    // reset whenever it closes
-    useEffect(() => {
-        if (!open) {
-            setName('');
-        }
-    }, [open]);
 
     /**
      * Create the file
@@ -91,11 +80,14 @@ export const CreateFileModal = (props: CreateFileModalProps) => {
             console.error(e);
         } finally {
             setIsLoading(false);
+
+            // reset state
+            setName('');
         }
     };
 
     return (
-        <Modal open={open} fullWidth>
+        <>
             <Modal.Title>
                 Create {mode === 'file' ? 'File' : 'Folder'}
             </Modal.Title>
@@ -132,6 +124,6 @@ export const CreateFileModal = (props: CreateFileModalProps) => {
                 </Button>
             </Modal.Actions>
             {isLoading && <LinearProgress />}
-        </Modal>
+        </>
     );
 };
