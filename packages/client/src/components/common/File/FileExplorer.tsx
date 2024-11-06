@@ -14,6 +14,7 @@ const StyledTreeView = styled(TreeView)(({ theme }) => ({
     '.MuiTreeItem-content': {
         padding: theme.spacing(0.5),
     },
+    overflow: 'auto',
 }));
 
 interface FileExplorerProps {
@@ -24,13 +25,19 @@ interface FileExplorerProps {
     space: string;
 
     /** Trigger a callback when an file is selected */
-    onSelect: (path: string) => void;
+    onSelect?: (path: string) => void;
 
-    /** Trigger a callback when delete file is clicked */
-    onTrashClick: (path: string) => void;
+    /** Triggered when the Label starts dragging */
+    onDragStart: (event: React.DragEvent<HTMLDivElement>, path: string) => void;
 
-    /** Trigger a callback when a file starts dragging */
-    onDragFileStart: (path: string) => void;
+    /** Triggered when the item ends dragging */
+    onDragEnd?: (event: React.DragEvent<HTMLDivElement>, path: string) => void;
+
+    /** Triggered when the Track Icon is clicked */
+    onTrashClick?: (
+        event: React.MouseEvent<HTMLButtonElement>,
+        path: string,
+    ) => void;
 }
 
 export const FileExplorer = (props: FileExplorerProps) => {
@@ -38,8 +45,9 @@ export const FileExplorer = (props: FileExplorerProps) => {
         type,
         space,
         onSelect = () => null,
+        onDragStart = () => null,
+        onDragEnd = () => null,
         onTrashClick = () => null,
-        onDragFileStart = () => null,
     } = props;
 
     const getAssets = usePixel<
@@ -126,11 +134,14 @@ export const FileExplorer = (props: FileExplorerProps) => {
                                 lastModified={n.lastModified}
                                 expanded={expanded}
                                 selected={selected}
-                                onDragStart={(filePath) => {
-                                    onDragFileStart(filePath);
+                                onDragStart={(e, path) => {
+                                    onDragStart(e, path);
                                 }}
-                                onTrashClick={(filePath) => {
-                                    onTrashClick(filePath);
+                                onDragEnd={(e, path) => {
+                                    onDragEnd(e, path);
+                                }}
+                                onTrashClick={(e, path) => {
+                                    onTrashClick(e, path);
                                 }}
                             />
                         );

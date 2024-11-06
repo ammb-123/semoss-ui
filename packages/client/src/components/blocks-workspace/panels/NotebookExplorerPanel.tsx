@@ -1,35 +1,14 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Actions, DockLocation, Layout, TabNode } from 'flexlayout-react';
-import { useNotification, styled, IconButton, Stack } from '@semoss/ui';
+import { useNotification, IconButton, Stack } from '@semoss/ui';
 import { NoteAddOutlined, Refresh } from '@mui/icons-material';
 
 import { useBlocks, useWorkspace } from '@/hooks';
 import { ActionMessages } from '@/stores';
 import { NewQueryOverlay, DeleteNotebookOverlay } from '@/components/notebook';
-import { NotebookExplorerItem } from '@/components/notebook/NotebookExplorerItem';
-
-const StyledContainer = styled('div')(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    height: '100%',
-    backgroundColor: theme.palette.background.paper,
-}));
-
-const StyledActions = styled('div')(({ theme }) => ({
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '100%',
-    backgroundColor: theme.palette.secondary.light,
-}));
-
-const StyledContent = styled('div')(({ theme }) => ({
-    flex: '1',
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-}));
+import { NotebookExplorerItem } from './NotebookExplorerPanelItem';
+import { Panel } from '@/components/workspace';
 
 interface NotebookExplorerPanelProps {
     /** Current layoutobject */
@@ -86,7 +65,7 @@ export const NotebookExplorerPanel: React.FC<NotebookExplorerPanelProps> =
          *
          * id - id of the notebook
          */
-        const handleOnSelectNotebook = (id: string) => {
+        const handleOnSelect = (id: string) => {
             // try to select a panel, if it doesn't exist create it. Save the path
             const IsSelected = selectPanel(id);
             if (!IsSelected) {
@@ -172,14 +151,20 @@ export const NotebookExplorerPanel: React.FC<NotebookExplorerPanelProps> =
         /**
          * Handle dragging of an item
          *
-         * id - id of the notebook
+         * event - drag event
+         * path - id of the notebook
          */
-        const handleItemDrag = (id: string) => {
+        const handleOnDragStart = (event: React.MouseEvent, id: string) => {
             try {
                 // get the model
                 const model = workspace.selectedLayout?.model;
                 if (!model) {
                     throw new Error('Missing model');
+                }
+
+                // TODO: ctrl key needs to be down for now. event.ctrl=false is reserved for panel-to-panel interactions
+                if (!event.ctrlKey) {
+                    return;
                 }
 
                 // get the name
@@ -375,51 +360,64 @@ export const NotebookExplorerPanel: React.FC<NotebookExplorerPanelProps> =
         };
 
         return (
-            <StyledContainer>
-                <StyledActions>
-                    <IconButton
-                        size={'small'}
-                        color={'default'}
-                        title={'Refresh'}
-                        onClick={() => {
-                            refreshNotebooks();
-                        }}
-                    >
-                        <Refresh fontSize="inherit" />
-                    </IconButton>
-                    <Stack direction="row" alignItems={'center'} spacing={0}>
+            <Panel
+                actions={
+                    <>
                         <IconButton
-                            title={`Create new notebook`}
                             size={'small'}
                             color={'default'}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleOpenCreateNotebook();
+                            title={'Refresh'}
+                            onClick={() => {
+                                refreshNotebooks();
                             }}
                         >
-                            <NoteAddOutlined fontSize="inherit" />
+                            <Refresh fontSize="inherit" />
                         </IconButton>
-                    </Stack>
-                </StyledActions>
-                <StyledContent key={counter}>
-                    {notebook.queriesList.map((q, i) => {
+                        <Stack flex={1}>&nbsp;</Stack>
+                        <Stack
+                            direction="row"
+                            alignItems={'center'}
+                            spacing={0}
+                        >
+                            <IconButton
+                                title={`Create new notebook`}
+                                size={'small'}
+                                color={'default'}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenCreateNotebook();
+                                }}
+                            >
+                                <NoteAddOutlined fontSize="inherit" />
+                            </IconButton>
+                        </Stack>
+                    </>
+                }
+            >
+                <Stack
+                    key={counter}
+                    direction="column"
+                    height={'100%'}
+                    overflow={'auto'}
+                >
+                    {notebook.queriesList.map((q) => {
                         return (
                             <NotebookExplorerItem
                                 key={q.id}
                                 id={q.id}
                                 isSelected={selected === q.id}
-                                onClick={() => handleOnSelectNotebook(q.id)}
+                                onClick={() => handleOnSelect(q.id)}
                                 onTrashClick={() => {
                                     handleOnTrashClick(q.id);
                                 }}
                                 onCopyClick={() => {
                                     handleOnCopyClick(q.id);
                                 }}
-                                onDragStart={() => handleItemDrag(q.id)}
+                                onDragStart={(e) => handleOnDragStart(e, q.id)}
                             />
                         );
                     })}
-                </StyledContent>
-            </StyledContainer>
+                </Stack>
+            </Panel>
         );
     });

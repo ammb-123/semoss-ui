@@ -1,25 +1,10 @@
 import { useEffect, useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
-import {
-    styled,
-    IconButton,
-    Stack,
-    useNotification,
-    Tooltip,
-    Typography,
-} from '@semoss/ui';
-import { ShareRounded, Save, CoPresentRounded } from '@mui/icons-material';
+import { IconButton, Stack, useNotification, Tooltip } from '@semoss/ui';
+import { ShareRounded, SaveOutlined, PlayArrow } from '@mui/icons-material';
 
 import { useWorkspace, useRootStore, useBlocks } from '@/hooks';
 import { ShareOverlay, PreviewOverlay } from '@/components/workspace';
-
-const StyledShareIcon = styled(ShareRounded)(({ theme }) => ({
-    color: 'rgba(0, 0, 0, 0.54)',
-}));
-
-const StyledPresentIcon = styled(CoPresentRounded)(({ theme }) => ({
-    color: 'rgba(0, 0, 0, 0.54)',
-}));
 
 export const BlocksWorkspaceActions = observer(() => {
     const { state } = useBlocks();
@@ -171,35 +156,26 @@ export const BlocksWorkspaceActions = observer(() => {
             <Tooltip title="Preview App">
                 <IconButton
                     size={'small'}
-                    color="inherit"
+                    color="default"
                     onClick={() => {
                         previewApp();
                     }}
                 >
-                    <StyledPresentIcon fontSize="small" />
+                    <PlayArrow fontSize="inherit" />
                 </IconButton>
             </Tooltip>
             <Tooltip title={'Share App'}>
                 <IconButton
                     size={'small'}
-                    color="inherit"
+                    color="default"
                     onClick={() => {
                         shareApp();
                     }}
                 >
-                    <StyledShareIcon fontSize="small" />
+                    <ShareRounded fontSize="inherit" />
                 </IconButton>
             </Tooltip>
-            <Tooltip
-                title={
-                    <Stack>
-                        <Typography variant="body2">Save App</Typography>
-                        <Typography variant="caption">
-                            {"Shortcut: ctrl + 's'"}
-                        </Typography>
-                    </Stack>
-                }
-            >
+            <Tooltip title={'Save App (ctrl + s)'}>
                 <IconButton
                     size={'small'}
                     color={'primary'}
@@ -207,7 +183,7 @@ export const BlocksWorkspaceActions = observer(() => {
                         saveApp();
                     }}
                 >
-                    <Save fontSize="small" />
+                    <SaveOutlined fontSize="inherit" />
                 </IconButton>
             </Tooltip>
         </Stack>

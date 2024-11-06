@@ -4,6 +4,7 @@ import { useNotification } from '@semoss/ui';
 
 import { useWorkspace } from '@/hooks';
 import { FileViewer } from '@/components/common';
+import { Panel } from './Panel';
 
 interface FileViewerPanelProps {
     /** Path to the file location */
@@ -71,12 +72,14 @@ export const FileViewerPanel = observer((props: FileViewerPanelProps) => {
     };
 
     return (
-        <FileViewer
-            type={'app'}
-            space={workspace.appId}
-            path={path}
-            agentModelEngine={workspace.agentModelEngine}
-            onChange={(isModified) => onChange(isModified)}
-        />
+        <Panel>
+            <FileViewer
+                type={'app'}
+                space={workspace.appId}
+                path={path}
+                agentModelEngine={workspace.agentModelEngine}
+                onChange={(isModified) => onChange(isModified)}
+            />
+        </Panel>
     );
 });

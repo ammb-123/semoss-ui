@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Actions, DockLocation, Layout, TabNode } from 'flexlayout-react';
-import { useNotification, styled, IconButton, Stack } from '@semoss/ui';
+import { useNotification, IconButton, Stack } from '@semoss/ui';
 import {
     CreateNewFolderOutlined,
     NoteAddOutlined,
@@ -15,28 +15,7 @@ import {
     CreateFileOverlay,
     DeleteFileOverlay,
 } from '@/components/common';
-
-const StyledContainer = styled('div')(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    height: '100%',
-    backgroundColor: theme.palette.background.paper,
-}));
-
-const StyledActions = styled('div')(({ theme }) => ({
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '100%',
-    backgroundColor: theme.palette.secondary.light,
-}));
-
-const StyledContent = styled('div')(({ theme }) => ({
-    flex: '1',
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-}));
+import { Panel } from './Panel';
 
 const EXPLORER_TYPE = 'app';
 
@@ -110,9 +89,9 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
     };
 
     /**
-     * Open the add modal
+     * Open the create file modal
      */
-    const handleCreateAddFile = (
+    const handleOpenCreateFile = (
         /** Mode of add file */
         mode: 'directory' | 'file',
     ) => {
@@ -143,7 +122,7 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
      *
      * path - path to file
      */
-    const handleOnSelectFile = (path: string) => {
+    const handleOnSelect = (path: string) => {
         // try to select a panel, if it doesn't exist create it. Save the path
         const IsSelected = selectPanel(path);
         if (!IsSelected) {
@@ -179,9 +158,13 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
     /**
      * Handle dragging of an item
      *
-     * path - path of the notebook
+     * event - drag event
+     * path - path of the file
      */
-    const handleItemDrag = (path: string) => {
+    const handleOnItemDragStart = (
+        event: React.DragEvent<HTMLDivElement>,
+        path: string,
+    ) => {
         try {
             // can can only drag in files into the workspace
             if (path.slice(-1) === '/') {
@@ -192,6 +175,11 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
             const model = workspace.selectedLayout?.model;
             if (!model) {
                 throw new Error('Missing model');
+            }
+
+            // TODO: ctrl key needs to be down for now. event.ctrl=false is reserved for panel-to-panel interactions
+            if (!event.ctrlKey) {
+                return;
             }
 
             // get the name
@@ -391,19 +379,20 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
     };
 
     return (
-        <StyledContainer>
-            <StyledActions>
-                <IconButton
-                    size={'small'}
-                    color={'default'}
-                    title={'Refresh'}
-                    onClick={() => {
-                        refreshFiles();
-                    }}
-                >
-                    <Refresh fontSize="inherit" />
-                </IconButton>
-                <Stack direction="row" alignItems={'center'} spacing={0}>
+        <Panel
+            actions={
+                <>
+                    <IconButton
+                        size={'small'}
+                        color={'default'}
+                        title={'Refresh'}
+                        onClick={() => {
+                            refreshFiles();
+                        }}
+                    >
+                        <Refresh fontSize="inherit" />
+                    </IconButton>
+                    <Stack flex={1}>&nbsp;</Stack>
                     <IconButton
                         title={`Upload file(s) to ${fileUploadPath}`}
                         size={'small'}
@@ -421,7 +410,7 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
                         color={'default'}
                         onClick={(e) => {
                             e.stopPropagation();
-                            handleCreateAddFile('file');
+                            handleOpenCreateFile('file');
                         }}
                     >
                         <NoteAddOutlined fontSize="inherit" />
@@ -432,28 +421,28 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
                         color={'default'}
                         onClick={(e) => {
                             e.stopPropagation();
-                            handleCreateAddFile('directory');
+                            handleOpenCreateFile('directory');
                         }}
                     >
                         <CreateNewFolderOutlined fontSize="inherit" />
                     </IconButton>
-                </Stack>
-            </StyledActions>
-            <StyledContent key={counter}>
-                <FileExplorer
-                    type={EXPLORER_TYPE}
-                    space={workspace.appId}
-                    onSelect={(path) => {
-                        handleOnSelectFile(path);
-                    }}
-                    onTrashClick={(path) => {
-                        handleOnTrashClick(path);
-                    }}
-                    onDragFileStart={(path) => {
-                        handleItemDrag(path);
-                    }}
-                />
-            </StyledContent>
-        </StyledContainer>
+                </>
+            }
+        >
+            <FileExplorer
+                key={counter}
+                type={EXPLORER_TYPE}
+                space={workspace.appId}
+                onSelect={(path) => {
+                    handleOnSelect(path);
+                }}
+                onTrashClick={(e, path) => {
+                    handleOnTrashClick(path);
+                }}
+                onDragStart={(e, path) => {
+                    handleOnItemDragStart(e, path);
+                }}
+            />
+        </Panel>
     );
 };

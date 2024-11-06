@@ -18,19 +18,20 @@ import { LoadingScreen } from '@/components/ui';
 
 const IS_PRODUCTION = process.env.NODE_ENV == 'production';
 
-const StyledPanel = styled('div')(() => ({
+const StyledPanel = styled('div')(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     height: '100%',
     width: '100%',
+    background: theme.palette.background.paper,
+    overflow: 'hidden',
 }));
 
-const StyledActions = styled('div')(({ theme }) => ({
-    display: 'flex',
-    justifyContent: 'space-between',
+const StyledActions = styled(Stack)(({ theme }) => ({
     width: '100%',
     backgroundColor: theme.palette.secondary.light,
+    padding: `${theme.spacing(0.25)} ${theme.spacing(0.5)}`,
 }));
 
 interface FileViewerProps {
@@ -428,7 +429,7 @@ export const FileViewer = (props: FileViewerProps) => {
 
     return (
         <StyledPanel>
-            <StyledActions>
+            <StyledActions direction="row" alignItems={'center'} spacing={0}>
                 <IconButton
                     size={'small'}
                     color={'default'}
@@ -441,33 +442,32 @@ export const FileViewer = (props: FileViewerProps) => {
                 >
                     <ContentCopyOutlined fontSize="inherit" />
                 </IconButton>
-                <Stack direction="row" alignContent={'center'}>
-                    <IconButton
-                        size={'small'}
-                        color={'default'}
-                        title={'Refresh'}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            prettifyFile();
-                        }}
-                    >
-                        <FormatPaintOutlined fontSize="inherit" />
-                    </IconButton>
-                    <IconButton
-                        size={'small'}
-                        color={'default'}
-                        title={'Refresh'}
-                        disabled={!isModified}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            saveFile();
-                        }}
-                    >
-                        <SaveOutlined fontSize="inherit" />
-                    </IconButton>
-                </Stack>
+                <Stack flex={1}>&nbsp;</Stack>
+                <IconButton
+                    size={'small'}
+                    color={'default'}
+                    title={'Refresh'}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        prettifyFile();
+                    }}
+                >
+                    <FormatPaintOutlined fontSize="inherit" />
+                </IconButton>
+                <IconButton
+                    size={'small'}
+                    color={'default'}
+                    title={'Refresh'}
+                    disabled={!isModified}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        saveFile();
+                    }}
+                >
+                    <SaveOutlined fontSize="inherit" />
+                </IconButton>
             </StyledActions>
             <Suspense
                 fallback={<LoadingScreen.Trigger description="Loading..." />}

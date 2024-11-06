@@ -23,7 +23,7 @@ import { WorkspaceLoading } from './WorkspaceLoading';
 import { WorkspaceTabs } from './WorkspaceTabs';
 import { Layout, TabNode } from 'flexlayout-react';
 import 'flexlayout-react/style/light.css';
-import './flexlayout-tabs.css';
+import './flexlayout.css';
 
 const StyledViewport = styled('div')(() => ({
     height: '100vh',
@@ -35,7 +35,7 @@ const StyledMain = styled('div', {
     shouldForwardProp: (prop) => prop !== 'drawerOpen',
 })<{
     drawerOpen: boolean;
-}>(({ theme, drawerOpen }) => ({
+}>(({ drawerOpen }) => ({
     position: 'relative',
     flex: '1',
     height: '100%',
@@ -47,20 +47,26 @@ const StyledMain = styled('div', {
     overflow: 'hidden',
 }));
 
-const StyledContent = styled('div')(() => ({
+const StyledContent = styled('div')(({ theme }) => ({
     position: 'relative',
     flex: '1',
     height: '100%',
     width: '100%',
-    overflow: 'auto',
-    minHeight: 0,
+    overflow: 'hidden',
+    padding: theme.spacing(1.5),
 }));
 
-const StyledMenuOpenIcon = styled(MenuOpen)(({ theme }) => ({
+const StyledSpacer = styled('div')(({ theme }) => ({
+    position: 'absolute',
+    inset: theme.spacing(1.5),
+    overflow: 'hidden',
+}));
+
+const StyledMenuOpenIcon = styled(MenuOpen)(() => ({
     color: 'rgba(0, 0, 0, 0.54)',
 }));
 
-const StyledMenuIcon = styled(Menu)(({ theme }) => ({
+const StyledMenuIcon = styled(Menu)(({}) => ({
     color: 'rgba(0, 0, 0, 0.54)',
 }));
 
@@ -246,15 +252,17 @@ export const Workspace = observer((props: WorkspaceProps) => {
                     </Stack>
                     <StyledContent>
                         <WorkspaceLoading />
-                        {model ? (
-                            <Layout
-                                ref={layoutRef}
-                                model={model}
-                                factory={(node) => {
-                                    return factory(node, layoutRef.current);
-                                }}
-                            />
-                        ) : null}
+                        <StyledSpacer>
+                            {model ? (
+                                <Layout
+                                    ref={layoutRef}
+                                    model={model}
+                                    factory={(node) => {
+                                        return factory(node, layoutRef.current);
+                                    }}
+                                />
+                            ) : null}
+                        </StyledSpacer>
                     </StyledContent>
                     {footer}
                 </StyledMain>

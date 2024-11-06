@@ -49,16 +49,19 @@ interface NotebookExplorerItemProps {
     isSelected: boolean;
 
     /** Triggered when the item is clicked*/
-    onClick: () => void;
+    onClick: (event: React.MouseEvent<HTMLLIElement>) => void;
 
     /** Triggered when the item starts dragging */
-    onDragStart: () => void;
+    onDragStart?: (event: React.DragEvent<HTMLLIElement>) => void;
+
+    /** Triggered when the item ends dragging */
+    onDragEnd?: (event: React.DragEvent<HTMLLIElement>) => void;
 
     /** Triggered when the item's trash icon */
-    onTrashClick: () => void;
+    onTrashClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 
     /** Triggered when the item's copy icon */
-    onCopyClick: () => void;
+    onCopyClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const NotebookExplorerItem: React.FC<NotebookExplorerItemProps> =
@@ -68,6 +71,7 @@ export const NotebookExplorerItem: React.FC<NotebookExplorerItemProps> =
             isSelected = false,
             onClick = () => null,
             onDragStart = () => null,
+            onDragEnd = () => null,
             onTrashClick = () => null,
             onCopyClick = () => null,
         } = props;
@@ -84,18 +88,21 @@ export const NotebookExplorerItem: React.FC<NotebookExplorerItemProps> =
                 onMouseLeave={() => setIsHovered(false)}
                 isDragging={isDragging}
                 isSelected={isSelected}
-                onDragStart={() => {
+                onDragStart={(e) => {
                     setIsDragging(true);
 
                     // trigger the callback
-                    onDragStart();
+                    onDragStart(e);
                 }}
-                onDragEnd={() => {
+                onDragEnd={(e) => {
                     setIsDragging(false);
+
+                    // trigger the callback
+                    onDragEnd(e);
                 }}
                 onClick={(e) => {
-                    e.stopPropagation();
-                    onClick();
+                    // trigger the callback
+                    onClick(e);
                 }}
             >
                 <Icon color={'disabled'} fontSize="small">
@@ -107,11 +114,8 @@ export const NotebookExplorerItem: React.FC<NotebookExplorerItemProps> =
                         <IconButton
                             title={`Duplicate ${name}`}
                             onClick={(e) => {
-                                // don't allow it to propagate
-                                e.stopPropagation();
-
                                 // trigger
-                                onCopyClick();
+                                onCopyClick(e);
                             }}
                             size="small"
                             color={'default'}
@@ -121,11 +125,8 @@ export const NotebookExplorerItem: React.FC<NotebookExplorerItemProps> =
                         <IconButton
                             title={`Delete ${name}`}
                             onClick={(e) => {
-                                // don't allow it to propagate
-                                e.stopPropagation();
-
                                 // trigger
-                                onTrashClick();
+                                onTrashClick(e);
                             }}
                             size="small"
                             color={'default'}

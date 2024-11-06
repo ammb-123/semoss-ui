@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
     DeleteOutline,
     FolderOutlined,
@@ -60,10 +60,19 @@ interface FileExplorerItemProps {
     selected: string[];
 
     /** Triggered when the Label starts dragging */
-    onDragStart: (filePath: string) => void;
+    onDragStart?: (
+        event: React.DragEvent<HTMLDivElement>,
+        path: string,
+    ) => void;
+
+    /** Triggered when the item ends dragging */
+    onDragEnd?: (event: React.DragEvent<HTMLDivElement>, path: string) => void;
 
     /** Triggered when the Track Icon is clicked */
-    onTrashClick: (filePath: string) => void;
+    onTrashClick?: (
+        event: React.MouseEvent<HTMLButtonElement>,
+        path: string,
+    ) => void;
 }
 
 export const FileExplorerItem = (props: FileExplorerItemProps) => {
@@ -76,13 +85,13 @@ export const FileExplorerItem = (props: FileExplorerItemProps) => {
         expanded,
         selected,
         onDragStart = () => null,
+        onDragEnd = () => null,
         onTrashClick = () => null,
     } = props;
     const [isHovered, setIsHovered] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
 
     const isOpen = expanded.indexOf(path) > -1;
-    const isSelected = selected.indexOf(path) > -1;
 
     const getAssets = usePixel<
         {
@@ -117,14 +126,17 @@ export const FileExplorerItem = (props: FileExplorerItemProps) => {
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                     isDragging={isDragging}
-                    onDragStart={() => {
+                    onDragStart={(e) => {
                         setIsDragging(true);
 
                         // trigger the callback
-                        onDragStart(path);
+                        onDragStart(e, path);
                     }}
-                    onDragEnd={() => {
+                    onDragEnd={(e) => {
                         setIsDragging(false);
+
+                        // trigger the callback
+                        onDragEnd(e, path);
                     }}
                 >
                     <Icon color={'disabled'} fontSize="small">
@@ -143,7 +155,7 @@ export const FileExplorerItem = (props: FileExplorerItemProps) => {
                                 e.stopPropagation();
 
                                 // trigger
-                                onTrashClick(path);
+                                onTrashClick(e, path);
                             }}
                             size="small"
                             color={'default'}
@@ -175,11 +187,11 @@ export const FileExplorerItem = (props: FileExplorerItemProps) => {
                                       lastModified={n.lastModified}
                                       expanded={expanded}
                                       selected={selected}
-                                      onTrashClick={(path) => {
-                                          onTrashClick(path);
+                                      onTrashClick={(e, path) => {
+                                          onTrashClick(e, path);
                                       }}
-                                      onDragStart={(path) => {
-                                          onDragStart(path);
+                                      onDragStart={(e, path) => {
+                                          onDragStart(e, path);
                                       }}
                                   />
                               );

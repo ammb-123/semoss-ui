@@ -1,12 +1,8 @@
 import { observer } from 'mobx-react-lite';
-import { styled, IconButton, Stack, Tooltip } from '@semoss/ui';
+import { IconButton, Stack, Tooltip } from '@semoss/ui';
 import { ShareRounded } from '@mui/icons-material';
 import { useWorkspace } from '@/hooks';
 import { ShareOverlay } from '@/components/workspace';
-
-const StyledShareIcon = styled(ShareRounded)(({ theme }) => ({
-    color: 'rgba(0, 0, 0, 0.54)',
-}));
 
 export const CodeWorkspaceActions = observer(() => {
     const { workspace } = useWorkspace();
@@ -16,6 +12,7 @@ export const CodeWorkspaceActions = observer(() => {
             <Tooltip title={'Share App'}>
                 <IconButton
                     size="small"
+                    color="default"
                     onClick={() => {
                         workspace.openOverlay(() => (
                             <ShareOverlay
@@ -25,7 +22,7 @@ export const CodeWorkspaceActions = observer(() => {
                         ));
                     }}
                 >
-                    <StyledShareIcon fontSize={'small'} />
+                    <ShareRounded fontSize={'inherit'} />
                 </IconButton>
             </Tooltip>
         </Stack>
