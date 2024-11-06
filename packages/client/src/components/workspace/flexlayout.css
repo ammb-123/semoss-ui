@@ -15,8 +15,9 @@
     background: none;
 }
 
-.flexlayout__border_left .flexlayout__border_inner_tab_container {
-    padding-right: 32px;
+.flexlayout__border_inner_tab_container {
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 .flexlayout__border_tab_divider {
@@ -75,8 +76,8 @@ Main Content tabs
 }
 
 .flexlayout__tabset_tabbar_inner_tab_container {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 .flexlayout__tabset-selected {
