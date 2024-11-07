@@ -1,30 +1,10 @@
 import { makeAutoObservable } from 'mobx';
 
 import { Role } from '@/types';
-import { RootStore } from '@/stores';
+import { RootStore, WorkspaceOptions } from '@/stores';
 
 import { AppMetadata } from '@/components/app';
-import { IJsonModel, Model } from 'flexlayout-react';
-
-interface WorkspaceOptions {
-    version: string;
-    layout: {
-        selected: string;
-        available: Record<
-            string,
-            {
-                /** id of the layout */
-                id: string;
-
-                /** name of the layout */
-                name: string;
-
-                /** Data associated with the layout */
-                data: IJsonModel;
-            }
-        >;
-    };
-}
+import { Model } from 'flexlayout-react';
 
 export interface WorkspaceStoreInterface {
     /**
@@ -268,6 +248,42 @@ export class WorkspaceStore {
      */
 
     /**
+     * Update the options
+     * @param options - options to configure the workspace with
+     */
+    updateOptions = (options: Partial<WorkspaceOptions>): boolean => {
+        try {
+            // TODO::Version Check
+
+            // add the new layout
+            if (options.layout) {
+                this._store.layout.selected = options.layout.selected;
+
+                //  add the new options
+                for (const lId in options.layout.available) {
+                    const l = options.layout.available[lId];
+
+                    // add the layout
+                    this._store.layout.available[l.id] = {
+                        // add the old
+                        ...this._store.layout.available[l.id],
+
+                        // add the new
+                        ...l,
+
+                        // recreate the model
+                        model: Model.fromJson(l.data),
+                    };
+                }
+            }
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    /**
      * Load either from the cache or with defaul options
      * @param defaultOptions - options to configure the workspace with
      */
@@ -277,12 +293,10 @@ export class WorkspaceStore {
         let isLoaded = false;
         try {
             const item = localStorage.getItem(this.cacheKey);
-            if (!item) {
-                return;
+            if (item) {
+                const options = JSON.parse(item);
+                isLoaded = this.updateOptions(options);
             }
-
-            const options = JSON.parse(item);
-            isLoaded = this.updateOptions(options);
         } catch (e) {
             console.error(e);
         }
@@ -296,9 +310,29 @@ export class WorkspaceStore {
     };
 
     /**
-     * Cache the state
+     * Load from cache and return a boolean if true
      */
-    cache = (): void => {
+    loadFromCache = (): boolean => {
+        // TODO::Version Check
+
+        let isLoaded = false;
+        try {
+            const item = localStorage.getItem(this.cacheKey);
+            if (item) {
+                const options = JSON.parse(item);
+                isLoaded = this.updateOptions(options);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+
+        return isLoaded;
+    };
+
+    /**
+     * Save the workspace to local storage
+     */
+    saveToCache = (): void => {
         try {
             const options: WorkspaceOptions = {
                 version: '',
@@ -324,7 +358,6 @@ export class WorkspaceStore {
 
             // save cache
             localStorage.setItem(this.cacheKey, JSON.stringify(options));
-            console.log(this.cacheKey);
         } catch (e) {
             console.error(e);
             // noop
@@ -347,15 +380,24 @@ export class WorkspaceStore {
     };
 
     /**
-     * Select the layout
+     * Update the layout
+     *
+     * @param id - id of the layout
+     * @param layout - layout that is being added
      */
     updateLayout = (
-        layout: string,
-        options: Partial<WorkspaceStore['layout']['available'][number]>,
+        id: string,
+        layout: Partial<WorkspaceOptions['layout']['available'][string]>,
     ) => {
-        this._store.layout.available[layout] = {
-            ...this._store.layout.available[layout],
-            ...options,
+        this._store.layout.available[id] = {
+            // add the old
+            ...this._store.layout.available[id],
+
+            // add the new
+            ...layout,
+
+            // recreate the model
+            model: Model.fromJson(layout.data),
         };
     };
 
@@ -396,40 +438,4 @@ export class WorkspaceStore {
     get overlay() {
         return this._store.overlay;
     }
-
-    /**
-     * Update the options
-     * @param options - options to configure the workspace with
-     */
-    private updateOptions = (options: Partial<WorkspaceOptions>): boolean => {
-        try {
-            // TODO::Version Check
-
-            // add the new layout
-            if (options.layout) {
-                this._store.layout.selected = options.layout.selected;
-
-                //  add the new options
-                for (const lId in options.layout.available) {
-                    const l = options.layout.available[lId];
-
-                    // add the layout
-                    this._store.layout.available[l.id] = {
-                        // add the old
-                        ...this._store.layout.available[l.id],
-
-                        // add the new
-                        ...l,
-
-                        // recreate the model
-                        model: Model.fromJson(l.data),
-                    };
-                }
-            }
-
-            return true;
-        } catch (e) {
-            return false;
-        }
-    };
 }

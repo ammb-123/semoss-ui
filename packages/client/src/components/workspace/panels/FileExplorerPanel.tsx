@@ -177,8 +177,8 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
                 throw new Error('Missing model');
             }
 
-            // TODO: ctrl key needs to be down for now. event.ctrl=false is reserved for panel-to-panel interactions
-            if (!event.ctrlKey) {
+            // TODO: altKey key needs to be down for now. event.altKey=false is reserved for panel-to-panel interactions
+            if (!event.altKey) {
                 return;
             }
 

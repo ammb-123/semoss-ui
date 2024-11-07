@@ -9,6 +9,7 @@ import {
     MigrationManager,
     STATE_VERSION,
     DesignerStore,
+    WorkspaceOptions,
 } from '@/stores';
 import { DefaultCells } from '@/components/cell-defaults';
 import { DefaultBlocks } from '@/components/block-defaults';
@@ -51,7 +52,8 @@ const StyledAlert = styled('div')(({ theme }) => ({
     background: 'rgba(253, 237, 225, 1)',
 }));
 
-const DEFAULT_OPTIONS: Parameters<WorkspaceStore['load']>[0] = {
+const DEFAULT_OPTIONS: WorkspaceOptions = {
+    version: '',
     layout: {
         selected: 'ui',
         available: {
@@ -361,11 +363,6 @@ export const BlocksWorkspace = observer((props: BlocksWorkspaceProps) => {
     const [state, setState] = useState<StateStore>();
 
     useEffect(() => {
-        // load the default options
-        workspace.load({
-            ...DEFAULT_OPTIONS,
-        });
-
         // start the loading screen
         workspace.setLoading(true);
 
@@ -451,6 +448,7 @@ export const BlocksWorkspace = observer((props: BlocksWorkspaceProps) => {
                 }}
             >
                 <Workspace
+                    options={DEFAULT_OPTIONS}
                     workspace={workspace}
                     endTopbar={<BlocksWorkspaceActions />}
                     alert={

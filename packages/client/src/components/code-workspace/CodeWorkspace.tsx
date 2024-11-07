@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import { WorkspaceStore } from '@/stores';
+import { WorkspaceOptions, WorkspaceStore } from '@/stores';
 
 import {
     Workspace,
@@ -12,9 +11,9 @@ import {
 
 import { CodeWorkspaceActions } from './CodeWorkspaceActions';
 import { RendererPanel } from './panels';
-import { Code, Settings } from '@mui/icons-material';
 
-const DEFAULT_OPTIONS: Parameters<WorkspaceStore['load']>[0] = {
+const DEFAULT_OPTIONS: WorkspaceOptions = {
+    version: '',
     layout: {
         selected: 'code',
         available: {
@@ -58,12 +57,6 @@ const DEFAULT_OPTIONS: Parameters<WorkspaceStore['load']>[0] = {
                                         type: 'tab',
                                         name: 'App',
                                         component: 'renderer',
-                                        config: {},
-                                    },
-                                    {
-                                        type: 'tab',
-                                        name: 'Settings',
-                                        component: 'settings',
                                         config: {},
                                     },
                                 ],
@@ -135,16 +128,10 @@ interface CodeWorkspaceProps {
 export const CodeWorkspace = observer((props: CodeWorkspaceProps) => {
     const { workspace } = props;
 
-    useEffect(() => {
-        // try to load from cache, otherwise load default settings
-        workspace.load({
-            ...DEFAULT_OPTIONS,
-        });
-    }, []);
-
     return (
         <>
             <Workspace
+                options={DEFAULT_OPTIONS}
                 workspace={workspace}
                 endTopbar={<CodeWorkspaceActions />}
                 factory={FACTORY}

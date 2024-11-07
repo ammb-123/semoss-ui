@@ -8,10 +8,9 @@ import {
     Typography,
     useNotification,
     IconButton,
-    alpha,
 } from '@semoss/ui';
-import { Drawer } from '@mui/material';
-import { Home, Menu, MenuOpen } from '@mui/icons-material';
+import { Drawer, Tooltip } from '@mui/material';
+import { Home, Menu, MenuOpen, RestartAlt } from '@mui/icons-material';
 import { Layout, TabNode } from 'flexlayout-react';
 import 'flexlayout-react/style/light.css';
 import './flexlayout.css';
@@ -19,9 +18,8 @@ import './flexlayout.css';
 import { Env } from '@/env';
 import { THEME } from '@/constants';
 import { WorkspaceContext } from '@/contexts';
-import { WorkspaceStore } from '@/stores';
+import { WorkspaceStore, WorkspaceOptions } from '@/stores';
 import { usePixel, useRootStore } from '@/hooks';
-import { LoadingScreen } from '@/components/ui';
 
 import { WorkspaceOverlay } from './WorkspaceOverlay';
 import { WorkspaceLoading } from './WorkspaceLoading';
@@ -94,6 +92,14 @@ const StyledHeaderLogoImg = styled('img')(({ theme }) => ({
     width: theme.spacing(3),
 }));
 
+const StyledActions = styled(Stack)(({ theme }) => ({
+    position: 'absolute',
+    bottom: '0',
+    left: '0',
+    width: '32px', // from flexlayout
+    zIndex: 1,
+}));
+
 type WorkspaceProps = {
     /** End items to render in the top bar */
     endTopbar?: React.ReactNode;
@@ -107,23 +113,26 @@ type WorkspaceProps = {
     /** Workspace to render */
     workspace: WorkspaceStore;
 
+    /** Options to load into the workspace */
+    options: WorkspaceOptions;
+
     /** Factor method */
     factory: (node: TabNode, layout: Layout) => React.ReactNode;
 };
 
 export const Workspace = observer((props: WorkspaceProps) => {
     const {
-        endTopbar: endTopbar = null,
+        endTopbar = null,
         alert,
         footer = null,
         workspace,
+        options,
         factory = () => null,
     } = props;
     const { configStore } = useRootStore();
     const notification = useNotification();
     const navigate = useNavigate();
     const location = useLocation();
-    const editMode = location.pathname.includes('/edit');
 
     const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -135,6 +144,17 @@ export const Workspace = observer((props: WorkspaceProps) => {
     const validateDependencies = usePixel(
         'ValidateUserProjectDependencies(project="' + workspace.appId + '");',
     );
+
+    useEffect(() => {
+        // load from options if not loaded from cache
+        const copied = JSON.parse(JSON.stringify(options));
+        workspace.load(copied);
+
+        const isLoaded = workspace.loadFromCache();
+        if (!isLoaded) {
+            workspace.updateOptions(options);
+        }
+    }, [options]);
 
     useEffect(() => {
         if (validateDependencies.status !== 'SUCCESS') {
@@ -183,6 +203,32 @@ export const Workspace = observer((props: WorkspaceProps) => {
         return {};
     }, [Object.keys(configStore.store.config).length]);
 
+    /**
+     * reset the selected layout
+     */
+    const resetWorkspace = () => {
+        try {
+            // reset only the selected one
+            const selected = workspace.selectedLayout.id;
+            if (!selected) {
+                return;
+            }
+
+            // copy the optoins
+            const layout = JSON.parse(
+                JSON.stringify(options.layout.available[selected]),
+            );
+
+            // update the layout
+            workspace.updateLayout(selected, layout);
+
+            // save the workspace
+            workspace.saveToCache();
+        } catch (e) {
+            //noop
+        }
+    };
+
     return (
         <WorkspaceContext.Provider
             value={{
@@ -206,29 +252,18 @@ export const Workspace = observer((props: WorkspaceProps) => {
                             padding={0}
                             spacing={2}
                         >
-                            {editMode ? (
-                                <IconButton
-                                    edge="start"
-                                    color="inherit"
-                                    aria-label="menu"
-                                    onClick={toggleDrawer(!drawerOpen)}
-                                >
-                                    {drawerOpen ? (
-                                        <StyledMenuOpenIcon fontSize="small" />
-                                    ) : (
-                                        <StyledMenuIcon fontSize="small" />
-                                    )}
-                                </IconButton>
-                            ) : (
-                                <IconButton
-                                    edge="start"
-                                    color="inherit"
-                                    aria-label="menu"
-                                    onClick={() => navigate('/')}
-                                >
-                                    <StyledHomeIcon />
-                                </IconButton>
-                            )}
+                            <IconButton
+                                edge="start"
+                                color="default"
+                                aria-label="menu"
+                                onClick={toggleDrawer(!drawerOpen)}
+                            >
+                                {drawerOpen ? (
+                                    <StyledMenuOpenIcon fontSize="small" />
+                                ) : (
+                                    <StyledMenuIcon fontSize="small" />
+                                )}
+                            </IconButton>
                             <Stack
                                 direction="row"
                                 alignItems={'center'}
@@ -250,16 +285,37 @@ export const Workspace = observer((props: WorkspaceProps) => {
                         <WorkspaceLoading />
                         <StyledSpacer>
                             {model ? (
-                                <Layout
-                                    ref={layoutRef}
-                                    model={model}
-                                    factory={(node) => {
-                                        return factory(node, layoutRef.current);
-                                    }}
-                                    onModelChange={() => {
-                                        workspace.cache();
-                                    }}
-                                />
+                                <>
+                                    <Layout
+                                        ref={layoutRef}
+                                        model={model}
+                                        factory={(node) => {
+                                            return factory(
+                                                node,
+                                                layoutRef.current,
+                                            );
+                                        }}
+                                        onModelChange={() => {
+                                            workspace.saveToCache();
+                                        }}
+                                    />
+                                    <StyledActions
+                                        direction="column"
+                                        justifyContent={'center'}
+                                    >
+                                        <Tooltip title={'Reset workspace'}>
+                                            <IconButton
+                                                size={'small'}
+                                                color="default"
+                                                onClick={() => {
+                                                    resetWorkspace();
+                                                }}
+                                            >
+                                                <RestartAlt fontSize="inherit" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </StyledActions>
+                                </>
                             ) : null}
                         </StyledSpacer>
                     </StyledContent>

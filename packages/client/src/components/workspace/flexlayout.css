@@ -13,6 +13,7 @@
 .flexlayout__border_left {
     border-right: none;
     background: none;
+    padding-bottom: 40px;
 }
 
 .flexlayout__border_inner_tab_container {
