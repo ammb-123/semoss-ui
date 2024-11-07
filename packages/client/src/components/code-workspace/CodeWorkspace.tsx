@@ -14,14 +14,13 @@ import { CodeWorkspaceActions } from './CodeWorkspaceActions';
 import { RendererPanel } from './panels';
 import { Code, Settings } from '@mui/icons-material';
 
-const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
+const DEFAULT_OPTIONS: Parameters<WorkspaceStore['load']>[0] = {
     layout: {
         selected: 'code',
-        available: [
-            {
+        available: {
+            code: {
                 id: 'code',
                 name: 'Code',
-                tab: () => <Code fontSize="inherit" />,
                 data: {
                     global: {
                         tabEnableClose: false,
@@ -73,10 +72,9 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                     },
                 },
             },
-            {
+            settings: {
                 id: 'settings',
                 name: 'Settings',
-                tab: () => <Settings fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
                     borders: [],
@@ -102,7 +100,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                     },
                 },
             },
-        ],
+        },
     },
 };
 
@@ -138,8 +136,10 @@ export const CodeWorkspace = observer((props: CodeWorkspaceProps) => {
     const { workspace } = props;
 
     useEffect(() => {
-        // set the initial settings
-        workspace.configure(CONFIG);
+        // try to load from cache, otherwise load default settings
+        workspace.load({
+            ...DEFAULT_OPTIONS,
+        });
     }, []);
 
     return (

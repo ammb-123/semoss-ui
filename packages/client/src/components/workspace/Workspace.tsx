@@ -6,24 +6,26 @@ import {
     styled,
     Stack,
     Typography,
-    Tooltip,
     useNotification,
     IconButton,
+    alpha,
 } from '@semoss/ui';
 import { Drawer } from '@mui/material';
-import { Home, InfoOutlined, Menu, MenuOpen } from '@mui/icons-material';
+import { Home, Menu, MenuOpen } from '@mui/icons-material';
+import { Layout, TabNode } from 'flexlayout-react';
+import 'flexlayout-react/style/light.css';
+import './flexlayout.css';
 
 import { Env } from '@/env';
 import { THEME } from '@/constants';
 import { WorkspaceContext } from '@/contexts';
 import { WorkspaceStore } from '@/stores';
 import { usePixel, useRootStore } from '@/hooks';
+import { LoadingScreen } from '@/components/ui';
+
 import { WorkspaceOverlay } from './WorkspaceOverlay';
 import { WorkspaceLoading } from './WorkspaceLoading';
 import { WorkspaceTabs } from './WorkspaceTabs';
-import { Layout, TabNode } from 'flexlayout-react';
-import 'flexlayout-react/style/light.css';
-import './flexlayout.css';
 
 const StyledViewport = styled('div')(() => ({
     height: '100vh',
@@ -53,12 +55,17 @@ const StyledContent = styled('div')(({ theme }) => ({
     height: '100%',
     width: '100%',
     overflow: 'hidden',
-    padding: theme.spacing(1.5),
+    paddingLeft: theme.spacing(1.5),
+    paddingRight: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
 }));
 
 const StyledSpacer = styled('div')(({ theme }) => ({
     position: 'absolute',
-    inset: theme.spacing(1.5),
+    top: 0,
+    left: theme.spacing(1.5),
+    right: theme.spacing(1.5),
+    bottom: theme.spacing(1.5),
     overflow: 'hidden',
 }));
 
@@ -66,7 +73,7 @@ const StyledMenuOpenIcon = styled(MenuOpen)(() => ({
     color: 'rgba(0, 0, 0, 0.54)',
 }));
 
-const StyledMenuIcon = styled(Menu)(({}) => ({
+const StyledMenuIcon = styled(Menu)(() => ({
     color: 'rgba(0, 0, 0, 0.54)',
 }));
 
@@ -75,13 +82,12 @@ const StyledHomeIcon = styled(Home)(({ theme }) => ({
 }));
 
 const StyledHeaderLogo = styled(Link)(({ theme }) => ({
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(2),
     color: 'inherit',
     textDecoration: 'none',
     cursor: 'pointer',
+    ':hover': {
+        bacakground: theme.palette.action.hover,
+    },
 }));
 
 const StyledHeaderLogoImg = styled('img')(({ theme }) => ({
@@ -188,17 +194,17 @@ export const Workspace = observer((props: WorkspaceProps) => {
                 <StyledMain drawerOpen={drawerOpen}>
                     <Stack
                         direction={'row'}
-                        gap={1}
                         justifyContent={'space-between'}
                         alignItems={'center'}
                         padding={1}
+                        spacing={1}
                     >
                         <Stack
                             direction={'row'}
-                            gap={1}
                             justifyContent={'flex-start'}
                             alignItems={'center'}
                             padding={0}
+                            spacing={2}
                         >
                             {editMode ? (
                                 <IconButton
@@ -223,29 +229,19 @@ export const Workspace = observer((props: WorkspaceProps) => {
                                     <StyledHomeIcon />
                                 </IconButton>
                             )}
-                            <Avatar
-                                variant="rounded"
-                                src={`${Env.MODULE}/api/project-${workspace.appId}/projectImage/download`}
-                            />
-                            <Typography variant={'h6'}>
-                                {workspace.metadata.project_name}
-                            </Typography>
-                            <Tooltip
-                                title={
-                                    <Stack direction="column" spacing={0}>
-                                        <div>App ID: {workspace.appId}</div>
-                                        <div>
-                                            Created:
-                                            {
-                                                workspace.metadata
-                                                    .project_date_created
-                                            }
-                                        </div>
-                                    </Stack>
-                                }
+                            <Stack
+                                direction="row"
+                                alignItems={'center'}
+                                spacing={1}
                             >
-                                <InfoOutlined fontSize={'small'} />
-                            </Tooltip>
+                                <Avatar
+                                    variant="rounded"
+                                    src={`${Env.MODULE}/api/project-${workspace.appId}/projectImage/download`}
+                                />
+                                <Typography variant={'subtitle1'}>
+                                    {workspace.metadata.project_name}
+                                </Typography>
+                            </Stack>
                             {alert}
                         </Stack>
                         {endTopbar}
@@ -259,6 +255,9 @@ export const Workspace = observer((props: WorkspaceProps) => {
                                     model={model}
                                     factory={(node) => {
                                         return factory(node, layoutRef.current);
+                                    }}
+                                    onModelChange={() => {
+                                        workspace.cache();
                                     }}
                                 />
                             ) : null}
@@ -284,18 +283,38 @@ export const Workspace = observer((props: WorkspaceProps) => {
                 }}
                 variant="persistent"
             >
-                <Stack p={2} direction="column" gap={1}>
+                <Stack direction="column" gap={1} height={'100%'} padding={2}>
                     <StyledHeaderLogo to={'/'}>
-                        {themeMap.isLogoUrl ? (
-                            <StyledHeaderLogoImg src={themeMap.logo} />
-                        ) : THEME.logo ? (
-                            <StyledHeaderLogoImg src={THEME.logo} />
-                        ) : null}
-                        <Typography variant={'h6'}>
-                            {themeMap.name ? themeMap.name : THEME.name}
-                        </Typography>
+                        <Stack
+                            direction="row"
+                            alignItems={'center'}
+                            spacing={1}
+                        >
+                            {themeMap.isLogoUrl ? (
+                                <StyledHeaderLogoImg src={themeMap.logo} />
+                            ) : THEME.logo ? (
+                                <StyledHeaderLogoImg src={THEME.logo} />
+                            ) : null}
+                            <Typography variant={'subtitle2'}>
+                                {themeMap.name ? themeMap.name : THEME.name}
+                            </Typography>
+                        </Stack>
                     </StyledHeaderLogo>
-                    <WorkspaceTabs />
+                    <Stack flex={1} direction="column" overflow={'auto'}>
+                        <WorkspaceTabs />
+                    </Stack>
+                    <Stack
+                        direction="column"
+                        justifyContent={'center'}
+                        spacing={0.25}
+                    >
+                        <Typography
+                            variant={'caption'}
+                            sx={{ fontSize: '.625rem' }}
+                        >
+                            ID: {workspace.appId}
+                        </Typography>
+                    </Stack>
                 </Stack>
             </Drawer>
         </WorkspaceContext.Provider>

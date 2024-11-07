@@ -6,6 +6,26 @@ import { RootStore } from '@/stores';
 import { AppMetadata } from '@/components/app';
 import { IJsonModel, Model } from 'flexlayout-react';
 
+interface WorkspaceOptions {
+    version: string;
+    layout: {
+        selected: string;
+        available: Record<
+            string,
+            {
+                /** id of the layout */
+                id: string;
+
+                /** name of the layout */
+                name: string;
+
+                /** Data associated with the layout */
+                data: IJsonModel;
+            }
+        >;
+    };
+}
+
 export interface WorkspaceStoreInterface {
     /**
      * ID of App
@@ -47,19 +67,19 @@ export interface WorkspaceStoreInterface {
         /**
          * List of available layouts
          */
-        available: {
-            /** id of the layout */
-            id: string;
+        available: Record<
+            string,
+            {
+                /** id of the layout */
+                id: string;
 
-            /** name of the layout */
-            name: string;
+                /** name of the layout */
+                name: string;
 
-            /** tab associated with layout */
-            tab: () => JSX.Element;
-
-            /** Model associated with the layout */
-            model: Model;
-        }[];
+                /** Model associated with the layout */
+                model: Model;
+            }
+        >;
     };
 
     /** overlay information */
@@ -132,7 +152,7 @@ export class WorkspaceStore {
         },
         layout: {
             selected: '',
-            available: [],
+            available: {},
         },
         overlay: {
             open: false,
@@ -199,7 +219,8 @@ export class WorkspaceStore {
      * Get the selected layout of the workspace
      */
     get selectedLayout() {
-        for (const s of this._store.layout.available) {
+        for (const sId in this._store.layout.available) {
+            const s = this._store.layout.available[sId];
             if (s.id === this._store.layout.selected) {
                 return s;
             }
@@ -212,7 +233,7 @@ export class WorkspaceStore {
      * Get the selected layout of the workspace
      */
     get availableLayouts() {
-        return this._store.layout.available;
+        return Object.values(this._store.layout.available);
     }
 
     /**
@@ -236,49 +257,80 @@ export class WorkspaceStore {
     }
 
     /**
-     * Get overlay information associated with the workspace
+     * The key for the local storage cache
      */
-    get overlay() {
-        return this._store.overlay;
+    get cacheKey() {
+        return `smss-workspace--${this._store.appId}`;
     }
 
     /**
      * Actions
      */
+
     /**
-     * Configure the worksapce based on the settings
-     * @param options - options to configure the workspace with
+     * Load either from the cache or with defaul options
+     * @param defaultOptions - options to configure the workspace with
      */
-    configure = (options: {
-        /** Initial View */
-        layout: {
-            selected: string;
-            available: {
-                /** id of the layout */
-                id: string;
+    load = (defaultOptions: Partial<WorkspaceOptions>): void => {
+        // TODO::Version Check
 
-                /** name of the layout */
-                name: string;
+        let isLoaded = false;
+        try {
+            const item = localStorage.getItem(this.cacheKey);
+            if (!item) {
+                return;
+            }
 
-                /** tab associated with layout */
-                tab: () => JSX.Element;
+            const options = JSON.parse(item);
+            isLoaded = this.updateOptions(options);
+        } catch (e) {
+            console.error(e);
+        }
 
-                /** Data associated with the layout */
-                data: IJsonModel;
-            }[];
-        };
-    }) => {
-        // create the layout
-        this._store.layout = {
-            selected: options.layout.selected,
-            available: options.layout.available.map((l) => {
-                return {
-                    ...l,
-                    model: Model.fromJson(l.data),
-                };
-            }),
-        };
+        if (!isLoaded) {
+            // load the default options
+            this.updateOptions({
+                ...defaultOptions,
+            });
+        }
     };
+
+    /**
+     * Cache the state
+     */
+    cache = (): void => {
+        try {
+            const options: WorkspaceOptions = {
+                version: '',
+                layout: {
+                    selected: this._store.layout.selected,
+                    available: {},
+                },
+            };
+
+            // add each layout in manually
+            for (const lId in this._store.layout.available) {
+                const l = this._store.layout.available[lId];
+
+                const data = l.model.toJson();
+
+                // add the layout
+                options.layout.available[l.id] = {
+                    id: l.id,
+                    name: l.name,
+                    data: data,
+                };
+            }
+
+            // save cache
+            localStorage.setItem(this.cacheKey, JSON.stringify(options));
+            console.log(this.cacheKey);
+        } catch (e) {
+            console.error(e);
+            // noop
+        }
+    };
+
     /**
      * Set the loading screen for the app
      * @param isLoading - true if loading screen is on
@@ -333,5 +385,51 @@ export class WorkspaceStore {
 
         // clear the content
         this._store.overlay.content = null;
+    };
+
+    /**
+     * Helpers
+     */
+    /**
+     * Get overlay information associated with the workspace
+     */
+    get overlay() {
+        return this._store.overlay;
+    }
+
+    /**
+     * Update the options
+     * @param options - options to configure the workspace with
+     */
+    private updateOptions = (options: Partial<WorkspaceOptions>): boolean => {
+        try {
+            // TODO::Version Check
+
+            // add the new layout
+            if (options.layout) {
+                this._store.layout.selected = options.layout.selected;
+
+                //  add the new options
+                for (const lId in options.layout.available) {
+                    const l = options.layout.available[lId];
+
+                    // add the layout
+                    this._store.layout.available[l.id] = {
+                        // add the old
+                        ...this._store.layout.available[l.id],
+
+                        // add the new
+                        ...l,
+
+                        // recreate the model
+                        model: Model.fromJson(l.data),
+                    };
+                }
+            }
+
+            return true;
+        } catch (e) {
+            return false;
+        }
     };
 }

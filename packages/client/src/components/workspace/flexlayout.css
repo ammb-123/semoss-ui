@@ -69,6 +69,7 @@ Main Content tabs
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: transparent;
     border-radius: var(--smss-tab-border-radius);
+    border-top-left-radius: 0;
 }
 
 .flexlayout__tabset_tabbar_outer_top {

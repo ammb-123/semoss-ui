@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Button, useNotification } from '@semoss/ui';
-import { LanguageOutlined } from '@mui/icons-material';
 
 import { WorkspaceStore } from '@/stores';
 import { useRootStore } from '@/hooks';
@@ -11,14 +10,13 @@ import { Workspace } from '@/components/workspace';
 import { BlocksRenderer } from '@/components/blocks-workspace';
 import { CodeRenderer } from '@/components/code-workspace';
 
-const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
+const CONFIG: Parameters<WorkspaceStore['load']>[0] = {
     layout: {
         selected: 'renderer',
-        available: [
-            {
+        available: {
+            renderer: {
                 id: 'renderer',
                 name: 'App',
-                tab: () => <LanguageOutlined fontSize="inherit" />,
                 data: {
                     global: {
                         tabEnableClose: false,
@@ -47,7 +45,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                     },
                 },
             },
-        ],
+        },
     },
 };
 
@@ -69,7 +67,7 @@ export const AppPage = observer(() => {
             .createWorkspace(appId)
             .then((loadedWorkspace) => {
                 // set the initial settings
-                loadedWorkspace.configure({
+                loadedWorkspace.load({
                     ...CONFIG,
                 });
 

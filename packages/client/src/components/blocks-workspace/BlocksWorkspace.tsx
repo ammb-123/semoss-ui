@@ -21,13 +21,7 @@ import {
 } from '@/components/workspace';
 import { LoadingScreen } from '@/components/ui';
 import { BlocksWorkspaceActions } from './BlocksWorkspaceActions';
-import {
-    ConstructionOutlined,
-    Dashboard,
-    DataObject,
-    Settings,
-    VerticalSplitOutlined,
-} from '@mui/icons-material';
+import { ConstructionOutlined } from '@mui/icons-material';
 import {
     DEFAULT_MENU,
     VISUALIZATION_MENU,
@@ -57,14 +51,13 @@ const StyledAlert = styled('div')(({ theme }) => ({
     background: 'rgba(253, 237, 225, 1)',
 }));
 
-const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
+const DEFAULT_OPTIONS: Parameters<WorkspaceStore['load']>[0] = {
     layout: {
         selected: 'ui',
-        available: [
-            {
+        available: {
+            ui: {
                 id: 'ui',
                 name: 'UI',
-                tab: () => <Dashboard fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
                     borders: [
@@ -143,10 +136,9 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                     },
                 },
             },
-            {
+            'data-science': {
                 id: 'data-science',
                 name: 'Data',
-                tab: () => <DataObject fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
                     borders: [
@@ -189,10 +181,9 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                     },
                 },
             },
-            {
+            custom: {
                 id: 'custom',
                 name: 'Custom',
-                tab: () => <VerticalSplitOutlined fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
                     borders: [
@@ -282,10 +273,9 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                     },
                 },
             },
-            {
+            settings: {
                 id: 'settings',
                 name: 'Settings',
-                tab: () => <Settings fontSize="inherit" />,
                 data: {
                     global: { tabEnableClose: false },
                     borders: [],
@@ -311,7 +301,7 @@ const CONFIG: Parameters<WorkspaceStore['configure']>[0] = {
                     },
                 },
             },
-        ],
+        },
     },
 };
 
@@ -371,9 +361,9 @@ export const BlocksWorkspace = observer((props: BlocksWorkspaceProps) => {
     const [state, setState] = useState<StateStore>();
 
     useEffect(() => {
-        // set the initial settings
-        workspace.configure({
-            ...CONFIG,
+        // load the default options
+        workspace.load({
+            ...DEFAULT_OPTIONS,
         });
 
         // start the loading screen
