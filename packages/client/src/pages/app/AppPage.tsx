@@ -18,6 +18,7 @@ import { useRootStore } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
 import { BlocksRenderer } from '@/components/blocks-workspace';
 import { CodeRenderer } from '@/components/code-workspace';
+import { Link } from 'react-router-dom';
 
 const StyledViewport = styled('div')(() => ({
     height: '100vh',
@@ -79,31 +80,14 @@ export const AppPage = observer(() => {
                 padding={1}
                 spacing={1}
             >
-                <Stack
-                    direction={'row'}
-                    justifyContent={'flex-start'}
-                    alignItems={'center'}
-                    padding={0}
-                    spacing={2}
-                >
-                    <IconButton
-                        edge="start"
-                        color="default"
-                        aria-label="menu"
-                        onClick={() => navigate('/')}
-                    >
-                        <Home />
-                    </IconButton>
-                    <Stack direction="row" alignItems={'center'} spacing={1}>
-                        <Avatar
-                            variant="rounded"
-                            src={`${Env.MODULE}/api/project-${workspace.appId}/projectImage/download`}
-                        />
-                        <Typography variant={'subtitle1'}>
-                            {workspace.metadata.project_name}
-                        </Typography>
-                    </Stack>
-                    {alert}
+                <Stack direction="row" alignItems={'center'} spacing={1}>
+                    <Avatar
+                        variant="rounded"
+                        src={`${Env.MODULE}/api/project-${workspace.appId}/projectImage/download`}
+                    />
+                    <Typography variant={'subtitle1'}>
+                        {workspace.metadata.project_name}
+                    </Typography>
                 </Stack>
                 <Stack flex={1}>&nbsp;</Stack>
                 <Button
@@ -116,10 +100,10 @@ export const AppPage = observer(() => {
                             workspace.role === 'EDIT'
                         )
                     }
-                    onClick={() => {
-                        navigate('edit');
-                    }}
                     endIcon={<EditOutlined fontSize="inherit" />}
+                    component={Link}
+                    //@ts-expect-error this is expected. props are forwarded
+                    to={`../../workspace/${appId}`}
                 >
                     Edit
                 </Button>

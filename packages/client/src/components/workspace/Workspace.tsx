@@ -8,8 +8,10 @@ import {
     Typography,
     useNotification,
     IconButton,
+    Tooltip,
+    Drawer,
 } from '@semoss/ui';
-import { Drawer, Tooltip } from '@mui/material';
+// import { Drawer } from '@mui/material';
 import { Home, Menu, MenuOpen, RestartAlt } from '@mui/icons-material';
 import { Layout, TabNode } from 'flexlayout-react';
 import 'flexlayout-react/style/light.css';
@@ -20,6 +22,7 @@ import { THEME } from '@/constants';
 import { WorkspaceContext } from '@/contexts';
 import { WorkspaceStore, WorkspaceOptions } from '@/stores';
 import { usePixel, useRootStore } from '@/hooks';
+import { LoginPopover } from '@/components/ui';
 
 import { WorkspaceOverlay } from './WorkspaceOverlay';
 import { WorkspaceLoading } from './WorkspaceLoading';
@@ -240,46 +243,46 @@ export const Workspace = observer((props: WorkspaceProps) => {
                 <StyledMain drawerOpen={drawerOpen}>
                     <Stack
                         direction={'row'}
-                        justifyContent={'space-between'}
                         alignItems={'center'}
                         padding={1}
                         spacing={1}
                     >
-                        <Stack
-                            direction={'row'}
-                            justifyContent={'flex-start'}
-                            alignItems={'center'}
-                            padding={0}
-                            spacing={2}
+                        <IconButton
+                            edge="start"
+                            color="default"
+                            aria-label="menu"
+                            onClick={toggleDrawer(!drawerOpen)}
                         >
-                            <IconButton
-                                edge="start"
-                                color="default"
-                                aria-label="menu"
-                                onClick={toggleDrawer(!drawerOpen)}
-                            >
-                                {drawerOpen ? (
-                                    <StyledMenuOpenIcon fontSize="small" />
-                                ) : (
-                                    <StyledMenuIcon fontSize="small" />
-                                )}
-                            </IconButton>
-                            <Stack
-                                direction="row"
-                                alignItems={'center'}
-                                spacing={1}
-                            >
-                                <Avatar
-                                    variant="rounded"
-                                    src={`${Env.MODULE}/api/project-${workspace.appId}/projectImage/download`}
-                                />
-                                <Typography variant={'subtitle1'}>
-                                    {workspace.metadata.project_name}
-                                </Typography>
-                            </Stack>
-                            {alert}
+                            {drawerOpen ? (
+                                <StyledMenuOpenIcon fontSize="small" />
+                            ) : (
+                                <StyledMenuIcon fontSize="small" />
+                            )}
+                        </IconButton>
+                        <Stack
+                            direction="row"
+                            alignItems={'center'}
+                            spacing={1}
+                        >
+                            <Avatar
+                                variant="rounded"
+                                src={`${Env.MODULE}/api/project-${workspace.appId}/projectImage/download`}
+                            />
+                            <Typography variant={'subtitle1'}>
+                                {workspace.metadata.project_name}
+                            </Typography>
+                        </Stack>
+
+                        <Stack
+                            flex={1}
+                            alignItems={'center'}
+                            justifyContent={'center'}
+                            overflow={'hidden'}
+                        >
+                            <div>{alert || <>&nbsp;</>}</div>
                         </Stack>
                         {endTopbar}
+                        <LoginPopover />
                     </Stack>
                     <StyledContent>
                         <WorkspaceLoading />
@@ -326,15 +329,14 @@ export const Workspace = observer((props: WorkspaceProps) => {
                 anchor="left"
                 open={drawerOpen}
                 ModalProps={{
-                    keepMounted: true, // Better open performance on mobile.
                     hideBackdrop: true, // Hide the backdrop
                 }}
                 PaperProps={{
-                    style: {
+                    sx: {
                         position: 'absolute',
                         height: '100%',
                         width: '240px',
-                        zIndex: 1200,
+                        borderRadius: 0,
                     },
                 }}
                 variant="persistent"
