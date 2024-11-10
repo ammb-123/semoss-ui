@@ -2,6 +2,9 @@ import { IJsonModel } from 'flexlayout-react';
 
 export interface WorkspaceOptions {
     version: string;
+    drawer: {
+        isOpen: boolean;
+    };
     layout: {
         selected: string;
         available: Record<

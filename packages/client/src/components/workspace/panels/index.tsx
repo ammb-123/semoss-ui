@@ -3,4 +3,4 @@ export * from './Panel';
 export * from './SettingsPanel';
 export * from './EmptyFilePanel';
 export * from './FileExplorerPanel';
-export * from './FileViewerPanel';
+export * from './FileEditorPanel';

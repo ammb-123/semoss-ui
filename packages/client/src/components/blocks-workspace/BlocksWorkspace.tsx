@@ -18,7 +18,7 @@ import {
     Workspace,
     SettingsPanel,
     FileExplorerPanel,
-    FileViewerPanel,
+    FileEditorPanel,
 } from '@/components/workspace';
 import { LoadingScreen } from '@/components/ui';
 import { BlocksWorkspaceActions } from './BlocksWorkspaceActions';
@@ -39,6 +39,8 @@ import {
 } from './panels';
 import { BlocksWorkspaceDev } from './BlocksWorkspaceDev';
 
+const DEFAULT_BORDER_SIZE = 300;
+
 const StyledAlert = styled('div')(({ theme }) => ({
     position: 'relative',
     display: 'flex',
@@ -54,6 +56,9 @@ const StyledAlert = styled('div')(({ theme }) => ({
 
 const DEFAULT_OPTIONS: WorkspaceOptions = {
     version: '',
+    drawer: {
+        isOpen: false,
+    },
     layout: {
         selected: 'ui',
         available: {
@@ -67,6 +72,7 @@ const DEFAULT_OPTIONS: WorkspaceOptions = {
                             type: 'border',
                             location: 'left',
                             selected: 0,
+                            size: DEFAULT_BORDER_SIZE,
                             children: [
                                 {
                                     type: 'tab',
@@ -148,6 +154,7 @@ const DEFAULT_OPTIONS: WorkspaceOptions = {
                             type: 'border',
                             location: 'left',
                             selected: 0,
+                            size: DEFAULT_BORDER_SIZE,
                             children: [
                                 {
                                     type: 'tab',
@@ -183,15 +190,16 @@ const DEFAULT_OPTIONS: WorkspaceOptions = {
                     },
                 },
             },
-            custom: {
-                id: 'custom',
-                name: 'Custom',
+            dev: {
+                id: 'dev',
+                name: 'Dev',
                 data: {
                     global: { tabEnableClose: false },
                     borders: [
                         {
                             type: 'border',
                             location: 'left',
+                            size: DEFAULT_BORDER_SIZE,
                             children: [
                                 {
                                     type: 'tab',
@@ -335,8 +343,8 @@ const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (
         );
     } else if (component === 'file-explorer') {
         return <FileExplorerPanel layout={layout} />;
-    } else if (component === 'file-viewer') {
-        return <FileViewerPanel path={config.path} />;
+    } else if (component === 'file-editor') {
+        return <FileEditorPanel path={config.path} />;
     } else if (component === 'notebook-explorer') {
         return <NotebookExplorerPanel layout={layout} />;
     } else if (component === 'notebook-viewer') {

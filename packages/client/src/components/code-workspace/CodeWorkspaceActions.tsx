@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 import { IconButton, Stack, Tooltip } from '@semoss/ui';
 import { ShareRounded } from '@mui/icons-material';
 import { useWorkspace } from '@/hooks';
-import { ShareOverlay } from '@/components/workspace';
+import { ShareOverlay } from '@/components/ui';
 
 export const CodeWorkspaceActions = observer(() => {
     const { workspace } = useWorkspace();

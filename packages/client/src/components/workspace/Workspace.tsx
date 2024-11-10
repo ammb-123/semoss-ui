@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, useMemo } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import {
     Avatar,
@@ -27,6 +27,7 @@ import { LoginPopover } from '@/components/ui';
 import { WorkspaceOverlay } from './WorkspaceOverlay';
 import { WorkspaceLoading } from './WorkspaceLoading';
 import { WorkspaceTabs } from './WorkspaceTabs';
+import { reaction } from 'mobx';
 
 const StyledViewport = styled('div')(() => ({
     height: '100vh',
@@ -134,10 +135,6 @@ export const Workspace = observer((props: WorkspaceProps) => {
     } = props;
     const { configStore } = useRootStore();
     const notification = useNotification();
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    const [drawerOpen, setDrawerOpen] = useState(false);
 
     const layoutRef = useRef<Layout>(null);
 
@@ -149,13 +146,13 @@ export const Workspace = observer((props: WorkspaceProps) => {
     );
 
     useEffect(() => {
-        // load from options if not loaded from cache
-        const copied = JSON.parse(JSON.stringify(options));
-        workspace.load(copied);
+        // default options if not loaded from cache
+        const defaultOptions = JSON.parse(JSON.stringify(options));
 
+        // try to load from cache
         const isLoaded = workspace.loadFromCache();
         if (!isLoaded) {
-            workspace.updateOptions(options);
+            workspace.load(defaultOptions);
         }
     }, [options]);
 
@@ -181,16 +178,6 @@ export const Workspace = observer((props: WorkspaceProps) => {
             }
         }
     }, [validateDependencies.status, validateDependencies.data]);
-
-    const toggleDrawer = (open) => (event) => {
-        if (
-            event.type === 'keydown' &&
-            (event.key === 'Tab' || event.key === 'Shift')
-        ) {
-            return;
-        }
-        setDrawerOpen(open);
-    };
 
     const themeMap = useMemo(() => {
         const theme = configStore.store.config['theme'];
@@ -224,9 +211,6 @@ export const Workspace = observer((props: WorkspaceProps) => {
 
             // update the layout
             workspace.updateLayout(selected, layout);
-
-            // save the workspace
-            workspace.saveToCache();
         } catch (e) {
             //noop
         }
@@ -240,7 +224,7 @@ export const Workspace = observer((props: WorkspaceProps) => {
         >
             <WorkspaceOverlay />
             <StyledViewport>
-                <StyledMain drawerOpen={drawerOpen}>
+                <StyledMain drawerOpen={workspace.drawer.isOpen}>
                     <Stack
                         direction={'row'}
                         alignItems={'center'}
@@ -249,14 +233,20 @@ export const Workspace = observer((props: WorkspaceProps) => {
                     >
                         <IconButton
                             edge="start"
-                            color="default"
+                            color={'default'}
                             aria-label="menu"
-                            onClick={toggleDrawer(!drawerOpen)}
+                            size={'small'}
+                            onClick={() => {
+                                workspace.toggleDrawer();
+
+                                // save the workspace
+                                workspace.saveToCache();
+                            }}
                         >
-                            {drawerOpen ? (
-                                <StyledMenuOpenIcon fontSize="small" />
+                            {workspace.drawer.isOpen ? (
+                                <StyledMenuOpenIcon fontSize="inherit" />
                             ) : (
-                                <StyledMenuIcon fontSize="small" />
+                                <StyledMenuIcon fontSize="inherit" />
                             )}
                         </IconButton>
                         <Stack
@@ -327,7 +317,7 @@ export const Workspace = observer((props: WorkspaceProps) => {
             </StyledViewport>
             <Drawer
                 anchor="left"
-                open={drawerOpen}
+                open={workspace.drawer.isOpen}
                 ModalProps={{
                     hideBackdrop: true, // Hide the backdrop
                 }}

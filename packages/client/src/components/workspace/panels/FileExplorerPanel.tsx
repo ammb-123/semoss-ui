@@ -189,7 +189,7 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
             layout.addTabWithDragAndDrop(name, {
                 type: 'tab',
                 name: name,
-                component: 'file-viewer',
+                component: 'file-editor',
                 config: {
                     path: path,
                 },
@@ -241,7 +241,7 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
                     {
                         type: 'tab',
                         name: name,
-                        component: 'file-viewer',
+                        component: 'file-editor',
                         config: {
                             path: path,
                         },
@@ -293,9 +293,9 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
             model.visitNodes((node) => {
                 // check if it is a tabNode
                 if (node instanceof TabNode) {
-                    // it needs to be a file-viewer
+                    // it needs to be a file-editor
                     const component = node.getComponent();
-                    if (component !== 'file-viewer') {
+                    if (component !== 'file-editor') {
                         return;
                     }
 
@@ -349,9 +349,9 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
             model.visitNodes((node) => {
                 // check if it is a tabNode
                 if (node instanceof TabNode) {
-                    // it needs to be a file-viewer
+                    // it needs to be a file-editor
                     const component = node.getComponent();
-                    if (component !== 'file-viewer') {
+                    if (component !== 'file-editor') {
                         return;
                     }
 

@@ -4,7 +4,8 @@ import { IconButton, Stack, useNotification, Tooltip } from '@semoss/ui';
 import { ShareRounded, SaveOutlined, PlayArrow } from '@mui/icons-material';
 
 import { useWorkspace, useRootStore, useBlocks } from '@/hooks';
-import { ShareOverlay, PreviewOverlay } from '@/components/workspace';
+import { PreviewOverlay } from '@/components/workspace';
+import { ShareOverlay } from '@/components/ui';
 
 export const BlocksWorkspaceActions = observer(() => {
     const { state } = useBlocks();

@@ -7,15 +7,17 @@ import {
     Stack,
     Typography,
     useNotification,
-    IconButton,
     Button,
+    Modal,
+    Tooltip,
+    IconButton,
 } from '@semoss/ui';
-import { EditOutlined, Home } from '@mui/icons-material';
+import { EditOutlined, ShareRounded } from '@mui/icons-material';
 
 import { Env } from '@/env';
 import { WorkspaceStore } from '@/stores';
 import { useRootStore } from '@/hooks';
-import { LoadingScreen } from '@/components/ui';
+import { LoadingScreen, ShareOverlay } from '@/components/ui';
 import { BlocksRenderer } from '@/components/blocks-workspace';
 import { CodeRenderer } from '@/components/code-workspace';
 import { Link } from 'react-router-dom';
@@ -46,6 +48,7 @@ export const AppPage = observer(() => {
     const navigate = useNavigate();
 
     const [workspace, setWorkspace] = useState<WorkspaceStore>(undefined);
+    const [isShareOpen, setIsShareOpen] = useState<boolean>(false);
 
     useEffect(() => {
         // clear out the old app
@@ -90,6 +93,19 @@ export const AppPage = observer(() => {
                     </Typography>
                 </Stack>
                 <Stack flex={1}>&nbsp;</Stack>
+
+                <Tooltip title={'Share App'}>
+                    <IconButton
+                        size="small"
+                        color="default"
+                        onClick={() => {
+                            setIsShareOpen(true);
+                        }}
+                    >
+                        <ShareRounded fontSize={'inherit'} />
+                    </IconButton>
+                </Tooltip>
+
                 <Button
                     variant="contained"
                     size={'small'}
@@ -116,6 +132,13 @@ export const AppPage = observer(() => {
                     <CodeRenderer appId={appId} />
                 ) : null}
             </StyledContent>
+
+            <Modal open={isShareOpen} onClose={() => setIsShareOpen(false)}>
+                <ShareOverlay
+                    appId={appId}
+                    onClose={() => setIsShareOpen(false)}
+                />
+            </Modal>
         </StyledViewport>
     );
 });

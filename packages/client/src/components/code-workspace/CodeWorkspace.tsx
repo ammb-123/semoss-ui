@@ -6,7 +6,7 @@ import {
     Workspace,
     SettingsPanel,
     FileExplorerPanel,
-    FileViewerPanel,
+    FileEditorPanel,
 } from '@/components/workspace';
 
 import { CodeWorkspaceActions } from './CodeWorkspaceActions';
@@ -14,6 +14,9 @@ import { RendererPanel } from './panels';
 
 const DEFAULT_OPTIONS: WorkspaceOptions = {
     version: '',
+    drawer: {
+        isOpen: false,
+    },
     layout: {
         selected: 'code',
         available: {
@@ -30,6 +33,7 @@ const DEFAULT_OPTIONS: WorkspaceOptions = {
                             type: 'border',
                             location: 'left',
                             selected: 0,
+                            size: 400,
                             children: [
                                 {
                                     id: 'file-explorer',
@@ -106,8 +110,8 @@ const FACTORY: React.ComponentProps<typeof Workspace>['factory'] = (
 
     if (component === 'file-explorer') {
         return <FileExplorerPanel layout={layout} />;
-    } else if (component === 'file-viewer') {
-        return <FileViewerPanel path={config.path} />;
+    } else if (component === 'file-editor') {
+        return <FileEditorPanel path={config.path} />;
     } else if (component === 'renderer') {
         return <RendererPanel />;
     } else if (component === 'settings') {

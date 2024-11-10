@@ -24,7 +24,7 @@ const getIcon = (id: string) => {
         return <Dashboard fontSize="inherit" />;
     } else if (id === 'data-science') {
         return <DataObject fontSize="inherit" />;
-    } else if (id === 'custom') {
+    } else if (id === 'dev') {
         return <VerticalSplitOutlined fontSize="inherit" />;
     } else if (id === 'renderer') {
         return null;
@@ -50,7 +50,10 @@ export const WorkspaceTabs = observer(() => {
                         <List.ItemButton
                             key={a.id}
                             selected={a.id === workspace.selectedLayout?.id}
-                            onClick={() => workspace.selectLayout(a.id)}
+                            onClick={() => {
+                                // select the layout
+                                workspace.selectLayout(a.id);
+                            }}
                         >
                             <StyledListIcon>{getIcon(a.id)}</StyledListIcon>
                             <List.ItemText primary={a.name} />

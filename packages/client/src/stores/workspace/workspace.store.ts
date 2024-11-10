@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, reaction } from 'mobx';
 
 import { Role } from '@/types';
 import { RootStore, WorkspaceOptions } from '@/stores';
@@ -60,6 +60,14 @@ export interface WorkspaceStoreInterface {
                 model: Model;
             }
         >;
+    };
+
+    /** overlay information */
+    drawer: {
+        /**
+         * Track if he drawer is open
+         */
+        isOpen: boolean;
     };
 
     /** overlay information */
@@ -134,6 +142,9 @@ export class WorkspaceStore {
             selected: '',
             available: {},
         },
+        drawer: {
+            isOpen: false,
+        },
         overlay: {
             open: false,
             options: {
@@ -162,6 +173,34 @@ export class WorkspaceStore {
 
         // make it observable
         makeAutoObservable(this);
+
+        // update the cache automatically when the drawer or layout change
+        reaction(
+            () => ({
+                version: '',
+                drawer: {
+                    isOpen: this._store.drawer.isOpen,
+                },
+                layout: {
+                    selected: this._store.layout.selected,
+                    available: Object.values(
+                        this._store.layout.available,
+                    ).reduce((acc, val) => {
+                        acc[val.id] = {
+                            id: val.id,
+                            name: val.name,
+                            data: {}, // tracked via onModelChange on <Layout
+                        };
+
+                        return acc;
+                    }, {}),
+                },
+            }),
+            () => {
+                console.log('AUTO');
+                this.saveToCache();
+            },
+        );
     }
 
     /**
@@ -193,6 +232,13 @@ export class WorkspaceStore {
      */
     get layout() {
         return this._store.layout;
+    }
+
+    /**
+     * Get drawer
+     */
+    get drawer() {
+        return this._store.drawer;
     }
 
     /**
@@ -248,12 +294,17 @@ export class WorkspaceStore {
      */
 
     /**
-     * Update the options
+     * Load the workspace
      * @param options - options to configure the workspace with
      */
-    updateOptions = (options: Partial<WorkspaceOptions>): boolean => {
+    load = (options: Partial<WorkspaceOptions>): boolean => {
         try {
             // TODO::Version Check
+
+            // update the drawer
+            if (options.drawer) {
+                this._store.drawer.isOpen = options.drawer.isOpen;
+            }
 
             // add the new layout
             if (options.layout) {
@@ -276,41 +327,15 @@ export class WorkspaceStore {
                     };
                 }
             }
-
             return true;
         } catch (e) {
+            console.error(e);
             return false;
         }
     };
 
     /**
-     * Load either from the cache or with defaul options
-     * @param defaultOptions - options to configure the workspace with
-     */
-    load = (defaultOptions: Partial<WorkspaceOptions>): void => {
-        // TODO::Version Check
-
-        let isLoaded = false;
-        try {
-            const item = localStorage.getItem(this.cacheKey);
-            if (item) {
-                const options = JSON.parse(item);
-                isLoaded = this.updateOptions(options);
-            }
-        } catch (e) {
-            console.error(e);
-        }
-
-        if (!isLoaded) {
-            // load the default options
-            this.updateOptions({
-                ...defaultOptions,
-            });
-        }
-    };
-
-    /**
-     * Load from cache and return a boolean if true
+     * Load from the cache
      */
     loadFromCache = (): boolean => {
         // TODO::Version Check
@@ -320,10 +345,11 @@ export class WorkspaceStore {
             const item = localStorage.getItem(this.cacheKey);
             if (item) {
                 const options = JSON.parse(item);
-                isLoaded = this.updateOptions(options);
+                isLoaded = this.load(options);
             }
         } catch (e) {
             console.error(e);
+            return false;
         }
 
         return isLoaded;
@@ -336,6 +362,9 @@ export class WorkspaceStore {
         try {
             const options: WorkspaceOptions = {
                 version: '',
+                drawer: {
+                    isOpen: this._store.drawer.isOpen,
+                },
                 layout: {
                     selected: this._store.layout.selected,
                     available: {},
@@ -399,6 +428,16 @@ export class WorkspaceStore {
             // recreate the model
             model: Model.fromJson(layout.data),
         };
+
+        // trigger the save manually as the Model is recreated
+        this.saveToCache();
+    };
+
+    /**
+     * Toggle opening and closing of the drawer
+     */
+    toggleDrawer = () => {
+        this._store.drawer.isOpen = !this._store.drawer.isOpen;
     };
 
     /**
