@@ -46,11 +46,10 @@ interface EditDetailsModalProps {
     onClose: (reset?: boolean) => void;
     control: Control<any, any>;
     onSubmit: any;
-    values: Record<string, unknown>;
 }
 
 export const EditDetailsModal = (props: EditDetailsModalProps) => {
-    const { isOpen, onClose, control, onSubmit, values = {} } = props;
+    const { isOpen, onClose, control, onSubmit } = props;
     const { configStore } = useRootStore();
 
     const filter = createFilterOptions<string>();
@@ -62,8 +61,12 @@ export const EditDetailsModal = (props: EditDetailsModalProps) => {
     // filter metakeys to the ones we want
     const projectMetaKeys = configStore.store.config.projectMetaKeys.filter(
         (k) => {
-            // filter the fields to the ones that are passed in
-            return Object.prototype.hasOwnProperty.call(values, k.metakey);
+            return (
+                k.metakey !== 'description' &&
+                k.metakey !== 'markdown' &&
+                k.metakey !== 'tag' &&
+                k.metakey !== 'tags'
+            );
         },
     );
 
