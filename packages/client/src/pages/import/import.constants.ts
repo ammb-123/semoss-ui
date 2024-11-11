@@ -5441,6 +5441,73 @@ export const CONNECTION_OPTIONS = {
                     },
                 ],
             },
+            {
+                name: 'AZUREOCR',
+                disable: false,
+                icon: RESTAPI,
+                fields: [
+                    {
+                        fieldName: 'FUNCTION_TYPE',
+                        label: 'Function Type',
+                        defaultValue: 'AZUREOCR',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: true,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'NAME',
+                        label: 'Name',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'URL',
+                        label: 'URL',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'API_KEY',
+                        label: 'API Key',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_NAME',
+                        label: 'Function Name (metadata)',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_DESCRIPTION',
+                        label: 'Function Description (metadata)',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },                
+                ],
+            },
         ],
         'File Uploads': [
             {
@@ -6246,7 +6313,7 @@ export const CONNECTION_OPTIONS = {
                         rules: { required: false },
                         advanced: true,
                         helperText: '',
-                    },
+                    }
                 ],
             },
             {
@@ -6657,6 +6724,26 @@ export const CONNECTION_OPTIONS = {
                         disabled: true,
                         secondary: true,
                         rules: {},
+                    },
+                    {
+                        fieldName: 'CUSTOM_DOCUMENT_PROCESSOR_FUNCTION_ID',
+                        label: 'OCR PROCESSOR FUNCTION ID',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'CUSTOM_DOCUMENT_PROCESSOR',
+                        label: 'Boolean flag for document processor',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
                     },
                 ],
             },
@@ -12877,6 +12964,10 @@ export const ENGINE_IMAGES = {
         {
             name: 'ZIP',
             icon: ZIP,
+        },
+        {
+            name: 'AZUREOCR',
+            icon: RESTAPI,
         },
     ],
     VECTOR: [
