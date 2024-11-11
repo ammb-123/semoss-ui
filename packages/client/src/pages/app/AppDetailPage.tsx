@@ -38,7 +38,7 @@ import {
 import { ShareOverlay } from '@/components/ui';
 import { SettingsContext } from '@/contexts';
 import { Env } from '@/env';
-import { useEngine, useRootStore } from '@/hooks';
+import { useRootStore } from '@/hooks';
 import { formatPermission, toTitleCase } from '@/utility';
 import {
     Add,
@@ -202,8 +202,6 @@ export const AppDetailPage = () => {
         ];
     }, []);
 
-    // get the database information
-    const { metaVals } = useEngine();
     const { monolithStore, configStore } = useRootStore();
     const navigate = useNavigate();
     const notification = useNotification();
@@ -853,7 +851,6 @@ export const AppDetailPage = () => {
                 onClose={handleCloseEditDetailsModal}
                 control={control}
                 onSubmit={onSubmit}
-                values={metaVals}
             />
 
             <EditDependenciesModal
