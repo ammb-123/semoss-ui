@@ -223,7 +223,7 @@ export const SetProjectDependencies = async (
 ) => {
     const res = await monolithStore.runQuery(
         `SetProjectDependencies(project="${appId}", dependencies=${JSON.stringify(
-            dependencies,
+            dependencies.length > 0 ? dependencies : null,
         )})`,
     );
 
