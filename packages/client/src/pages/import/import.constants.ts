@@ -5623,7 +5623,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -6453,7 +6453,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -6627,7 +6627,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -6939,7 +6939,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -7123,7 +7123,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -7317,7 +7317,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -7588,7 +7588,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -7763,7 +7763,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -8056,7 +8056,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -8231,7 +8231,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -8406,7 +8406,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -8580,7 +8580,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -8753,7 +8753,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -9045,7 +9045,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -9219,7 +9219,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -9403,7 +9403,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -9587,7 +9587,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -9761,7 +9761,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -9975,7 +9975,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -10180,7 +10180,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -10364,7 +10364,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -10529,7 +10529,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -10693,7 +10693,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -10867,7 +10867,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
@@ -11050,7 +11050,7 @@ export const CONNECTION_OPTIONS = {
                         advanced: true,
                     },
                     {
-                        fieldName: 'CONNECTION_POOLING',
+                        fieldName: 'USE_CONNECTION_POOLING',
                         label: 'Use Connection Pooling',
                         defaultValue: false,
                         rules: { required: false },
