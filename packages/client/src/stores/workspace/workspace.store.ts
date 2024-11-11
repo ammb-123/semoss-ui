@@ -197,7 +197,6 @@ export class WorkspaceStore {
                 },
             }),
             () => {
-                console.log('AUTO');
                 this.saveToCache();
             },
         );
