@@ -57,7 +57,7 @@ export const config: BlockConfig<UploadBlockDef> = {
         loading: false,
         disabled: false,
         required: false,
-        multifile: false,
+        multiple: false,
     },
     listeners: {
         onChange: [],
@@ -120,7 +120,7 @@ export const config: BlockConfig<UploadBlockDef> = {
                         <SwitchSettings
                             id={id}
                             label="Multiple Files"
-                            path="multifile"
+                            path="multiple"
                         />
                     ),
                 },
