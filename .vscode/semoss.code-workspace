@@ -36,5 +36,6 @@
       "search.exclude": {
         "**/dist": true
       },
+      "svn.ignoreMissingSvnWarning": true,
     }
   }

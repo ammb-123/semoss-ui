@@ -3,7 +3,13 @@ import { computed } from 'mobx';
 
 import { upload } from '@/api';
 import { Paths, PathValue } from '@/types';
-import { ActionMessages, Block, BlockDef, ListenerActions } from '@/stores';
+import {
+    ActionMessages,
+    Block,
+    BlockDef,
+    ListenerActions,
+    StateStore,
+} from '@/stores';
 import { copy } from '@/utility';
 
 import { useBlocks } from './useBlocks';
@@ -12,6 +18,9 @@ import { useBlocks } from './useBlocks';
  * useBlockReturn
  */
 interface useBlockReturn<D extends BlockDef = BlockDef> {
+    /** Dispatch an action directly  */
+    dispatch: StateStore['dispatch'];
+
     /** Data for the block  */
     data: Block<D>['data'];
 
@@ -216,6 +225,7 @@ export const useBlock = <D extends BlockDef = BlockDef>(
     }).get();
 
     return {
+        dispatch: state.dispatch,
         data: data,
         listeners: listeners,
         slots: block.slots,
