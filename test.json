@@ -41,9 +41,7 @@
         "page-1": {
             "slots": {
                 "content": {
-                    "children": [
-                        "container--8432"
-                    ],
+                    "children": ["container--8432"],
                     "name": "content"
                 }
             },
@@ -111,11 +109,7 @@
             "slots": {
                 "children": {
                     "name": "children",
-                    "children": [
-                        "text--8697",
-                        "grid-1",
-                        "grid-2"
-                    ]
+                    "children": ["text--8697", "grid-1", "grid-2"]
                 }
             }
         },
@@ -124,39 +118,14 @@
             "widget": "grid",
             "parent": "container--8432",
             "data": {
-                "source": "CUSTOM",
-                "values": "{{grid-values}}",
-                "columns": "{{grid-columns}}",
-                "contextMenu": {
-                    "items": [
-                        {
-                            "name": "Refresh",
-                            "action":  {
-                                "message": "RUN_QUERY",
-                                "payload": {
-                                    "queryId": "DIABETES_DATA"
-                                }
-                            }
-                        },
-                        {
-                            "name": "Filter",
-                            "action": {
-                                "message": "RUN_QUERY",
-                                "payload": {
-                                    "queryId": "DIABETES_DATA",
-                                    "parameters":{
-                                        "column":"",
-                                        "operator":"",
-                                        "value": ""
-                                    }
-                                }
-                            }
-                        }
-                    ]
+                "frame": {
+                    "name": "DIABETES_DATA"
                 },
-                "style": {
-                    "width": "100%"
-                }
+                "columns": [
+                    { "key": "ID", "name": "id" },
+                    { "key": "DRUG", "name": "Drug" }
+                ],
+                "style": {}
             },
             "listeners": {},
             "slots": {}
@@ -166,61 +135,20 @@
             "widget": "grid",
             "parent": "container--8432",
             "data": {
-                "source": "CUSTOM",
-                "values": "{{grid-values}}",
-                "columns": "{{grid-columns}}",
-                "contextMenu": {
-                    "items": [
-                        {
-                            "name":"Refresh",
-                            "action":  {
-                                "message": "RUN_QUERY",
-                                "payload": {
-                                    "queryId": "DIABETES_DATA"
-                                }
-                            }
-                        },
-                        {
-                            "name":"Filter",
-                            "action":  {
-                                "message": "RUN_QUERY",
-                                "payload": {
-                                    "queryId": "DIABETES_DATA",
-                                    "parameters":{
-                                        "column":"",
-                                        "operator":"",
-                                        "value": ""
-                                    }
-                                }
-                            }
-                        }
-                        
-                    ]
+                "frame": {
+                    "name": "DIABETES_DATA"
                 },
-                "style": {
-                    "width": "100%"
-                }
+                "columns": [
+                    { "key": "DRUG", "name": "Drug" }
+                ],
+                "style": {}
             },
             "listeners": {},
             "slots": {}
         }
     },
-    "variables": {
-        "grid-columns": {
-            "type": "cell",
-            "to": "Grid-Config",
-            "cellId": "11609"
-        },
-        "grid-values": {
-            "type": "cell",
-            "to": "Grid-Config",
-            "cellId": "45314"
-        }
-    },
+    "variables": {},
     "dependencies": {},
-    "executionOrder": [
-        "DIABETES_DATA",
-        "Grid-Config"
-    ],
+    "executionOrder": ["DIABETES_DATA", "Grid-Config"],
     "version": "1.0.0-alpha.3"
 }

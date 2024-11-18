@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useBlockSettings } from '@/hooks';
 
-import { GridBlockDef } from './grid-block.types';
+import { GridBlockDef } from './GridBlock';
 import { BaseSettingSection, JsonSettings } from '@/components/block-settings';
 
 interface GridBlockColumnSettingsProp {
@@ -15,22 +15,9 @@ export const GridBlockColumnSettings = observer(
         const { data } = useBlockSettings<GridBlockDef>(id);
 
         return (
-            <>
-                {data.source === 'CUSTOM' ? (
-                    <BaseSettingSection label="JSON">
-                        <JsonSettings<GridBlockDef>
-                            id={id}
-                            path=""
-                            height="300px"
-                        />
-                    </BaseSettingSection>
-                ) : null}
-                {data.source === 'FRAME' ? (
-                    <BaseSettingSection label="Frame">
-                        FrameSelect
-                    </BaseSettingSection>
-                ) : null}
-            </>
+            <BaseSettingSection label="Data">
+                <JsonSettings id={id} path={''} height="300px" />
+            </BaseSettingSection>
         );
     },
 );

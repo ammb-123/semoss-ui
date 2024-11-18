@@ -37,5 +37,8 @@
         "**/dist": true
       },
       "svn.ignoreMissingSvnWarning": true,
+      "typescript.inlayHints.enumMemberValues.enabled": true,
+      "typescript.tsserver.enableTracing": true,
+      "typescript.tsserver.experimental.enableProjectDiagnostics": true,
     }
   }
