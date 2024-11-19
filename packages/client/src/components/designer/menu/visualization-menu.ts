@@ -86,6 +86,9 @@ export const VISUALIZATION_MENU: DesignerMenuItem[] = [
                     name: '',
                 },
                 columns: [],
+                view: {
+                    pagination: true,
+                },
             },
             listeners: {},
             slots: {} as BlockJSON['slots'],
