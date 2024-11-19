@@ -5,6 +5,7 @@ import { useBlocksPixel } from './useBlocksPixel';
 import { useBlockSettings } from './useBlockSettings';
 import { useEngine } from './useEngine';
 import { useFrame } from './useFrame';
+import { useFrameHeaders } from './useFrameHeaders';
 import { useLLM } from './useLLM';
 import { useMetamodel } from './useMetamodel';
 import { useRootStore } from './useRootStore';
@@ -26,6 +27,7 @@ export {
     useBlockSettings,
     useEngine,
     useFrame,
+    useFrameHeaders,
     useLLM,
     useMetamodel,
     useRootStore,

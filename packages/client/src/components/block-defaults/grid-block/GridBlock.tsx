@@ -13,11 +13,10 @@ import {
     TableHead,
     TablePagination,
     TableRow,
-    Menu,
 } from '@mui/material';
 
 import { GridBlockColumn } from './grid-block.types';
-import { MenuItem } from '@semoss/ui';
+import { GridBlockContextMenu } from './GridBlockContextMenu';
 
 const DEFAULT_HEIGHT = '300px';
 const DEFAULT_WIDTH = '500px';
@@ -78,6 +77,15 @@ export interface GridBlockDef extends BlockDef<'grid'> {
             | 'height'
             | 'width'
         >;
+
+        /** Context Menu */
+        contextMenu?: {
+            /** Show the unfilter related options */
+            hideUnfilter: boolean;
+
+            /** Show the filter related options */
+            hideFilter: boolean;
+        };
     };
 }
 
@@ -93,17 +101,29 @@ export const GridBlock: BlockComponent = observer(({ id }) => {
         value: unknown;
     } | null>(null);
 
+    // create the selector
+    const selector = `Select(${data.columns
+        .map((c) => {
+            return c.selector;
+        })
+        .join(', ')}).as([${data.columns
+        .map((c) => {
+            return c.name;
+        })
+        .join(', ')}])`;
+
     // get the frame
     const frame = useFrame(data.frame.name, {
-        limit: rowsPerPage * page,
-        collect: rowsPerPage,
+        selector: selector,
+        offset: rowsPerPage * page,
+        limit: rowsPerPage,
         enableCount: true,
     });
 
-    // get the columns as as a map
-    const columnMap: Record<string, GridBlockColumn> = data.columns.reduce(
-        (acc, val) => {
-            acc[val.key] = val;
+    // get the headers as as a map (header -> idx)
+    const headerMap: Record<string, number> = frame.data.headers.reduce(
+        (acc, val, idx) => {
+            acc[val] = idx;
 
             return acc;
         },
@@ -160,116 +180,97 @@ export const GridBlock: BlockComponent = observer(({ id }) => {
                 >
                     <TableHead>
                         <StyledTableHeadRow>
-                            {frame.status === 'SUCCESS'
-                                ? frame.data.headers.map((h) => {
-                                      // check if the header as a column
-                                      const column = columnMap[h];
-                                      if (!column) {
-                                          return null;
-                                      }
-
-                                      return (
-                                          <StyledTableHeadCell
-                                              key={column.key}
-                                              align="left"
-                                              title={column.name}
-                                              sx={{
-                                                  //This component is weird because it is a table / has a special layout, you have to either use minWidth or maxWidth
-                                                  maxWidth: !isNaN(
-                                                      Number(column.width),
-                                                  )
-                                                      ? column.width
-                                                      : DEFAULT_COLUMN_WIDTH,
-                                              }}
-                                          >
-                                              {column.name}
-                                          </StyledTableHeadCell>
-                                      );
-                                  })
-                                : null}
-                            {frame.status === 'LOADING' ? (
-                                <LinearProgress />
-                            ) : null}
+                            {data.columns.map((c, cIdx) => {
+                                return (
+                                    <StyledTableHeadCell
+                                        component={'th'}
+                                        key={cIdx}
+                                        align="left"
+                                        title={c.name}
+                                        sx={{
+                                            //This component is weird because it is a table / has a special layout, you have to either use minWidth or maxWidth
+                                            maxWidth: !isNaN(Number(c.width))
+                                                ? c.width
+                                                : DEFAULT_COLUMN_WIDTH,
+                                        }}
+                                    >
+                                        {c.name}
+                                    </StyledTableHeadCell>
+                                );
+                            })}
                         </StyledTableHeadRow>
                     </TableHead>
                     <TableBody>
-                        {frame.status === 'SUCCESS'
-                            ? frame.data.values.map((r, rIdx) => {
-                                  return (
-                                      <TableRow key={rIdx}>
-                                          {r.map((v, hIdx) => {
-                                              const header =
-                                                  frame.data.headers[hIdx];
+                        {frame.isLoading ? (
+                            <LinearProgress />
+                        ) : (
+                            frame.data.values.map((r, rIdx) => {
+                                return (
+                                    <TableRow key={rIdx}>
+                                        {data.columns.map((c, cIdx) => {
+                                            let headerExists = false;
+                                            // check if the header exists
+                                            if (
+                                                Object.prototype.hasOwnProperty.call(
+                                                    headerMap,
+                                                    c.name,
+                                                )
+                                            ) {
+                                                headerExists = true;
+                                            }
 
-                                              // check if the header exists as a column
-                                              const column = columnMap[header];
-                                              if (!column) {
-                                                  return null;
-                                              }
+                                            // get the value
+                                            const value = r[headerMap[c.name]];
 
-                                              // str for rendering and title
-                                              const str =
-                                                  v !== 'string'
-                                                      ? JSON.stringify(v)
-                                                      : v;
+                                            // str for rendering and title
+                                            const str =
+                                                typeof value !== 'string'
+                                                    ? JSON.stringify(value)
+                                                    : value;
 
-                                              return (
-                                                  <StyledTableCell
-                                                      key={column.key}
-                                                      align="left"
-                                                      title={str}
-                                                      sx={{
-                                                          //This component is weird because it is a table / has a special layout, you have to either use minWidth or maxWidth
-                                                          maxWidth: !isNaN(
-                                                              Number(
-                                                                  column.width,
-                                                              ),
-                                                          )
-                                                              ? column.width
-                                                              : DEFAULT_COLUMN_WIDTH,
-                                                      }}
-                                                      onContextMenu={(e) =>
-                                                          handleTableCellOnContextMenu(
-                                                              e,
-                                                              column,
-                                                              v,
-                                                          )
-                                                      }
-                                                  >
-                                                      {str}
-                                                  </StyledTableCell>
-                                              );
-                                          })}
-                                      </TableRow>
-                                  );
-                              })
-                            : null}
+                                            return (
+                                                <StyledTableCell
+                                                    key={cIdx}
+                                                    align="left"
+                                                    title={str}
+                                                    sx={{
+                                                        //This component is weird because it is a table / has a special layout, you have to either use minWidth or maxWidth
+                                                        maxWidth: !isNaN(
+                                                            Number(c.width),
+                                                        )
+                                                            ? c.width
+                                                            : DEFAULT_COLUMN_WIDTH,
+                                                    }}
+                                                    onContextMenu={(e) => {
+                                                        // don't open context menu
+                                                        if (!headerExists) {
+                                                            return;
+                                                        }
+
+                                                        handleTableCellOnContextMenu(
+                                                            e,
+                                                            c,
+                                                            value,
+                                                        );
+                                                    }}
+                                                >
+                                                    {str}
+                                                </StyledTableCell>
+                                            );
+                                        })}
+                                    </TableRow>
+                                );
+                            })
+                        )}
                     </TableBody>
                 </Table>
             </StyledTableContainer>
-            <Menu
-                open={contextMenu !== null}
+            <GridBlockContextMenu
+                id={id}
+                frame={frame}
+                contextMenu={contextMenu}
                 onClose={() => setContextMenu(null)}
-                anchorReference="anchorPosition"
-                anchorPosition={
-                    contextMenu !== null
-                        ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-                        : undefined
-                }
-            >
-                {/* {data.contextMenu?.items.map((i, idx) => (
-                    <MenuItem
-                        key={idx}
-                        dense={true}
-                        value={idx}
-                        onClick={() => console.log(i.action)}
-                    >
-                        {i.name}
-                    </MenuItem>
-                ))} */}
-                {/* TODO: */}
-                <MenuItem value={'TODO'}>TODO</MenuItem>
-            </Menu>
+            />
             <TablePagination
                 rowsPerPageOptions={[10, 25, 50, 100]}
                 component="div"
