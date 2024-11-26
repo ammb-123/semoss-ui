@@ -979,6 +979,138 @@ export const CONNECTION_OPTIONS = {
                         },
                     ],
                 },
+                {
+                    name: 'Azure Open AI ADA Embedder',
+                    disable: false,
+                    icon: AZURE_OPEN_AI,
+                    fields: [
+                        {
+                            fieldName: 'NAME',
+                            label: 'Catalog Name',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: {
+                                required: true,
+                                pattern: {
+                                    value: /^[\w\-\s]+$/,
+                                    message:
+                                        'Catalog names can only contain alphanumeric characters and dashes.',
+                                },
+                                custom: {
+                                    value: 'CheckEngineName ( [VALUE] ) ;',
+                                    message:
+                                        'This Catalog name has already been used, please try another.',
+                                },
+                            },
+                        },
+                        {
+                            fieldName: 'TAG',
+                            label: 'Tag',
+                            defaultValue: 'embeddings',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: true,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'MODEL_TYPE',
+                            label: 'Type',
+                            defaultValue: 'OPEN_AI',
+                            options: {
+                                component: 'select',
+                                options: [
+                                    {
+                                        display: 'Open AI',
+                                        value: 'OPEN_AI',
+                                    },
+                                ],
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'MODEL',
+                            label: 'Model',
+                            defaultValue: 'text-embedding-ada-002',
+                            options: {
+                                component: 'select',
+                                options: [
+                                    {
+                                        display: 'text-embedding-ada-002',
+                                        value: 'text-embedding-ada-002',
+                                    },
+                                ],
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'OPEN_AI_API_KEY',
+                            label: 'Azure Open AI API Key',
+                            defaultValue: '',
+                            options: {
+                                component: 'password',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'ENDPOINT',
+                            label: 'Azure Endpoint',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'API_VERSION',
+                            label: 'API version',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'VAR_NAME',
+                            label: 'Variable Name',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'INIT_MODEL_ENGINE',
+                            label: 'Init Script',
+                            defaultValue:
+                                "from genai_client import AzureOpenAiEmbedder;${VAR_NAME} = AzureOpenAiEmbedder(model_name = '${MODEL}', endpoint = '${ENDPOINT}', api_key = '${OPEN_AI_API_KEY}', api_version = '${API_VERSION}')",
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'MAX_TOKENS',
+                            label: 'Max Tokens',
+                            rules: { required: true },
+                            defaultValue: '4000',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                        },
+                    ],
+                },
             ],
             'AWS Bedrock': [
                 {
