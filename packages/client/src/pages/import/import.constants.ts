@@ -9286,7 +9286,7 @@ export const CONNECTION_OPTIONS = {
                     {
                         fieldName: 'RDBMS_TYPE',
                         label: 'Driver Name',
-                        defaultValue: 'HIVE',
+                        defaultValue: 'H2_DB',
                         options: {
                             component: 'text-field',
                         },
