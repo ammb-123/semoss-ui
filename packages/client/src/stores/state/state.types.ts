@@ -16,9 +16,6 @@ export type SerializedState = {
     /** Variables used in notebook */
     variables: Record<string, Variable>;
 
-    /** TODO: Remove, Dependencies in app */
-    dependencies?: Record<string, unknown>;
-
     /** Order of how we consume app as api */
     executionOrder: string[];
 };

@@ -222,7 +222,6 @@ export const AskLLMTemplate: Template = {
                 isOutput: false,
             },
         },
-        dependencies: {},
         executionOrder: ['ask-llm'],
         version: '1.0.0-alpha.3',
     },

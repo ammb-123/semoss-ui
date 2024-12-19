@@ -815,7 +815,6 @@ export const BlocksGuideTemplate: Template = {
                 isOutput: true,
             },
         },
-        dependencies: {},
         executionOrder: ['default', 'python_code', 'py-code'],
         version: '1.0.0-alpha.3',
     },
