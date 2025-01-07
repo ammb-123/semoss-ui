@@ -18,6 +18,8 @@ import {
 } from '@mui/icons-material';
 
 import { ListenerActionOverlay } from './ListenerActionOverlay';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { toJS } from 'mobx';
 
 const StyledStatusIconContainer = styled('div')(() => ({
     height: '100%',
@@ -135,59 +137,160 @@ export const ListenerSettings = observer(
             setListener(listener, updated);
         };
 
+        const blockListeners = toJS(listeners)[listener];
+        /**
+         * Reorder columns
+         * @param startDragIndex
+         * @param stopDragIndex
+         */
+        const reorderListeners = (
+            startDragIndex: number,
+            stopDragIndex: number,
+        ) => {
+            const updated = [...listeners[listener]];
+
+            // remove it
+            const [removed] = updated.splice(startDragIndex, 1);
+
+            // add it at the new location
+            updated.splice(stopDragIndex, 0, removed);
+
+            // update the data
+            setListener(listener, updated);
+        };
+
         return (
             <>
-                <List disablePadding={true}>
-                    {listeners[listener]?.map((a, aIdx) => (
-                        <List.Item
-                            dense={true}
-                            key={aIdx}
-                            secondaryAction={
-                                <>
-                                    <IconButton
-                                        size="small"
-                                        color="primary"
-                                        onClick={() => runAction(a)}
+                <DragDropContext
+                    onDragEnd={(result) => {
+                        // ingnore if no destination
+                        if (!result.destination) {
+                            return;
+                        }
+                        // swap
+                        reorderListeners(
+                            result.source.index,
+                            result.destination.index,
+                        );
+                    }}
+                >
+                    <Droppable droppableId="droppable--list">
+                        {(provided) => (
+                            <List
+                                disablePadding={true}
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                            >
+                                {blockListeners?.map((a, aIdx) => (
+                                    <Draggable
+                                        key={a}
+                                        draggableId={`draggable--${aIdx}`}
+                                        index={aIdx}
                                     >
-                                        <PlayCircleOutlineRounded
-                                            fontSize="medium"
-                                            color={'inherit'}
-                                        />
-                                    </IconButton>
-                                    <IconButton
-                                        size="small"
-                                        onClick={() => openActionOverlay(aIdx)}
-                                    >
-                                        <Edit />
-                                    </IconButton>
-                                    <IconButton
-                                        size="small"
-                                        onClick={() => deleteListener(aIdx)}
-                                    >
-                                        <Delete />
-                                    </IconButton>
-                                </>
-                            }
-                        >
-                            <StyledStatusIconContainer>
-                                {getQueryStatusIcon(a)}
-                            </StyledStatusIconContainer>
-                            <List.ItemText
-                                disableTypography={true}
-                                primary={
-                                    <Typography
-                                        variant="body2"
-                                        noWrap={true}
-                                        title={ACTIONS_DISPLAY[a.message]}
-                                    >
-                                        {ACTIONS_DISPLAY[a.message]}
-                                    </Typography>
-                                }
-                            />
-                        </List.Item>
-                    ))}
-                </List>
-
+                                        {(provided) => (
+                                            <List.Item
+                                                dense={true}
+                                                ref={provided.innerRef}
+                                                {...provided.dragHandleProps}
+                                                {...provided.draggableProps}
+                                                secondaryAction={
+                                                    <>
+                                                        <IconButton
+                                                            size="small"
+                                                            color="primary"
+                                                            onClick={() =>
+                                                                runAction(a)
+                                                            }
+                                                        >
+                                                            <PlayCircleOutlineRounded
+                                                                fontSize="medium"
+                                                                color={
+                                                                    'inherit'
+                                                                }
+                                                            />
+                                                        </IconButton>
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() =>
+                                                                openActionOverlay(
+                                                                    aIdx,
+                                                                )
+                                                            }
+                                                        >
+                                                            <Edit />
+                                                        </IconButton>
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() =>
+                                                                deleteListener(
+                                                                    aIdx,
+                                                                )
+                                                            }
+                                                        >
+                                                            <Delete />
+                                                        </IconButton>
+                                                    </>
+                                                }
+                                            >
+                                                <StyledStatusIconContainer>
+                                                    {getQueryStatusIcon(a)}
+                                                </StyledStatusIconContainer>
+                                                <List.ItemText
+                                                    disableTypography={true}
+                                                    primary={
+                                                        <Typography
+                                                            variant="body2"
+                                                            noWrap={true}
+                                                            title={
+                                                                ACTIONS_DISPLAY[
+                                                                    a.message
+                                                                ]
+                                                            }
+                                                        >
+                                                            {
+                                                                ACTIONS_DISPLAY[
+                                                                    a.message
+                                                                ]
+                                                            }
+                                                        </Typography>
+                                                    }
+                                                    secondary={
+                                                        <Typography
+                                                            variant="caption"
+                                                            noWrap={true}
+                                                            title={
+                                                                a.payload[
+                                                                    'queryId'
+                                                                ]
+                                                                    ? a.payload[
+                                                                          'queryId'
+                                                                      ]
+                                                                    : a.payload[
+                                                                          'name'
+                                                                      ]
+                                                            }
+                                                        >
+                                                            {a.payload[
+                                                                'queryId'
+                                                            ]
+                                                                ? a.payload[
+                                                                      'queryId'
+                                                                  ]
+                                                                : a.payload[
+                                                                      'name'
+                                                                  ]}
+                                                        </Typography>
+                                                    }
+                                                />
+                                            </List.Item>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </List>
+                        )}
+                    </Droppable>
+                </DragDropContext>
                 <Button
                     fullWidth={true}
                     variant={'outlined'}
