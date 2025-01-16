@@ -5895,6 +5895,115 @@ export const CONNECTION_OPTIONS = {
                     },
                 ],
             },
+            {
+                name: 'Google OCR',
+                disable: false,
+                icon: GOOGLE_CLOUD, //need to change the icon
+                fields: [
+                    {
+                        fieldName: 'FUNCTION_TYPE',
+                        label: 'Function Type',
+                        defaultValue: 'GOOGLE_OCR',
+
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: true,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'NAME',
+                        label: 'Name',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'PROJECT_ID',
+                        label: 'Project Id',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'PROCESSOR_ID',
+                        label: 'Processor Id',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'REGION',
+                        label: 'Region',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FILE',
+                        label: 'Upload Service Account File',
+                        defaultValue: null,
+                        options: {
+                            component: 'file-upload',
+                        },
+                        disabled: true,
+                        secondary: true,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'GOOGLE_BUCKET_ENGINEID',
+                        label: 'Google Bucket Engine Id',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_NAME',
+                        label: 'Function Name (metadata)',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_DESCRIPTION',
+                        label: 'Function Description (metadata)',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_REQUIRED_PARAMETERS',
+                        label: 'Function Required Parameters',
+                        defaultValue: '["isFilePresentInBucket","filePath"]',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                ],
+            },
         ],
         'File Uploads': [
             {
@@ -13695,6 +13804,10 @@ export const ENGINE_IMAGES = {
         {
             name: 'AWS Transcribe',
             icon: AMAZON_S3, //need to change the icon
+        },
+        {
+            name: 'Google OCR',
+            icon: GOOGLE_CLOUD, //need to change the icon
         },
     ],
     VECTOR: [

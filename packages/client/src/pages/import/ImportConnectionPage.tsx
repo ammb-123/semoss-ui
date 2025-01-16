@@ -164,10 +164,23 @@ export const ImportConnectionPage = () => {
             return;
         } else if (values.type === 'FUNCTION') {
             /** Function: START */
-            const pixel = `
-            CreateRestFunctionEngine(function=["${
-                values.name
-            }"],functionDetails=[${JSON.stringify(values.fields)}]);`;
+            var pixel;
+            if (values.secondaryFields['FILE']) {
+                const upload = await monolithStore.uploadFile(
+                    [values.secondaryFields['FILE']],
+                    configStore.store.insightID,
+                );
+                pixel = `
+                    CreateRestFunctionEngine(function=["${
+                        values.name
+                    }"],functionDetails=[${JSON.stringify(values.fields)}],
+                    filePaths=["${upload[0].fileLocation}"]);`;
+            } else {
+                pixel = `
+                    CreateRestFunctionEngine(function=["${
+                        values.name
+                    }"],functionDetails=[${JSON.stringify(values.fields)}]);`;
+            }
 
             monolithStore.runQuery(pixel).then((response) => {
                 const output = response.pixelReturn[0].output,
