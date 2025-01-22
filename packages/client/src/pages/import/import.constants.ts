@@ -71,6 +71,7 @@ import STABILITY_AI from '@/assets/img/STABILITY_AI.png';
 import REPLIT from '@/assets/img/REPLIT_CODE.png';
 // Functions
 import RESTAPI from '@/assets/img/rest-api.svg';
+import AWS_COMPREHEND from '@/assets/img/AWS_COMPREHEND.png';
 //Vector
 import CHROMADB from '@/assets/img/CHROMADB.png';
 import PINECONE from '@/assets/img/PINECONE.png';
@@ -5965,6 +5966,93 @@ export const CONNECTION_OPTIONS = {
                         fieldName: 'FUNCTION_REQUIRED_PARAMETERS',
                         label: 'Function Required Parameters',
                         defaultValue: '["isFilePresentInS3","filePath"]',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                ],
+            },
+            {
+                name: 'AWS Comprehend',
+                disable: false,
+                icon: AWS_COMPREHEND,
+                fields: [
+                    {
+                        fieldName: 'FUNCTION_TYPE',
+                        label: 'Function Type',
+                        defaultValue: 'AWS_COMPREHEND',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: true,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'NAME',
+                        label: 'Name',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'ACCESS_KEY',
+                        label: 'Access Key',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'SECRET_KEY',
+                        label: 'Secret Key',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'REGION',
+                        label: 'Region',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_REQUIRED_PARAMETERS',
+                        label: 'Function Required Parameters',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_NAME',
+                        label: 'Function Name (metadata)',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_DESCRIPTION',
+                        label: 'Function Description (metadata)',
+                        defaultValue: '',
                         options: {
                             component: 'text-field',
                         },
