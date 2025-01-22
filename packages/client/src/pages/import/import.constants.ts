@@ -981,6 +981,138 @@ export const CONNECTION_OPTIONS = {
                         },
                     ],
                 },
+                {
+                    name: 'Azure Open AI ADA Embedder',
+                    disable: false,
+                    icon: AZURE_OPEN_AI,
+                    fields: [
+                        {
+                            fieldName: 'NAME',
+                            label: 'Catalog Name',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: {
+                                required: true,
+                                pattern: {
+                                    value: /^[\w\-\s]+$/,
+                                    message:
+                                        'Catalog names can only contain alphanumeric characters and dashes.',
+                                },
+                                custom: {
+                                    value: 'CheckEngineName ( [VALUE] ) ;',
+                                    message:
+                                        'This Catalog name has already been used, please try another.',
+                                },
+                            },
+                        },
+                        {
+                            fieldName: 'TAG',
+                            label: 'Tag',
+                            defaultValue: 'embeddings',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: true,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'MODEL_TYPE',
+                            label: 'Type',
+                            defaultValue: 'OPEN_AI',
+                            options: {
+                                component: 'select',
+                                options: [
+                                    {
+                                        display: 'Open AI',
+                                        value: 'OPEN_AI',
+                                    },
+                                ],
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'MODEL',
+                            label: 'Model',
+                            defaultValue: 'text-embedding-ada-002',
+                            options: {
+                                component: 'select',
+                                options: [
+                                    {
+                                        display: 'text-embedding-ada-002',
+                                        value: 'text-embedding-ada-002',
+                                    },
+                                ],
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'OPEN_AI_API_KEY',
+                            label: 'Azure Open AI API Key',
+                            defaultValue: '',
+                            options: {
+                                component: 'password',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'ENDPOINT',
+                            label: 'Azure Endpoint',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'API_VERSION',
+                            label: 'API version',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'VAR_NAME',
+                            label: 'Variable Name',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'INIT_MODEL_ENGINE',
+                            label: 'Init Script',
+                            defaultValue:
+                                "from genai_client import AzureOpenAiEmbedder;${VAR_NAME} = AzureOpenAiEmbedder(model_name = '${MODEL}', endpoint = '${ENDPOINT}', api_key = '${OPEN_AI_API_KEY}', api_version = '${API_VERSION}')",
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'MAX_TOKENS',
+                            label: 'Max Tokens',
+                            rules: { required: true },
+                            defaultValue: '4000',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                        },
+                    ],
+                },
             ],
             'AWS Bedrock': [
                 {
@@ -1637,6 +1769,173 @@ export const CONNECTION_OPTIONS = {
                             label: 'Init Script',
                             defaultValue:
                                 "import genai_client;${VAR_NAME} = genai_client.VertexClient(model_name = '${MODEL}', service_account_key_file = '${SERVICE_ACCOUNT_FILE}', region='${GCP_REGION}', chat_type='${CHAT_TYPE}')",
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'KEEP_CONVERSATION_HISTORY',
+                            label: 'Keep Conversation History',
+                            defaultValue: 'false',
+                            options: {
+                                component: 'select',
+                                options: [
+                                    {
+                                        display: 'true',
+                                        value: 'true',
+                                    },
+                                    {
+                                        display: 'false',
+                                        value: 'false',
+                                    },
+                                ],
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'KEEP_INPUT_OUTPUT',
+                            label: 'Record Questions and Responses',
+                            defaultValue: 'false',
+                            options: {
+                                component: 'select',
+                                options: [
+                                    {
+                                        display: 'true',
+                                        value: 'true',
+                                    },
+                                    {
+                                        display: 'false',
+                                        value: 'false',
+                                    },
+                                ],
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'MAX_TOKENS',
+                            label: 'Max Tokens',
+                            rules: { required: false },
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                        },
+                        {
+                            fieldName: 'MAX_INPUT_TOKENS',
+                            label: 'Max Input Tokens',
+                            rules: { required: false },
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                        },
+                    ],
+                },
+                {
+                    name: 'Gemini 1.5 pro',
+                    disable: false,
+                    icon: VERTEX,
+                    fields: [
+                        {
+                            fieldName: 'NAME',
+                            label: 'Catalog Name',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: {
+                                required: true,
+                                pattern: {
+                                    value: /^[\w\-\s]+$/,
+                                    message:
+                                        'Catalog names can only contain alphanumeric characters and dashes.',
+                                },
+                                custom: {
+                                    value: 'CheckEngineName ( [VALUE] ) ;',
+                                    message:
+                                        'This Catalog name has already been used, please try another.',
+                                },
+                            },
+                        },
+                        {
+                            fieldName: 'MODEL_TYPE',
+                            label: 'Type',
+                            defaultValue: 'VERTEX',
+                            options: {
+                                component: 'select',
+                                options: [
+                                    {
+                                        display: 'Vertex',
+                                        value: 'VERTEX',
+                                    },
+                                ],
+                            },
+                            disabled: true,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'MODEL',
+                            label: 'Model',
+                            defaultValue: 'gemini-1.5-pro-002',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: true,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'GCP_REGION',
+                            label: 'GCP Region',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'VAR_NAME',
+                            label: 'Variable Name',
+                            defaultValue: '',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: false,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'CHAT_TYPE',
+                            label: 'Chat Type',
+                            defaultValue: 'generative',
+                            options: {
+                                component: 'text-field',
+                            },
+                            disabled: true,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'FILE',
+                            label: 'Upload Service Account File',
+                            defaultValue: null,
+                            options: {
+                                component: 'file-upload',
+                            },
+                            disabled: true,
+                            secondary: true,
+                            rules: { required: true },
+                        },
+                        {
+                            fieldName: 'INIT_MODEL_ENGINE',
+                            label: 'Init Script',
+                            defaultValue:
+                                "import genai_client;${VAR_NAME} = genai_client.VertexClient(model_name = '${MODEL}', service_account_key_file = '${SERVICE_ACCOUNT_FILE}', service_account_credentials = ${SERVICE_ACCOUNT_CREDENTIALS}, region='${GCP_REGION}', chat_type='${CHAT_TYPE}')",
                             options: {
                                 component: 'text-field',
                             },
@@ -6053,6 +6352,85 @@ export const CONNECTION_OPTIONS = {
                         fieldName: 'FUNCTION_DESCRIPTION',
                         label: 'Function Description (metadata)',
                         defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                ],
+            },
+            {
+                name: 'Google Speech To Text',
+                disable: false,
+                icon: GOOGLE_CLOUD, //need to change the icon
+                fields: [
+                    {
+                        fieldName: 'FUNCTION_TYPE',
+                        label: 'Function Type',
+                        defaultValue: 'GOOGLE_SPEECH_TO_TEXT',
+
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: true,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'NAME',
+                        label: 'Name',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FILE',
+                        label: 'Upload Service Account File',
+                        defaultValue: null,
+                        options: {
+                            component: 'file-upload',
+                        },
+                        disabled: true,
+                        secondary: true,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'GOOGLE_BUCKET_ENGINEID',
+                        label: 'Google Bucket Engine Id',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_NAME',
+                        label: 'Function Name (metadata)',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_DESCRIPTION',
+                        label: 'Function Description (metadata)',
+                        defaultValue: '',
+                        options: {
+                            component: 'text-field',
+                        },
+                        disabled: false,
+                        rules: { required: true },
+                    },
+                    {
+                        fieldName: 'FUNCTION_REQUIRED_PARAMETERS',
+                        label: 'Function Required Parameters',
+                        defaultValue: '["isFilePresentInBucket","filePath"]',
                         options: {
                             component: 'text-field',
                         },
@@ -13970,6 +14348,10 @@ export const ENGINE_IMAGES = {
         {
             name: 'AWS Transcribe',
             icon: AMAZON_S3, //need to change the icon
+        },
+        {
+            name: 'Google Speech To Text',
+            icon: GOOGLE_CLOUD, //need to change the icon
         },
         {
             name: 'Google OCR',
