@@ -1,7 +1,9 @@
 import { BlockJSON } from '@/stores';
 import { DesignerMenuItem } from './menu.types';
+import { lightTheme } from '@semoss/ui';
 
 import BLOCK_AUDIO_PLAYER from '@/assets/img/BLOCK_AUDIO_PLAYER.png';
+import BLOCK_AUDIO_INPUT from '@/assets/img/BLOCK_MIC.png';
 import BLOCK_BUTTON from '@/assets/img/BLOCK_BUTTON.png';
 import BLOCK_CHECKBOX from '@/assets/img/BLOCK_CHECKBOX.png';
 import BLOCK_CONTAINER from '@/assets/img/BLOCK_CONTAINER.png';
@@ -22,11 +24,14 @@ import BLOCK_IFRAME from '@/assets/img/BLOCK_IFRAME.png';
 import BLOCK_IMAGE from '@/assets/img/BLOCK_IMAGE.png';
 import BLOCK_LINK from '@/assets/img/BLOCK_LINK.png';
 import BLOCK_MARKDOWN from '@/assets/img/BLOCK_MARKDOWN.png';
-import HTML_BLOCK from '@/assets/img/HTML_BLOCK_SM.png';
 import BLOCK_PROGRESS_BAR from '@/assets/img/BLOCK_PROGRESS_BAR.png';
 import BLOCK_SELECT from '@/assets/img/BLOCK_SELECT.png';
 import BLOCK_TOGGLE_BUTTON from '@/assets/img/BLOCK_TOGGLE_BUTTON.png';
 import BLOCK_PDF_VIEWER from '@/assets/img/BLOCK_PDF.png';
+import BLOCK_RADIO from '@/assets/img/BLOCK_RADIO.png';
+import HTML_BLOCK from '@/assets/img/HTML_BLOCK_SM.png';
+import BLOCK_MODAL from '@/assets/img/BLOCK_MODAL.png';
+import BLOCK_THEME from '@/assets/img/BLOCK_THEME.png';
 
 const SECTION_ELEMENT = 'Element';
 const SECTION_INPUT = 'Input';
@@ -35,11 +40,27 @@ const SECTION_PROGRESS = 'Progress';
 const SECTION_TEXT = 'Text';
 const SECTION_COMPARE_LLMS = 'Compare LLMs';
 const SECTION_MERMAID = 'Mermaid';
+const SECTION_THEME = 'Theme';
 
 /**
  * Show the default blocks menu
  */
 export const DEFAULT_MENU: DesignerMenuItem[] = [
+    {
+        section: SECTION_THEME,
+        image: BLOCK_THEME,
+        name: 'Theme Block',
+        json: {
+            widget: 'theme',
+            data: {
+                theme: lightTheme,
+            },
+            listeners: {},
+            slots: {
+                children: [],
+            },
+        },
+    },
     {
         section: SECTION_INPUT,
         image: BLOCK_AUDIO_PLAYER,
@@ -98,24 +119,57 @@ export const DEFAULT_MENU: DesignerMenuItem[] = [
             slots: {} as BlockJSON['slots'],
         },
     },
-    // {
-    //     section: SECTION_INPUT,
-    //     image: BLOCK_MODAL,
-    //     name: 'Modal',
-    //     json: {
-    //         widget: 'modal',
-    //         data: {
-    //             style: {},
-    //             open: true,
-    //         },
-    //         listeners: {
-    //             onChange: [],
-    //         },
-    //         slots: {
-    //             children: [],
-    //         } as BlockJSON['slots'],
-    //     },
-    // },
+    {
+        section: SECTION_INPUT,
+        image: BLOCK_RADIO,
+        name: 'Radio',
+        json: {
+            widget: 'radio',
+            data: {
+                style: {
+                    padding: '4px',
+                },
+                value: 'no_value',
+                label: 'Radio Input',
+                isGroup: false,
+                options: [{ label: 'Default', value: 'no_value' }],
+                size: 'medium',
+                direction: 'column',
+                color: 'primary',
+                labelPlacement: 'end',
+                required: false,
+                disabled: false,
+            },
+            listeners: {
+                onChange: [],
+            },
+            slots: {} as BlockJSON['slots'],
+        },
+    },
+    {
+        section: SECTION_LAYOUT,
+        image: BLOCK_MODAL,
+        name: 'Modal',
+        json: {
+            widget: 'modal',
+            data: {
+                style: {},
+                title: 'Modal Title',
+                open: false,
+                fullWidth: true,
+                maxWidth: 'sm',
+                minWidth: 'sm',
+                designMode: true,
+            },
+            listeners: {
+                onSubmit: [],
+            },
+            slots: {
+                content: [],
+                footer: [],
+            },
+        },
+    },
     {
         section: SECTION_INPUT,
         image: BLOCK_INPUT,
@@ -143,6 +197,30 @@ export const DEFAULT_MENU: DesignerMenuItem[] = [
             slots: {
                 content: [],
             },
+        },
+    },
+    {
+        section: SECTION_INPUT,
+        image: BLOCK_AUDIO_INPUT,
+        name: 'Audio Input',
+        json: {
+            widget: 'audio-input',
+            data: {
+                style: {
+                    width: '50px',
+                    height: '60px',
+                },
+                loading: false,
+                disabled: false,
+                variant: 'contained',
+                color: 'primary',
+                value: '',
+                mode: 'transcribe',
+            },
+            listeners: {
+                onClick: [],
+            },
+            slots: {} as BlockJSON['slots'],
         },
     },
     {

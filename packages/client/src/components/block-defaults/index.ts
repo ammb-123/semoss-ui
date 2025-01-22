@@ -50,14 +50,21 @@ import {
 } from './llm-comparison-block';
 import { config as ModalBlockConfig, ModalBlockDef } from './modal-block';
 import { config as StepperBlockConfig, StepperBlockDef } from './stepper-block';
+import { config as RadioBlockConfig, RadioBlockDef } from './radio-block';
+import {
+    config as AudioInputBlockConfig,
+    AudioInputBlockDef,
+} from './audio-input-block';
 
 import {
     config as PDFViewerBlockConfig,
     PDFViewerBlockDef,
 } from './pdfViewer-block';
+import { config as ThemeBlockConfig, ThemeBlockDef } from './theme-block';
 
 export type DefaultBlockDefinitions =
     | AudioBlockDef
+    | AudioInputBlockDef
     | BodyBlockDef
     | ButtonBlockDef
     | CheckboxBlockDef
@@ -87,7 +94,9 @@ export type DefaultBlockDefinitions =
     | MermaidBlockDef
     | LLMComparisonBlockDef
     | ModalBlockDef
-    | PDFViewerBlockDef;
+    | RadioBlockDef
+    | PDFViewerBlockDef
+    | ThemeBlockDef;
 
 export const DefaultBlocks: Registry<DefaultBlockDefinitions> = {
     [AudioBlockConfig.widget]: AudioBlockConfig,
@@ -114,7 +123,10 @@ export const DefaultBlocks: Registry<DefaultBlockDefinitions> = {
     [UploadBlockConfig.widget]: UploadBlockConfig,
     [VegaVisualizationBlockConfig.widget]: VegaVisualizationBlockConfig,
     [MermaidBlockConfig.widget]: MermaidBlockConfig,
+    [RadioBlockConfig.widget]: RadioBlockConfig,
+    [AudioInputBlockConfig.widget]: AudioInputBlockConfig,
     [PDFViewerBlockConfig.widget]: PDFViewerBlockConfig,
+    [ThemeBlockConfig.widget]: ThemeBlockConfig,
 };
 
 export {
@@ -139,5 +151,7 @@ export {
     MermaidBlockConfig,
     CompareLLMBlockConfig,
     ModalBlockConfig,
+    RadioBlockConfig,
     PDFViewerBlockConfig,
+    ThemeBlockConfig,
 };

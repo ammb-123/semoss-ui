@@ -149,6 +149,8 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
                         // refresh the content
                         refreshFiles();
                     }
+                    // close the overlay
+                    workspace.closeOverlay();
                 }}
                 fileDeletePath={fileDeletePath}
             />
@@ -186,7 +188,7 @@ export const FileExplorerPanel = (props: FileExplorerPanelProps) => {
             const name = path.split('/').pop();
 
             // add to layout
-            layout.addTabWithDragAndDrop(name, {
+            layout.addTabWithDragAndDrop(event as unknown as DragEvent, {
                 type: 'tab',
                 name: name,
                 component: 'file-editor',
