@@ -178,6 +178,11 @@ interface AppTileCardProps {
     href?: string;
 
     /**
+     * Link to navigate to see details
+     */
+    detailHref?: string;
+
+    /**
      * is app favorited
      */
     isFavorite?: boolean;
@@ -207,8 +212,8 @@ export const AppTileCard = (props: AppTileCardProps) => {
     const {
         app,
         background = '#DAC9F5',
-        onAction = () => null,
         href = null,
+        detailHref = '',
         isFavorite,
         favorite,
         appType,
@@ -427,12 +432,7 @@ export const AppTileCard = (props: AppTileCardProps) => {
                     {systemApp && !appDetails && <StyledPlaceholder />}
                 </Card.Content>
                 <StyledCardActions>
-                    {!href ? (
-                        <StyledOpenButton onClick={onAction}>
-                            <p>Open</p>
-                            <OpenInNewOutlined fontSize="small" />
-                        </StyledOpenButton>
-                    ) : (
+                    {href ? (
                         <Link
                             href={href}
                             rel="noopener noreferrer"
@@ -445,7 +445,7 @@ export const AppTileCard = (props: AppTileCardProps) => {
                                 <OpenInNewOutlined fontSize="small" />
                             </StyledOpenButton>
                         </Link>
-                    )}
+                    ) : null}
                     {app.project_created_by !== 'SYSTEM' ? (
                         <IconButton
                             onClick={(e) => {
@@ -476,20 +476,15 @@ export const AppTileCard = (props: AppTileCardProps) => {
                 >
                     Copy App ID
                 </Menu.Item>
-                {app?.user_permission && app.user_permission <= 3 && (
-                    <Link
-                        href={`${href}/detail`}
-                        rel="noopener noreferrer"
-                        color="inherit"
-                        underline="none"
-                        target="_blank"
+                {detailHref && (
+                    <Menu.Item
+                        value="details"
+                        onClick={() => {
+                            navigate(detailHref);
+                        }}
                     >
-                        <Menu.Item value="copy">
-                            {app.user_permission === 3
-                                ? 'View App Details'
-                                : 'Edit App Details'}
-                        </Menu.Item>
-                    </Link>
+                        View Details
+                    </Menu.Item>
                 )}
                 {app?.user_permission && app.user_permission < 2 && (
                     <Menu.Item

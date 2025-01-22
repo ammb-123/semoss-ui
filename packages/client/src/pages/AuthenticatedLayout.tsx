@@ -16,28 +16,35 @@ export const AuthenticatedLayout = observer(() => {
     const [acceptedTerms, setAcceptedTerms] = useState(false);
 
     const TERMS = useMemo(() => {
-        const theme = configStore.store.config['theme'];
-
-        try {
-            if (theme && theme['THEME_MAP']) {
-                const themeMap = JSON.parse(theme['THEME_MAP'] as string);
+        if (!sessionStorage.getItem('attention-message')) {
+            const theme = configStore.store.config['theme'];
+            try {
+                if (theme && theme['THEME_MAP']) {
+                    const themeMap = JSON.parse(theme['THEME_MAP'] as string);
+                    return {
+                        header: themeMap['termsHeaderReact']
+                            ? themeMap['termsHeaderReact']
+                            : 'Attention',
+                        text: themeMap['termsReact']
+                            ? themeMap['termsReact']
+                            : '',
+                    };
+                }
                 return {
-                    header: themeMap['termsHeaderReact']
-                        ? themeMap['termsHeaderReact']
-                        : 'Attention',
-                    text: themeMap['termsReact'] ? themeMap['termsReact'] : '',
+                    header: '',
+                    text: '',
+                };
+            } catch {
+                return {
+                    header: '',
+                    text: '',
                 };
             }
-            return {
-                header: '',
-                text: '',
-            };
-        } catch {
-            return {
-                header: '',
-                text: '',
-            };
         }
+        return {
+            header: '',
+            text: '',
+        };
     }, []);
 
     // wait till the config is authenticated to load the view
@@ -51,20 +58,32 @@ export const AuthenticatedLayout = observer(() => {
         <>
             {TERMS.header && TERMS.text && (
                 <Modal open={!acceptedTerms}>
-                    <Modal.Title>
-                        <Typography
-                            variant={'h5'}
-                            color={'primary'}
-                            fontWeight="bold"
-                        >
-                            {TERMS.header}
-                        </Typography>
+                    <Modal.Title sx={{ paddingBottom: '0' }}>
+                        <div
+                            id="attention-modal-header"
+                            dangerouslySetInnerHTML={{
+                                __html: TERMS.header,
+                            }}
+                        ></div>
                     </Modal.Title>
-                    <Modal.Content>{TERMS.text}</Modal.Content>
+                    <Modal.Content>
+                        <div
+                            id="attention-modal-body"
+                            dangerouslySetInnerHTML={{
+                                __html: TERMS.text,
+                            }}
+                        ></div>
+                    </Modal.Content>
                     <Modal.Actions>
                         <Button
                             variant="contained"
-                            onClick={() => setAcceptedTerms(true)}
+                            onClick={() => {
+                                setAcceptedTerms(true);
+                                sessionStorage.setItem(
+                                    'attention-message',
+                                    'true',
+                                );
+                            }}
                         >
                             Accept
                         </Button>

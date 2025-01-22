@@ -2,7 +2,6 @@ import {
     BlockJSON,
     ListenerActions,
     SerializedState,
-    Variable,
     VariableType,
     VariableWithId,
 } from './state.types';
@@ -31,8 +30,6 @@ export enum ActionMessages {
     RENAME_VARIABLE = 'RENAME_VARIABLE',
     EDIT_VARIABLE = 'EDIT_VARIABLE',
     DELETE_VARIABLE = 'DELETE_VARIABLE',
-    ADD_DEPENDENCY = 'ADD_DEPENDENCY',
-    REMOVE_DEPENDENCY = 'REMOVE_DEPENDENCY',
     SET_SHEET_EXECUTION_ORDER = 'SET_SHEET_EXECUTION_ORDER',
 }
 
@@ -57,8 +54,6 @@ export type Actions =
     | RenameVariableAction
     | EditVariableAction
     | DeleteVariableAction
-    | AddDependencyAction
-    | RemoveDependencyAction
     | SetSheetExecutionOrderAction;
 
 export interface Action {
@@ -223,21 +218,6 @@ export interface DispatchEventAction extends Action {
     payload: {
         name: string;
         detail?: Record<string, unknown>;
-    };
-}
-
-export interface AddDependencyAction extends Action {
-    message: ActionMessages.ADD_DEPENDENCY;
-    payload: {
-        id: string;
-        type: VariableType;
-    };
-}
-
-export interface RemoveDependencyAction extends Action {
-    message: ActionMessages.REMOVE_DEPENDENCY;
-    payload: {
-        id: string;
     };
 }
 

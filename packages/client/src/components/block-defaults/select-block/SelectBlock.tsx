@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useBlock, useDebounce } from '@/hooks';
 import { BlockComponent, BlockDef } from '@/stores';
+import { debounced } from '@/utility';
 
 import {
     Autocomplete,
@@ -11,7 +12,6 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { optimize } from 'webpack';
 
 export interface SelectBlockDef extends BlockDef<'select'> {
     widget: 'select';
@@ -62,13 +62,9 @@ export const SelectBlock: BlockComponent = observer(({ id }) => {
         });
     }, [data.options]);
 
-    useDebounce(
-        () => {
-            listeners.onChange();
-        },
-        [listeners, data.value],
-        200,
-    );
+    const debouncedCallback = debounced(() => {
+        listeners.onChange();
+    }, 500);
 
     // Ensure that value is always an array when multiple is true
     const value = useMemo(() => {
@@ -139,6 +135,7 @@ export const SelectBlock: BlockComponent = observer(({ id }) => {
                     parsedVal = value;
                 }
                 setData('value', parsedVal);
+                debouncedCallback();
             }}
             sx={{
                 ...data.style,

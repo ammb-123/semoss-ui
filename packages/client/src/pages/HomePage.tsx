@@ -15,13 +15,10 @@ import { useNavigate } from 'react-router-dom';
 import { usePixel, useRootStore } from '@/hooks';
 import { Page } from '@/components/ui';
 import { AppMetadata, AppTileCard } from '@/components/app';
-import { WelcomeModal } from '@/components/welcome';
 import { Search } from '@mui/icons-material';
 import { Help } from '@/components/help';
 
 import { Filterbox } from '@/components/ui';
-
-// Test Comment
 
 const StyledContainer = styled('div')(({ theme }) => ({
     width: '100%',
@@ -428,7 +425,6 @@ export const HomePage = observer((): JSX.Element => {
                                     app={BUSINESS_INTELLIGENCE_APP}
                                     background="#BADEFF"
                                     href="../../../"
-                                    onAction={() => navigate('../../../')}
                                     systemApp={true}
                                     appType={'BI'}
                                 />
@@ -440,9 +436,6 @@ export const HomePage = observer((): JSX.Element => {
                                     app={TERMINAL_APP}
                                     background="#BADEFF"
                                     href="../../../#!/embed-terminal"
-                                    onAction={() =>
-                                        navigate('../../../#!/embed-terminal')
-                                    }
                                     systemApp={true}
                                     appType={'TERMINAL'}
                                 />

@@ -1,8 +1,9 @@
 import React, {
     createElement,
+    useCallback,
     useEffect,
-    useState,
     useMemo,
+    useState,
     Suspense,
     lazy,
 } from 'react';
@@ -31,15 +32,20 @@ import {
 import { observer } from 'mobx-react-lite';
 import { computed } from 'mobx';
 import { DefaultBlocks } from '../block-defaults';
-import { BLOCK_TYPE_INPUT } from '../block-defaults/block-defaults.constants';
+import {
+    BLOCK_TYPE_COMPARE,
+    BLOCK_TYPE_INPUT,
+} from '../block-defaults/block-defaults.constants';
 import { BlocksRenderer } from '../blocks-workspace';
 import { VARIABLE_TYPES } from '@/stores';
 import {
     capitalizeFirstLetter,
     getEngineImage,
+    isOutputJSON,
     splitAtPeriod,
 } from '@/utility';
 import { MoreSharp, WarningRounded } from '@mui/icons-material';
+import { JsonViewer } from '@textea/json-viewer';
 
 import { ENGINE_ROUTES } from '@/pages/engine';
 
@@ -195,6 +201,27 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
         return cells;
     }, [state.queries]);
 
+    // Get the LLM Comparison Blocks
+    const comparisonBlocks = computed(() => {
+        return Object.values(state.blocks)
+            .filter(
+                (block) =>
+                    DefaultBlocks[block.widget].type === BLOCK_TYPE_COMPARE,
+            )
+            .sort((a, b) => {
+                const aId = a.id.toLowerCase(),
+                    bId = b.id.toLowerCase();
+
+                if (aId < bId) {
+                    return -1;
+                }
+                if (aId > bId) {
+                    return 1;
+                }
+                return 0;
+            });
+    }).get();
+
     /**
      * Select Box on different constants to tie to
      */
@@ -212,6 +239,14 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
                 return (
                     <Select.Item key={q.id} value={q.id}>
                         <Typography variant="caption">{q.id}</Typography>
+                    </Select.Item>
+                );
+            });
+        } else if (variableType === 'LLM Comparison') {
+            return comparisonBlocks.map((block) => {
+                return (
+                    <Select.Item key={block.id} value={block.id}>
+                        <Typography variant="caption">{block.id}</Typography>
                     </Select.Item>
                 );
             });
@@ -341,7 +376,8 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
                     value={
                         (variableType === 'cell' ||
                         variableType === 'query' ||
-                        variableType === 'block'
+                        variableType === 'block' ||
+                        variableType === 'LLM Comparison'
                             ? variablePointer
                             : engine) ?? ''
                     }
@@ -350,7 +386,8 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
                         if (
                             variableType === 'cell' ||
                             variableType === 'query' ||
-                            variableType === 'block'
+                            variableType === 'block' ||
+                            variableType === 'LLM Comparison'
                         ) {
                             const p = val as string;
                             setVariablePointer(p);
@@ -377,12 +414,14 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
                 variableType &&
                 (variablePointer || engine || variableInputValue)
             ) {
-                if (variableType === 'block') {
+                if (
+                    variableType === 'block' ||
+                    variableType === 'LLM Comparison'
+                ) {
                     const block = state.getBlock(variablePointer);
                     const s: SerializedState = {
                         version: STATE_VERSION,
                         executionOrder: [],
-                        dependencies: {},
                         variables: {},
                         queries: {},
                         blocks: {
@@ -435,8 +474,8 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
                             <Alert severity="warning" icon={<WarningRounded />}>
                                 <Alert.Title>
                                     Sheet {variablePointer} has not been
-                                    executed. Click 'Run All' in order to
-                                    preview output.
+                                    executed. Click &apos;Run All&apos; in order
+                                    to preview output.
                                 </Alert.Title>
                             </Alert>
                         );
@@ -469,14 +508,24 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
                                 <Alert.Title>
                                     Cell{' '}
                                     {splitAtPeriod(variablePointer, 'right')}{' '}
-                                    has not been executed. Click 'Run All' in
-                                    order to preview output.
+                                    has not been executed. Click &apos;Run
+                                    All&apos; in order to preview output.
                                 </Alert.Title>
                             </Alert>
                         );
                     }
                 } else if (inputVariableTypeList.indexOf(variableType) > -1) {
-                    return JSON.stringify(variableInputValue);
+                    let value = null;
+                    value = isOutputJSON(variableInputValue);
+                    return (
+                        <JsonViewer
+                            value={value === null ? variableInputValue : value}
+                            displayDataTypes={true}
+                            displaySize={true}
+                            displayComma={true}
+                            rootName={false}
+                        />
+                    );
                 } else {
                     const image = getEngineImage(
                         engine.app_type,
@@ -524,7 +573,6 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
     }, [variableType, variablePointer, engine, variableInputValue]);
 
     const addVariableDisabled = useMemo(() => {
-        debugger;
         const hasRequiredFields = Boolean(
             variableType.length > 0 && variableName.length > 0,
         );
@@ -533,8 +581,18 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
             engine || variablePointer.length > 0 || variableInputValue,
         );
 
-        const isValid = hasRequiredFields && hasRequiredDependency;
+        let isValid = null;
 
+        // Disable the add button when adding in JSON / array incorrectly
+        if (variableType === 'JSON' || variableType === 'array') {
+            const checkValidJSON = Boolean(
+                isOutputJSON(variableInputValue) != null,
+            );
+            isValid =
+                hasRequiredFields && hasRequiredDependency && checkValidJSON;
+        } else {
+            isValid = hasRequiredFields && hasRequiredDependency;
+        }
         let v;
 
         if (variable) {
@@ -595,6 +653,12 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
                     if (variableEngine) {
                         setEngine(variableEngine);
                     }
+                }
+            } else {
+                if (variable.type === 'cell') {
+                    setVariablePointer(`${variable.to}.${variable.cellId}`);
+                } else {
+                    setVariablePointer(variable.to);
                 }
             }
         }
@@ -710,7 +774,6 @@ export const AddVariablePopover = observer((props: AddVariablePopoverProps) => {
                             // Refactor this
                             if (variableType) {
                                 if (variable) {
-                                    debugger;
                                     state.dispatch({
                                         message: ActionMessages.EDIT_VARIABLE,
                                         payload: {
