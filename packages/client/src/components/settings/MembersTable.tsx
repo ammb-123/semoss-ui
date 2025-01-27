@@ -12,6 +12,7 @@ import {
     Search,
     Stack,
     useNotification,
+    Badge,
 } from '@semoss/ui';
 import { Delete } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
@@ -19,7 +20,7 @@ import { AxiosResponse } from 'axios';
 import { ALL_TYPES } from '@/types';
 import { useRootStore, useAPI, useSettings, useDebounceValue } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
-import { SETTINGS_PROVISIONED_USER } from './settings.types';
+import { SETTINGS_PROVISIONED_USER, SETTINGS_ROLE } from './settings.types';
 
 import { MembersDeleteOverlay } from './MembersDeleteOverlay';
 import { MembersAddOverlay } from './MembersAddOverlay';
@@ -176,6 +177,18 @@ const permissionMapper = {
     'Read-Only': 'READ_ONLY', // DISPLAY: BE
 };
 
+const accessPriority = {
+    1: 1,
+    OWNER: 1,
+    Author: 1,
+    2: 2,
+    EDIT: 2,
+    Editor: 2,
+    3: 3,
+    READ_ONLY: 3,
+    'Read-Only': 3,
+};
+
 interface MembersTableProps {
     /**
      * Id of the engine
@@ -196,7 +209,7 @@ interface MembersTableProps {
 export const MembersTable = (props: MembersTableProps) => {
     const { id, type, onChange = () => null } = props;
 
-    const { monolithStore } = useRootStore();
+    const { monolithStore, configStore } = useRootStore();
     const notification = useNotification();
     const { adminMode } = useSettings();
 
@@ -208,6 +221,11 @@ export const MembersTable = (props: MembersTableProps) => {
     const [selectedMembers, setSelectedMembers] = useState<
         SETTINGS_PROVISIONED_USER[]
     >([]);
+    const [userData, setUserData] = useState<SETTINGS_PROVISIONED_USER>(
+        {} as SETTINGS_PROVISIONED_USER,
+    );
+    const [userPermission, setUserPermission] =
+        useState<SETTINGS_ROLE>('Read-Only');
 
     // debounce the input
     const debouncedSearch = useDebounceValue(search);
@@ -255,6 +273,32 @@ export const MembersTable = (props: MembersTableProps) => {
     const getMembers = useAPI(getMembersApi);
 
     /**
+     * Sets the user details based on the current user in the members array.
+     * If the user is an admin, it sets the user permission to 'Author'.
+     * Otherwise, it sets the user permission based on the user's permission in the members array.
+     * @param members The array of members to set the user details from
+     */
+    const setUserDetails = (members: SETTINGS_PROVISIONED_USER[]) => {
+        if (members.length > 0) {
+            let data = members.filter(
+                (member) => member.name === configStore.store.user.name,
+            );
+            if (data.length > 0) {
+                setUserData(data[0]);
+                if (adminMode) {
+                    // if logged in admin, need to provide all Author option previledges
+                    let adminPermissionPriority = 'Author';
+                    setUserPermission(
+                        permissionMapper[adminPermissionPriority],
+                    );
+                } else {
+                    setUserPermission(permissionMapper[data[0].permission]);
+                }
+            }
+        }
+    };
+
+    /**
      * When
      **/
     useEffect(() => {
@@ -264,6 +308,7 @@ export const MembersTable = (props: MembersTableProps) => {
 
         // setPage(0);
         // setSelectedMembers([]);
+        setUserDetails(getMembers.data.members);
 
         // select the member when done mounting
         memberSearchRef.current?.focus();
@@ -277,6 +322,22 @@ export const MembersTable = (props: MembersTableProps) => {
     //     // select the member when done mounting
     //     memberSearchRef.current?.focus();
     // }, [getMembers.status, getMembers.data]);
+
+    /**
+     * Determines if the read-only option should be restricted for a given member.
+     * Restrictions apply when the module type is 'DATABASE' or 'APP', and the member
+     * is the currently logged-in user.
+     *
+     * @param member - The member to check for read-only restriction.
+     * @returns {boolean} - `true` if the read-only option is restricted for the member; otherwise, `false`.
+     */
+    const readOnlyRestricted = (member) => {
+        if (!userData) return false;
+        return (
+            (type === 'DATABASE' || type === 'APP') &&
+            member.name === userData.name
+        );
+    };
 
     /**
      * Update the selected users
@@ -612,8 +673,19 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                 </Avatar>
                                                             </AvatarWrapper>
                                                             <NameIDWrapper>
-                                                                <Stack>
-                                                                    {user.name}
+                                                                <Stack direction="row">
+                                                                    <div>
+                                                                        {
+                                                                            user.name
+                                                                        }
+                                                                    </div>
+                                                                    {user.name ===
+                                                                        userData.name && (
+                                                                        <Badge
+                                                                            color="primary"
+                                                                            variant="dot"
+                                                                        />
+                                                                    )}
                                                                 </Stack>
                                                                 <Stack>
                                                                     {`${user.type} ID: ${user.id}`}
@@ -645,14 +717,32 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                 <RadioGroup.Item
                                                                     value="Author"
                                                                     label="Author"
+                                                                    disabled={
+                                                                        accessPriority[
+                                                                            userPermission
+                                                                        ] > 1
+                                                                    }
                                                                 />
                                                                 <RadioGroup.Item
                                                                     value="Editor"
                                                                     label="Editor"
+                                                                    disabled={
+                                                                        accessPriority[
+                                                                            userPermission
+                                                                        ] > 2
+                                                                    }
                                                                 />
                                                                 <RadioGroup.Item
                                                                     value="Read-Only"
                                                                     label="Read-Only"
+                                                                    disabled={
+                                                                        accessPriority[
+                                                                            userPermission
+                                                                        ] > 3 ||
+                                                                        readOnlyRestricted(
+                                                                            user,
+                                                                        )
+                                                                    }
                                                                 />
                                                             </RadioGroup>
                                                         </Table.Cell>
@@ -748,6 +838,7 @@ export const MembersTable = (props: MembersTableProps) => {
                 type={type}
                 id={id}
                 open={addMembersModal}
+                userPermission={userPermission}
                 onClose={(success) => {
                     // clear out the deleted members
                     setAddMembersModal(false);

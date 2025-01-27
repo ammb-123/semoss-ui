@@ -73,6 +73,18 @@ const permissionMapper = {
     'Read-Only': 'READ_ONLY', // DISPLAY: BE
 };
 
+const accessPriority = {
+    1: 1,
+    OWNER: 1,
+    Author: 1,
+    2: 2,
+    EDIT: 2,
+    Editor: 2,
+    3: 3,
+    READ_ONLY: 3,
+    'Read-Only': 3,
+};
+
 const AUTOCOMPLETE_OFFSET = 0;
 const AUTOCOMPLETE_LIMIT = 10;
 
@@ -93,6 +105,11 @@ interface MembersAddOverlayProps {
     open: boolean;
 
     /**
+     * User permission of the app or engine being edited
+     */
+    userPermission: SETTINGS_ROLE;
+
+    /**
      * Called on close
      *
      * @returns - method that is called onClose
@@ -101,7 +118,13 @@ interface MembersAddOverlayProps {
 }
 
 export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
-    const { type, id, open = false, onClose = () => null } = props;
+    const {
+        type,
+        id,
+        open = false,
+        userPermission,
+        onClose = () => null,
+    } = props;
 
     const { monolithStore } = useRootStore();
     const notification = useNotification();
@@ -383,6 +406,7 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                 <StyledSelection>
                     <RadioGroup
                         label={''}
+                        value={selectedRole}
                         onChange={(e) => {
                             const val = e.target.value;
                             if (val) {
@@ -433,6 +457,10 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                                         <RadioGroup.Item
                                             value="Author"
                                             label=""
+                                            disabled={
+                                                accessPriority[userPermission] >
+                                                1
+                                            }
                                         />
                                     }
                                 />
@@ -478,6 +506,10 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                                         <RadioGroup.Item
                                             value="Editor"
                                             label=""
+                                            disabled={
+                                                accessPriority[userPermission] >
+                                                2
+                                            }
                                         />
                                     }
                                 />
@@ -523,6 +555,10 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                                         <RadioGroup.Item
                                             value="Read-Only"
                                             label=""
+                                            disabled={
+                                                accessPriority[userPermission] >
+                                                3
+                                            }
                                         />
                                     }
                                 />
