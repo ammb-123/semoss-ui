@@ -21,6 +21,7 @@ import { ALL_TYPES } from '@/types';
 import { useRootStore, useAPI, useSettings, useDebounceValue } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
 import { SETTINGS_PROVISIONED_USER, SETTINGS_ROLE } from './settings.types';
+import { permissionPriorityMapper } from '@/utility/general';
 
 import { MembersDeleteOverlay } from './MembersDeleteOverlay';
 import { MembersAddOverlay } from './MembersAddOverlay';
@@ -164,31 +165,6 @@ const StyledCheckbox = styled(Checkbox)({
     paddingBottom: '0px',
 });
 
-// maps for permissions,
-const permissionMapper = {
-    1: 'Author', // BE: 'DISPLAY'
-    OWNER: 'Author', // BE: 'DISPLAY'
-    Author: 'OWNER', // DISPLAY: BE
-    2: 'Editor', // BE: 'DISPLAY'
-    EDIT: 'Editor', // BE: 'DISPLAY'
-    Editor: 'EDIT', // DISPLAY: BE
-    3: 'Read-Only', // BE: 'DISPLAY'
-    READ_ONLY: 'Read-Only', // BE: 'DISPLAY'
-    'Read-Only': 'READ_ONLY', // DISPLAY: BE
-};
-
-const accessPriority = {
-    1: 1,
-    OWNER: 1,
-    Author: 1,
-    2: 2,
-    EDIT: 2,
-    Editor: 2,
-    3: 3,
-    READ_ONLY: 3,
-    'Read-Only': 3,
-};
-
 interface MembersTableProps {
     /**
      * Id of the engine
@@ -254,7 +230,7 @@ export const MembersTable = (props: MembersTableProps) => {
                   adminMode,
                   id,
                   debouncedSearch ? debouncedSearch : undefined,
-                  permissionMapper[permissionFilter],
+                  permissionPriorityMapper(permissionFilter)?.permission,
                   (page + 1) * rowsPerPage - rowsPerPage, // offset
                   rowsPerPage, // limit
               ]
@@ -264,7 +240,7 @@ export const MembersTable = (props: MembersTableProps) => {
                   adminMode,
                   id,
                   debouncedSearch ? debouncedSearch : undefined,
-                  permissionMapper[permissionFilter],
+                  permissionPriorityMapper(permissionFilter)?.permission,
                   (page + 1) * rowsPerPage - rowsPerPage, // offset
                   rowsPerPage, // limit
               ]
@@ -289,10 +265,14 @@ export const MembersTable = (props: MembersTableProps) => {
                     // if logged in admin, need to provide all Author option previledges
                     let adminPermissionPriority = 'Author';
                     setUserPermission(
-                        permissionMapper[adminPermissionPriority],
+                        permissionPriorityMapper(adminPermissionPriority)
+                            ?.permission as SETTINGS_ROLE,
                     );
                 } else {
-                    setUserPermission(permissionMapper[data[0].permission]);
+                    setUserPermission(
+                        permissionPriorityMapper(data[0].permission)
+                            ?.permission as SETTINGS_ROLE,
+                    );
                 }
             }
         }
@@ -696,21 +676,22 @@ export const MembersTable = (props: MembersTableProps) => {
                                                             <RadioGroup
                                                                 row
                                                                 defaultValue={
-                                                                    permissionMapper[
-                                                                        user
-                                                                            .permission
-                                                                    ]
+                                                                    permissionPriorityMapper(
+                                                                        user.permission,
+                                                                    )
+                                                                        ?.permission
                                                                 }
                                                                 onChange={(
                                                                     e,
                                                                 ) => {
                                                                     updateSelectedUsers(
                                                                         [user],
-                                                                        permissionMapper[
+                                                                        permissionPriorityMapper(
                                                                             e
                                                                                 .target
-                                                                                .value
-                                                                        ],
+                                                                                .value,
+                                                                        )
+                                                                            ?.permission,
                                                                     );
                                                                 }}
                                                             >
@@ -718,27 +699,33 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                     value="Author"
                                                                     label="Author"
                                                                     disabled={
-                                                                        accessPriority[
-                                                                            userPermission
-                                                                        ] > 1
+                                                                        permissionPriorityMapper(
+                                                                            userPermission,
+                                                                        )
+                                                                            .priority >
+                                                                        1
                                                                     }
                                                                 />
                                                                 <RadioGroup.Item
                                                                     value="Editor"
                                                                     label="Editor"
                                                                     disabled={
-                                                                        accessPriority[
-                                                                            userPermission
-                                                                        ] > 2
+                                                                        permissionPriorityMapper(
+                                                                            userPermission,
+                                                                        )
+                                                                            ?.priority >
+                                                                        2
                                                                     }
                                                                 />
                                                                 <RadioGroup.Item
                                                                     value="Read-Only"
                                                                     label="Read-Only"
                                                                     disabled={
-                                                                        accessPriority[
-                                                                            userPermission
-                                                                        ] > 3 ||
+                                                                        permissionPriorityMapper(
+                                                                            userPermission,
+                                                                        )
+                                                                            ?.priority >
+                                                                            3 ||
                                                                         readOnlyRestricted(
                                                                             user,
                                                                         )

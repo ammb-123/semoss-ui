@@ -28,6 +28,7 @@ import { PERMISSION_DESCRIPTION_MAP } from '@/constants';
 import { useAPI, useDebounceValue, useRootStore, useSettings } from '@/hooks';
 import { MembersAddOverlayUser } from './MembersAddOverlayUser';
 import { SETTINGS_ROLE } from './settings.types';
+import { permissionPriorityMapper } from '@/utility/general';
 
 const StyledModal = styled(Modal.Content)(({ theme }) => ({
     maxWidth: '50rem',
@@ -59,31 +60,6 @@ const StyledOuterBox = styled('div')(({ theme }) => ({
     overflow: 'auto',
     gap: theme.spacing(1),
 }));
-
-// maps for permissions,
-const permissionMapper = {
-    1: 'Author', // BE: 'DISPLAY'
-    OWNER: 'Author', // BE: 'DISPLAY'
-    Author: 'OWNER', // DISPLAY: BE
-    2: 'Editor', // BE: 'DISPLAY'
-    EDIT: 'Editor', // BE: 'DISPLAY'
-    Editor: 'EDIT', // DISPLAY: BE
-    3: 'Read-Only', // BE: 'DISPLAY'
-    READ_ONLY: 'Read-Only', // BE: 'DISPLAY'
-    'Read-Only': 'READ_ONLY', // DISPLAY: BE
-};
-
-const accessPriority = {
-    1: 1,
-    OWNER: 1,
-    Author: 1,
-    2: 2,
-    EDIT: 2,
-    Editor: 2,
-    3: 3,
-    READ_ONLY: 3,
-    'Read-Only': 3,
-};
 
 const AUTOCOMPLETE_OFFSET = 0;
 const AUTOCOMPLETE_LIMIT = 10;
@@ -220,7 +196,8 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
             const requests = selectedMembers.map((m) => {
                 return {
                     userid: m.id,
-                    permission: permissionMapper[selectedRole],
+                    permission:
+                        permissionPriorityMapper(selectedRole)?.permission,
                     email: m.email,
                     name: m.name,
                     type: m.type,
@@ -458,8 +435,9 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                                             value="Author"
                                             label=""
                                             disabled={
-                                                accessPriority[userPermission] >
-                                                1
+                                                permissionPriorityMapper(
+                                                    userPermission,
+                                                )?.priority > 1
                                             }
                                         />
                                     }
@@ -507,8 +485,9 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                                             value="Editor"
                                             label=""
                                             disabled={
-                                                accessPriority[userPermission] >
-                                                2
+                                                permissionPriorityMapper(
+                                                    userPermission,
+                                                )?.priority > 2
                                             }
                                         />
                                     }
@@ -556,8 +535,9 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                                             value="Read-Only"
                                             label=""
                                             disabled={
-                                                accessPriority[userPermission] >
-                                                3
+                                                permissionPriorityMapper(
+                                                    userPermission,
+                                                )?.priority > 3
                                             }
                                         />
                                     }
