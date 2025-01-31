@@ -325,12 +325,14 @@ export const MembersTable = (props: MembersTableProps) => {
                 if (
                     m.max_response_time ||
                     m.usage_restriction ||
-                    m.usage_frequency
+                    m.usage_frequency ||
+                    m.max_tokens
                 ) {
                     // TODO: WE NEED CONSISTENCY, VERSUS HOW WE RECIEVE FROM BACKEND AND HOW WE SEND
                     json['maxResponseTime'] = m.max_response_time;
                     json['usageRestriction'] = m.usage_restriction;
                     json['usageFrequency'] = m.usage_frequency;
+                    json['maxTokens'] = m.max_tokens;
                 }
                 return json;
             });
@@ -719,11 +721,11 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                 <Table.Cell>
                                                                     {user?.usage_restriction ===
                                                                         'compute' &&
-                                                                        `${user.max_response_time.toLocaleString()} ms`}
+                                                                        `${user.max_response_time?.toLocaleString()} ms`}
 
                                                                     {user?.usage_restriction ===
                                                                         'token' &&
-                                                                        `${user.max_tokens.toLocaleString()}`}
+                                                                        `${user.max_tokens?.toLocaleString()}`}
                                                                 </Table.Cell>
                                                                 <Table.Cell>
                                                                     {formatModelLimitValue(
