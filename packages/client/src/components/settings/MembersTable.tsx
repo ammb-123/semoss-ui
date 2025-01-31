@@ -22,7 +22,10 @@ import { ALL_TYPES } from '@/types';
 import { useRootStore, useAPI, useSettings, useDebounceValue } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
 import { SETTINGS_PROVISIONED_USER, SETTINGS_ROLE } from './settings.types';
-import { permissionPriorityMapper } from '@/utility/general';
+import {
+    getAdminOnlyModulesFlagMapper,
+    permissionPriorityMapper,
+} from '@/utility/general';
 
 import { MembersDeleteOverlay } from './MembersDeleteOverlay';
 import { MembersAddOverlay } from './MembersAddOverlay';
@@ -549,35 +552,45 @@ export const MembersTable = (props: MembersTableProps) => {
                                 </IconButton>
                             )}
                         </StyledSearchButtonContainer>
-
-                        <StyledDeleteSelectedContainer>
-                            {selectedMembers.length > 0 && (
-                                <Button
-                                    disabled={isLoading}
-                                    variant={'outlined'}
-                                    color="error"
-                                    onClick={() =>
-                                        openDeleteMembersModal(selectedMembers)
-                                    }
-                                >
-                                    Delete Selected
-                                </Button>
-                            )}
-                        </StyledDeleteSelectedContainer>
-                        <StyledAddMemberContainer>
-                            <Button
-                                disabled={isLoading}
-                                variant={'contained'}
-                                onClick={() => {
-                                    openAddMembersModal();
-                                }}
-                            >
-                                <StyledCenteredBox>
-                                    <Add />
-                                    Add Members
-                                </StyledCenteredBox>
-                            </Button>
-                        </StyledAddMemberContainer>
+                        {!(
+                            !configStore.store.user.admin &&
+                            configStore.store.config[
+                                getAdminOnlyModulesFlagMapper(type, 'AddAccess')
+                            ]
+                        ) && (
+                            <>
+                                <StyledDeleteSelectedContainer>
+                                    {selectedMembers.length > 0 && (
+                                        <Button
+                                            disabled={isLoading}
+                                            variant={'outlined'}
+                                            color="error"
+                                            onClick={() =>
+                                                openDeleteMembersModal(
+                                                    selectedMembers,
+                                                )
+                                            }
+                                        >
+                                            Delete Selected
+                                        </Button>
+                                    )}
+                                </StyledDeleteSelectedContainer>
+                                <StyledAddMemberContainer>
+                                    <Button
+                                        disabled={isLoading}
+                                        variant={'contained'}
+                                        onClick={() => {
+                                            openAddMembersModal();
+                                        }}
+                                    >
+                                        <StyledCenteredBox>
+                                            <Add />
+                                            Add Members
+                                        </StyledCenteredBox>
+                                    </Button>
+                                </StyledAddMemberContainer>
+                            </>
+                        )}
                     </StyledTableTitleContainer>
 
                     {isLoading ? (
@@ -755,28 +768,67 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                     value="Author"
                                                                     label="Author"
                                                                     disabled={
+                                                                        (!configStore
+                                                                            .store
+                                                                            .user
+                                                                            .admin &&
+                                                                            configStore
+                                                                                .store
+                                                                                .config[
+                                                                                getAdminOnlyModulesFlagMapper(
+                                                                                    type,
+                                                                                    'AddAccess',
+                                                                                )
+                                                                            ]) ===
+                                                                            true ||
                                                                         permissionPriorityMapper(
                                                                             userPermission,
                                                                         )
                                                                             .priority >
-                                                                        1
+                                                                            1
                                                                     }
                                                                 />
                                                                 <RadioGroup.Item
                                                                     value="Editor"
                                                                     label="Editor"
                                                                     disabled={
+                                                                        (!configStore
+                                                                            .store
+                                                                            .user
+                                                                            .admin &&
+                                                                            configStore
+                                                                                .store
+                                                                                .config[
+                                                                                getAdminOnlyModulesFlagMapper(
+                                                                                    type,
+                                                                                    'AddAccess',
+                                                                                )
+                                                                            ]) ===
+                                                                            true ||
                                                                         permissionPriorityMapper(
                                                                             userPermission,
                                                                         )
                                                                             ?.priority >
-                                                                        2
+                                                                            2
                                                                     }
                                                                 />
                                                                 <RadioGroup.Item
                                                                     value="Read-Only"
                                                                     label="Read-Only"
                                                                     disabled={
+                                                                        (!configStore
+                                                                            .store
+                                                                            .user
+                                                                            .admin &&
+                                                                            configStore
+                                                                                .store
+                                                                                .config[
+                                                                                getAdminOnlyModulesFlagMapper(
+                                                                                    type,
+                                                                                    'AddAccess',
+                                                                                )
+                                                                            ]) ===
+                                                                            true ||
                                                                         permissionPriorityMapper(
                                                                             userPermission,
                                                                         )
@@ -826,6 +878,21 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                         user,
                                                                     );
                                                                 }}
+                                                                disabled={
+                                                                    (!configStore
+                                                                        .store
+                                                                        .user
+                                                                        .admin &&
+                                                                        configStore
+                                                                            .store
+                                                                            .config[
+                                                                            getAdminOnlyModulesFlagMapper(
+                                                                                type,
+                                                                                'AddAccess',
+                                                                            )
+                                                                        ]) ===
+                                                                    true
+                                                                }
                                                             >
                                                                 <Edit />
                                                             </IconButton>
@@ -835,6 +902,21 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                         [user],
                                                                     );
                                                                 }}
+                                                                disabled={
+                                                                    (!configStore
+                                                                        .store
+                                                                        .user
+                                                                        .admin &&
+                                                                        configStore
+                                                                            .store
+                                                                            .config[
+                                                                            getAdminOnlyModulesFlagMapper(
+                                                                                type,
+                                                                                'AddAccess',
+                                                                            )
+                                                                        ]) ===
+                                                                    true
+                                                                }
                                                             >
                                                                 <Delete></Delete>
                                                             </IconButton>
@@ -876,16 +958,26 @@ export const MembersTable = (props: MembersTableProps) => {
                                     <Typography variant={'body2'}>
                                         No members
                                     </Typography>
-                                    <Button
-                                        disabled={isLoading}
-                                        variant={'contained'}
-                                        onClick={() => {
-                                            setAddModalUser(null);
-                                            openAddMembersModal();
-                                        }}
-                                    >
-                                        Add Members
-                                    </Button>
+                                    {!(
+                                        !configStore.store.user.admin &&
+                                        configStore.store.config[
+                                            getAdminOnlyModulesFlagMapper(
+                                                type,
+                                                'AddAccess',
+                                            )
+                                        ]
+                                    ) && (
+                                        <Button
+                                            disabled={isLoading}
+                                            variant={'contained'}
+                                            onClick={() => {
+                                                setAddModalUser(null);
+                                                openAddMembersModal();
+                                            }}
+                                        >
+                                            Add Members
+                                        </Button>
+                                    )}
                                 </StyledNoMembersDiv>
                             )}
                         </>

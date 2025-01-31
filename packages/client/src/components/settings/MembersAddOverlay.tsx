@@ -176,8 +176,12 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
     const unitTypes: string[] = ['milliseconds'];
 
     useEffect(() => {
+        setSelectedRole('Read-Only');
         if (user) {
-            setSelectedRole(user?.permission as SETTINGS_ROLE);
+            setSelectedRole(
+                permissionPriorityMapper(user?.permission)
+                    ?.permission as SETTINGS_ROLE,
+            );
             setRestriction(user?.usage_restriction);
             setMaxTokens(user?.max_tokens?.toString());
             setMaxTime(user?.max_response_time?.toString());
@@ -186,7 +190,6 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
 
         // reset on open or close
         setSelectedMembers([]);
-        setSelectedRole('Read-Only');
         setSearch('');
     }, [open]);
 
@@ -607,10 +610,6 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                 <StyledSelection>
                     <RadioGroup
                         label={''}
-                        defaultValue={
-                            permissionPriorityMapper(user?.permission)
-                                ?.permission
-                        }
                         value={selectedRole}
                         onChange={(e) => {
                             const val = e.target.value;

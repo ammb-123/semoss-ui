@@ -19,6 +19,7 @@ import { Search } from '@mui/icons-material';
 import { Help } from '@/components/help';
 
 import { Filterbox } from '@/components/ui';
+import { getAdminOnlyModulesFlagMapper } from '@/utility';
 
 const StyledContainer = styled('div')(({ theme }) => ({
     width: '100%',
@@ -328,16 +329,23 @@ export const HomePage = observer((): JSX.Element => {
                                 }}
                             />
                         </Stack>
-                        <Button
-                            size={'large'}
-                            variant={'contained'}
-                            onClick={() => {
-                                navigate('/app/new');
-                            }}
-                            aria-label={`Open the App Model`}
-                        >
-                            Create New App
-                        </Button>
+                        {!(
+                            !configStore.store.user.admin &&
+                            configStore.store.config[
+                                getAdminOnlyModulesFlagMapper('APP', 'Add')
+                            ]
+                        ) && (
+                            <Button
+                                size={'large'}
+                                variant={'contained'}
+                                onClick={() => {
+                                    navigate('/app/new');
+                                }}
+                                aria-label={`Open the App Model`}
+                            >
+                                Create New App
+                            </Button>
+                        )}
                     </Stack>
                 </Stack>
             }

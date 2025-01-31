@@ -27,6 +27,7 @@ import { usePixel, useRootStore, useSettings } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
 
 import { Java } from '@/assets/img/Java';
+import { getAdminOnlyModulesFlagMapper } from '@/utility';
 
 const StyledAppSettings = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -683,6 +684,15 @@ export const AppSettings = (props: AppSettingsProps) => {
                                         onChange={() => {
                                             enablePublishing();
                                         }}
+                                        disabled={
+                                            (!configStore.store.user.admin &&
+                                                configStore.store.config[
+                                                    getAdminOnlyModulesFlagMapper(
+                                                        'APP',
+                                                        'AddAccess',
+                                                    )
+                                                ]) === true
+                                        }
                                     ></StyledRightSwitch>
                                 </StyledSubRow>
                             </StyledSubColumn>
@@ -708,7 +718,15 @@ export const AppSettings = (props: AppSettingsProps) => {
                                             variant="outlined"
                                             startIcon={<StyledPublishedIcon />}
                                             disabled={
-                                                !portalDetails.project_has_portal
+                                                !portalDetails.project_has_portal ||
+                                                (!configStore.store.user
+                                                    .admin &&
+                                                    configStore.store.config[
+                                                        getAdminOnlyModulesFlagMapper(
+                                                            'APP',
+                                                            'AddAccess',
+                                                        )
+                                                    ]) === true
                                             }
                                             onClick={() => {
                                                 publish();
@@ -839,6 +857,15 @@ export const AppSettings = (props: AppSettingsProps) => {
                                 name={'PROJECT_UPLOAD'}
                                 control={control}
                                 rules={{}}
+                                disabled={
+                                    (!configStore.store.user.admin &&
+                                        configStore.store.config[
+                                            getAdminOnlyModulesFlagMapper(
+                                                'APP',
+                                                'AddAccess',
+                                            )
+                                        ]) === true
+                                }
                                 render={({ field }) => {
                                     return (
                                         <FileDropzone

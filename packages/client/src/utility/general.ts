@@ -251,3 +251,39 @@ export const permissionPriorityMapper = (permission: string | number) => {
             return { permission: '', priority: 0 };
     }
 };
+
+export const getAdminOnlyModulesFlagMapper = (
+    moduleName: string,
+    operation: string,
+): string => {
+    const moduleMap = {
+        APP: 'Project',
+        Database: 'Db',
+        DATABASE: 'Db',
+        Function: 'Function',
+        FUNCTION: 'Function',
+        Model: 'Model',
+        MODEL: 'Model',
+        Storage: 'Storage',
+        STORAGE: 'Storage',
+        Vector: 'Vector',
+        VECTOR: 'Vector',
+    } as const;
+
+    const operationMap = {
+        Add: 'Add',
+        AddAccess: 'AddAccess',
+        Delete: 'Delete',
+        SetDiscoverable: 'SetDiscoverable',
+        SetPublic: 'SetPublic',
+    } as const;
+
+    const moduleNameKey = moduleMap[moduleName as keyof typeof moduleMap];
+    const operationKey = operationMap[operation as keyof typeof operationMap];
+
+    if (!moduleNameKey || !operationKey) {
+        return 'Invalid module name or operation';
+    }
+
+    return `adminOnly${moduleNameKey}${operationKey}`;
+};

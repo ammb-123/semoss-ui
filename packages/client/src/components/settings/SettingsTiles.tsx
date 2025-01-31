@@ -18,6 +18,7 @@ import { AxiosResponse } from 'axios';
 import { ALL_TYPES } from '@/types';
 import { useRootStore, usePixel, useSettings } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
+import { getAdminOnlyModulesFlagMapper } from '@/utility';
 
 const StyledAlert = styled(Alert, {
     shouldForwardProp: (prop) => prop !== 'setBounds',
@@ -383,7 +384,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                 checked={global}
                                 disabled={
                                     configStore.store.config[
-                                        'adminOnlyProjectSetPublic'
+                                        getAdminOnlyModulesFlagMapper(
+                                            type,
+                                            'SetPublic',
+                                        )
                                     ] && !configStore.store.user.admin
                                 }
                                 onChange={() => {
@@ -413,7 +417,16 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                                 ? `Make ${name} non-discoverable`
                                                 : `Make ${name} discoverable`
                                         }
-                                        disabled={global}
+                                        disabled={
+                                            global ||
+                                            (configStore.store.config[
+                                                getAdminOnlyModulesFlagMapper(
+                                                    type,
+                                                    'SetDiscoverable',
+                                                )
+                                            ] &&
+                                                !configStore.store.user.admin)
+                                        }
                                         checked={discoverable}
                                         onChange={() => {
                                             changeDiscoverable();
@@ -449,7 +462,16 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                             ? `Make ${name} non-discoverable`
                                             : `Make ${name} discoverable`
                                     }
-                                    disabled={global}
+                                    disabled={
+                                        global ||
+                                        (configStore.store.config[
+                                            getAdminOnlyModulesFlagMapper(
+                                                type,
+                                                'SetDiscoverable',
+                                            )
+                                        ] &&
+                                            !configStore.store.user.admin)
+                                    }
                                     checked={discoverable}
                                     onChange={() => {
                                         changeDiscoverable();
@@ -483,7 +505,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                 color="error"
                                 disabled={
                                     configStore.store.config[
-                                        'adminOnlyProjectDelete'
+                                        getAdminOnlyModulesFlagMapper(
+                                            type,
+                                            'Delete',
+                                        )
                                     ] && !configStore.store.user.admin
                                 }
                                 onClick={() => setDeleteModal(true)}
@@ -577,7 +602,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                 checked={global}
                                 disabled={
                                     configStore.store.config[
-                                        'adminOnlyProjectSetPublic'
+                                        getAdminOnlyModulesFlagMapper(
+                                            type,
+                                            'SetPublic',
+                                        )
                                     ] && !configStore.store.user.admin
                                 }
                                 onChange={() => {
@@ -605,7 +633,16 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                 icon={false}
                                 action={
                                     <Switch
-                                        disabled={global}
+                                        disabled={
+                                            global ||
+                                            (configStore.store.config[
+                                                getAdminOnlyModulesFlagMapper(
+                                                    type,
+                                                    'SetDiscoverable',
+                                                )
+                                            ] &&
+                                                !configStore.store.user.admin)
+                                        }
                                         title={
                                             discoverable
                                                 ? `Make ${name} non-discoverable`
@@ -642,7 +679,16 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                             icon={false}
                             action={
                                 <Switch
-                                    disabled={global}
+                                    disabled={
+                                        global ||
+                                        (configStore.store.config[
+                                            getAdminOnlyModulesFlagMapper(
+                                                type,
+                                                'SetDiscoverable',
+                                            )
+                                        ] &&
+                                            !configStore.store.user.admin)
+                                    }
                                     title={
                                         discoverable
                                             ? `Make ${name} non-discoverable`
@@ -682,6 +728,14 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                     variant="contained"
                                     color="error"
                                     onClick={() => setDeleteModal(true)}
+                                    disabled={
+                                        configStore.store.config[
+                                            getAdminOnlyModulesFlagMapper(
+                                                type,
+                                                'Delete',
+                                            )
+                                        ] && !configStore.store.user.admin
+                                    }
                                 >
                                     Delete
                                 </Button>
