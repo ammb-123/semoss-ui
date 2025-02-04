@@ -5,7 +5,7 @@ import { RootStore } from '@/stores';
 import { RootStoreContext } from '@/contexts';
 import { AppWrapper } from './AppWrapper';
 
-// add interceptors
+// add response interceptors
 axios.interceptors.response.use(
     function (response) {
         return response;
@@ -40,12 +40,34 @@ axios.interceptors.response.use(
     },
 );
 
-// axios.interceptors.request.use((config) => {
-//     return new Promise((resolve) => setTimeout(() => resolve(config), 3000));
-// });
-
 // create a new root store
 const _store = new RootStore();
+
+// add request interceptors
+axios.interceptors.request.use(
+    function (config) {
+        if (_store.configStore.store.config.csrf) {
+            const url = `${Env.MODULE}/api/config/fetchCsrf`;
+            const setHeaders = { headers: { 'X-CSRF-Token': 'fetch' } };
+
+            //get and set token in header
+            axios
+                .get(url, setHeaders)
+                .then((response) => {
+                    console.log({ response });
+                    config.headers['X-CSRF-Token'] = response;
+                })
+                .catch((error) => {
+                    console.log({ error });
+                });
+        } else {
+            return config;
+        }
+    },
+    function (error) {
+        console.log({ error });
+    },
+);
 
 export const App = () => {
     useEffect(() => {
