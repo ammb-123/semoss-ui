@@ -11,61 +11,69 @@ axios.interceptors.response.use(
         return response;
     },
     function (error) {
-        if (error.status === 302 && error.headers && error.headers.redirect) {
-            window.location.replace(error.headers.redirect);
-        }
-
-        if (isAxiosError(error)) {
-            const { response } = error;
-            if (
-                response.status === 302 &&
-                response.headers &&
-                response.headers.redirect
-            ) {
-                window.location.replace(response.headers.redirect);
-            }
-        }
-
-        const apiMessage = error.response?.data?.errorMessage;
-        if (apiMessage && typeof apiMessage === 'string') {
-            // Exception for returning the errorMessage provided via the API if available.
-            return Promise.reject(apiMessage);
-        } else if (error.message) {
-            // return the message if it exists
-            return Promise.reject(error.message);
-        } else {
-            // reject with generic error
-            return Promise.reject('Error');
-        }
+        getError(error);
     },
 );
 
 // create a new root store
 const _store = new RootStore();
 
+//get and set CSRF Token
+async function getCsrfToken() {
+    const url = `${Env.MODULE}/api/config/fetchCsrf`;
+    const csrfHeaders = { headers: { 'X-CSRF-Token': 'fetch' } };
+
+    try {
+        const response = await axios.get(url, csrfHeaders);
+        return response.headers['x-csrf-token'];
+    } catch (error) {
+        return null;
+    }
+}
+
+//get error from request or response
+function getError(error) {
+    if (error.status === 302 && error.headers && error.headers.redirect) {
+        window.location.replace(error.headers.redirect);
+    }
+
+    if (isAxiosError(error)) {
+        const { response } = error;
+        if (
+            response.status === 302 &&
+            response.headers &&
+            response.headers.redirect
+        ) {
+            window.location.replace(response.headers.redirect);
+        }
+    }
+
+    const apiMessage = error.response?.data?.errorMessage;
+    if (apiMessage && typeof apiMessage === 'string') {
+        // Exception for returning the errorMessage provided via the API if available.
+        return Promise.reject(apiMessage);
+    } else if (error.message) {
+        // return the message if it exists
+        return Promise.reject(error.message);
+    } else {
+        // reject with generic error
+        return Promise.reject('Error');
+    }
+}
+
 // add request interceptors
 axios.interceptors.request.use(
-    function (config) {
-        if (_store.configStore.store.config.csrf) {
-            const url = `${Env.MODULE}/api/config/fetchCsrf`;
-            const setHeaders = { headers: { 'X-CSRF-Token': 'fetch' } };
-
-            //get and set token in header
-            axios
-                .get(url, setHeaders)
-                .then((response) => {
-                    console.log({ response });
-                    config.headers['X-CSRF-Token'] = response;
-                })
-                .catch((error) => {
-                    console.log({ error });
-                });
-        } else {
-            return config;
+    async function (config) {
+        if (!config.headers['X-CSRF-Token']) {
+            const token = await getCsrfToken();
+            if (token) {
+                config.headers['X-CSRF-Token'] = token;
+            }
         }
+        return config;
     },
     function (error) {
-        console.log({ error });
+        getError(error);
     },
 );
 
