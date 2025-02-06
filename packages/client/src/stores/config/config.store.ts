@@ -60,7 +60,18 @@ interface ConfigStoreInterface {
         /**
          * List of available providers (logins) that are available
          */
-        providers: string[];
+        availableProviders: {
+            provider: string;
+            name: string;
+            isOauth: boolean;
+        }[];
+        /**
+         * Track if native registration is allowed (username/pw)
+         */
+        nativeRegistration: boolean;
+        /**
+         * Version of the app
+         */
         version: {
             datetime: string;
             version: string;
@@ -97,7 +108,8 @@ export class ConfigStore {
         config: {
             databaseMetaKeys: [],
             projectMetaKeys: [],
-            providers: [],
+            availableProviders: [],
+            nativeRegistration: false,
             version: {
                 version: '',
                 datetime: '',
@@ -172,14 +184,6 @@ export class ConfigStore {
                 // set the user information
                 if (Object.keys(data.logins).length > 0) {
                     this._store.user.loggedIn = true;
-                }
-
-                // save the providers
-                this._store.config.providers = [];
-                for (const provider in data.loginsAllowed) {
-                    if (data.loginsAllowed[provider]) {
-                        this._store.config.providers.push(provider);
-                    }
                 }
 
                 // save the other config data
