@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef, useReducer, useCallback } from 'react';
-import { useRootStore, useAPI } from '@/hooks';
-import { useSettings } from '@/hooks/useSettings';
 import { useNavigate } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
+import { observer } from 'mobx-react-lite';
 
+import { TextField } from '@mui/material';
 import {
     Grid,
     Search,
@@ -19,10 +20,9 @@ import {
     Select,
 } from '@semoss/ui';
 
-import { Controller, useForm } from 'react-hook-form';
-import { TextField } from '@mui/material';
+import { useRootStore, useAPI } from '@/hooks';
+import { useSettings } from '@/hooks/useSettings';
 import { TeamTileCard } from './GenericTeamCard';
-import { observer } from 'mobx-react-lite';
 
 export interface DBMember {
     ID: string;
