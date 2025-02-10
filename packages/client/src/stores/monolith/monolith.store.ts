@@ -1095,14 +1095,13 @@ export class MonolithStore {
      * @param type
      * @returns
      */
-    async deleteTeam(groupid: string, description: string, type?: string) {
+    async deleteTeam(groupid: string, type?: string) {
         let url = `${Env.MODULE}/api/auth/admin/`,
             postData = '';
 
         url += 'group/deleteGroup';
 
         postData += 'groupId=' + encodeURIComponent(groupid);
-        postData += '&description=' + encodeURIComponent(description);
 
         if (type) {
             postData += '&type=' + encodeURIComponent(type);
@@ -1414,6 +1413,7 @@ export class MonolithStore {
      */
     async getTeamProjects(
         groupId: string,
+        // groupType: string,
         limit: number,
         offset: number,
         searchTerm: string,
@@ -1427,6 +1427,7 @@ export class MonolithStore {
         const params = {};
 
         groupId && (params['groupId'] = groupId);
+        // groupType && (params['groupType'] = groupType);
         limit && (params['limit'] = limit);
         offset && (params['offset'] = offset);
         searchTerm && (params['searchTerm'] = searchTerm);

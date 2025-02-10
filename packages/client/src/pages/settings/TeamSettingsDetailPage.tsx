@@ -28,10 +28,15 @@ const StyledContent = styled('div')(({ theme }) => ({
 export const TeamSettingsDetailPage = () => {
     const { state } = useLocation();
 
+    const isCustomGroup = !state.type;
+    // debugger
+
     return (
         <StyledContainer>
             <StyledContent>
-                <TeamMembersTable groupId={state.name} name="MEMBERS" />
+                {isCustomGroup && (
+                    <TeamMembersTable groupId={state.name} name="MEMBERS" />
+                )}
                 <TeamProjectsTable
                     groupId={state.name}
                     groupType={state.type}
