@@ -27,7 +27,7 @@ import {
 } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 
-import { SETTINGS_ROLE } from './settings.types';
+import { SETTINGS_ROLE } from '@/components/settings/settings.types';
 import { useRootStore } from '@/hooks';
 
 const colors = [

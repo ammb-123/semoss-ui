@@ -112,7 +112,7 @@ interface TeamCardProps {
 }
 
 export const TeamTileCard = (props: TeamCardProps) => {
-    const { id, description, tag, dispatch, databases, onClick } = props;
+    const { id, description, type, tag, dispatch, databases, onClick } = props;
     const [hover, setHover] = React.useState(false);
     const [deleteModal, setDeleteModal] = React.useState(false);
     const { monolithStore } = useRootStore();
@@ -125,7 +125,8 @@ export const TeamTileCard = (props: TeamCardProps) => {
 
     const deleteGroup = () => {
         try {
-            monolithStore.deleteTeam(id, description);
+            debugger;
+            monolithStore.deleteTeam(id, type);
             dispatch({
                 type: 'field',
                 field: 'databases',

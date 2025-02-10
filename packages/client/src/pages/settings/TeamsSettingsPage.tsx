@@ -1,9 +1,7 @@
 import { useEffect, useState, useRef, useReducer, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
 import { observer } from 'mobx-react-lite';
 
-import { TextField } from '@mui/material';
 import {
     Grid,
     Search,
@@ -12,12 +10,8 @@ import {
     CircularProgress,
     Stack,
     Typography,
-    Modal,
     Box,
     Button,
-    useNotification,
-    Checkbox,
-    Select,
 } from '@semoss/ui';
 
 import { useRootStore, useAPI } from '@/hooks';
@@ -213,15 +207,11 @@ export const TeamsSettingsPage = observer(() => {
                                                   `${team.id
                                                       .toLowerCase()
                                                       .replace(/['"]+/g, '')
-                                                      .replace(/\s/g, '-')}`,
-                                                  {
-                                                      state: {
-                                                          name: team.id,
-                                                          description:
-                                                              team.description,
-                                                          type: team.type,
-                                                      },
-                                                  },
+                                                      .replace(/\s/g, '-')}${
+                                                      team.type
+                                                          ? `?type=${team.type}`
+                                                          : ''
+                                                  }`,
                                               );
                                           }}
                                       />
