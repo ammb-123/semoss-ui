@@ -25,7 +25,14 @@ async function getCsrfToken() {
 
     try {
         const response = await axios.get(url, csrfHeaders);
-        return response.headers['x-csrf-token'];
+
+        // not sure why the server is sending it as lowercase, preserving headers doesn't fix it
+        const token =
+            response.headers['X-CSRF-Token'] ||
+            response.headers['x-csrf-token'] ||
+            '';
+
+        return token;
     } catch (error) {
         return null;
     }
