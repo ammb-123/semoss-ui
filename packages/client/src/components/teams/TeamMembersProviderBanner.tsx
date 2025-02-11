@@ -1,5 +1,6 @@
 import React from 'react';
 import { Paper, Stack, Typography } from '@semoss/ui';
+
 import AMAZON_S3 from '@/assets/loginProviders/Amazon_S3.png';
 import newGoogle from '@/assets/loginProviders/google.png';
 import Github from '@/assets/loginProviders/github.png';
@@ -48,6 +49,10 @@ export const TeamMembersProviderBanner = (
     props: TeamMembersProviderBannerProps,
 ) => {
     const { type } = props;
+
+    const lowercase = type.toLowerCase();
+    const imgsrc = TypeImageObject[lowercase];
+
     return (
         <Paper sx={{ width: '100%', padding: '16px' }}>
             <Stack justifyContent={'space-between'} direction={'row'}>
@@ -57,10 +62,10 @@ export const TeamMembersProviderBanner = (
                         Members are managed by the external identity provider
                     </Typography>
                 </Stack>
-                <Stack>
-                    {TypeImageObject[type] ? (
+                <Stack alignItems={'center'}>
+                    {imgsrc ? (
                         <img
-                            src={TypeImageObject[type]}
+                            src={imgsrc}
                             style={{
                                 height: '36px',
                                 width: '36px',
@@ -70,7 +75,10 @@ export const TeamMembersProviderBanner = (
                         <PeopleAltIcon />
                     )}
                     <Typography variant={'caption'} color="secondary">
-                        <em>{type.charAt(0).toUpperCase() + type.slice(1)}</em>
+                        <em>
+                            {type.charAt(0).toUpperCase() +
+                                type.slice(1).toLowerCase()}
+                        </em>
                     </Typography>
                 </Stack>
             </Stack>

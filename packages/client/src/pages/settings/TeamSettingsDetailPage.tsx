@@ -34,7 +34,7 @@ export const TeamSettingsDetailPage = () => {
      * And pull info from database
      */
     const type = state.type;
-    const id = state.id;
+    const id = state.name;
 
     return (
         <StyledContainer>

@@ -203,7 +203,7 @@ export const TeamsSettingsPage = observer(() => {
                                           type={team.type}
                                           description={team.description}
                                           dispatch={dispatch}
-                                          databases={teams}
+                                          teams={teams}
                                           onClick={() => {
                                               navigate(
                                                   `${team.id
@@ -212,7 +212,7 @@ export const TeamsSettingsPage = observer(() => {
                                                       .replace(/\s/g, '-')}`,
                                                   {
                                                       state: {
-                                                          id: team.id,
+                                                          name: team.id,
                                                           type: team.type,
                                                       },
                                                   },
