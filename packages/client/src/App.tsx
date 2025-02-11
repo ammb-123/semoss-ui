@@ -71,10 +71,12 @@ function getError(error) {
 // add request interceptors
 axios.interceptors.request.use(
     async function (config) {
-        if (!config.headers['X-CSRF-Token']) {
-            const token = await getCsrfToken();
-            if (token) {
-                config.headers['X-CSRF-Token'] = token;
+        if (_store.configStore.store.config.csrf) {
+            if (!config.headers['X-CSRF-Token']) {
+                const token = await getCsrfToken();
+                if (token) {
+                    config.headers['X-CSRF-Token'] = token;
+                }
             }
         }
         return config;
