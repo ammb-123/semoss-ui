@@ -29,7 +29,10 @@ const StyledContent = styled('div')(({ theme }) => ({
 export const TeamSettingsDetailPage = () => {
     const { state } = useLocation();
 
-    
+    /**
+     * TODO: Likely want to send with :id from url
+     * And pull info from database
+     */
     const type = state.type;
     const id = state.id;
 
