@@ -239,17 +239,19 @@ export const TeamsSettingsPage = observer(() => {
                     open={addModal}
                     onClose={(team) => {
                         if (team) {
+                            const obj = {
+                                id: team.id,
+                                description: team.description,
+                            };
+
+                            if (team.type != 'Custom') {
+                                obj['type'] = team.type;
+                            }
+
                             dispatch({
                                 type: 'field',
                                 field: 'teams',
-                                value: [
-                                    ...teams,
-                                    {
-                                        id: team.id,
-                                        type: team.type,
-                                        description: team.description,
-                                    },
-                                ],
+                                value: [...teams, obj],
                             });
                         }
                         setAddModal(false);
