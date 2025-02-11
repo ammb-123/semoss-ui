@@ -41,11 +41,11 @@ export const TeamSettingsDetailPage = () => {
                     <TeamMembersProviderBanner type={type} />
                 )}
 
-                <TeamProjectsTable
+                {/* <TeamProjectsTable
                     groupId={id}
                     groupType={type}
                     name="PROJECTS"
-                />
+                /> */}
                 <TeamEnginesTable
                     groupId={id}
                     groupType={type}

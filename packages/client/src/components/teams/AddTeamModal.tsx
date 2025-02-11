@@ -1,4 +1,6 @@
 import { Controller, useForm } from 'react-hook-form';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import { Close } from '@mui/icons-material';
 
 import {
     Stack,
@@ -10,6 +12,7 @@ import {
     Typography,
     styled,
     useNotification,
+    IconButton,
 } from '@semoss/ui';
 
 import { useRootStore } from '@/hooks';
@@ -31,14 +34,28 @@ import Siteminder from '@/assets/loginProviders/siteminder.png';
 import Surverymonkey from '@/assets/loginProviders/surveymonkey.png';
 import Twitter from '@/assets/loginProviders/x_twitter.png';
 
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+const StyledModalTitle = styled(Modal.Title)(({ theme }) => ({
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+}));
 
-const StyledFormLabel = styled(Typography)({
-    fontWeight: 500,
-    fontSize: '16px',
-    lineHeight: '28px',
-    letter: '0.15px',
-});
+const StyledIcon = styled(PeopleAltIcon)(({ theme }) => ({
+    color: theme.palette.secondary.dark,
+}));
+
+const StyledMenuItemDesc = styled(Typography)(({ theme }) => ({
+    color: theme.palette.secondary.dark,
+}));
+
+const StyledSelectItem = styled(Select.Item, {
+    shouldForwardProp: (prop) => prop !== 'type',
+})<{
+    /** Track if the page header is stuck */
+    type: string;
+}>(({ theme, type }) => ({
+    borderBottom: type === 'Custom' ? `solid ${theme.palette.divider}` : 'none',
+}));
 
 const TypeImageObject = {
     native: AMAZON_S3,
@@ -101,9 +118,19 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
     });
 
     const loginTypes = [
-        { provider: 'Custom', name: 'Custom', isOauth: false },
+        {
+            provider: 'Custom',
+            name: 'Custom',
+            description: 'Directly manage users in the team',
+            isOauth: false,
+        },
         ...configStore.store.config.availableProviders,
-    ] as { provider: string; name: string; isOauth: boolean }[];
+    ] as {
+        provider: string;
+        name: string;
+        isOauth: boolean;
+        description?: string;
+    }[];
 
     /**
      * Method that is called to create the team
@@ -144,19 +171,25 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
             });
         } finally {
             // close the modal
-            // onClose();
         }
     });
+
     return (
         <Modal open={open} fullWidth>
-            <Modal.Title>Create New Team</Modal.Title>
+            <StyledModalTitle>
+                <>Create New Team</>
+                <IconButton
+                    onClick={() => {
+                        onClose();
+                    }}
+                >
+                    <Close />
+                </IconButton>
+            </StyledModalTitle>
             <form onSubmit={onSubmit}>
                 <Modal.Content>
                     <Stack direction="column" spacing={2}>
                         <Box>
-                            <StyledFormLabel variant="subtitle1">
-                                Type
-                            </StyledFormLabel>
                             <Controller
                                 name={'TEAM_TYPE'}
                                 control={control}
@@ -164,7 +197,7 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
                                 render={({ field }) => {
                                     return (
                                         <Select
-                                            label=""
+                                            label="Type"
                                             value={
                                                 field.value ? field.value : ''
                                             }
@@ -184,9 +217,10 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
                                                 )
                                                 .map((p, idx) => {
                                                     return (
-                                                        <Select.Item
+                                                        <StyledSelectItem
                                                             key={idx}
                                                             value={p.provider}
+                                                            type={p.provider}
                                                         >
                                                             <Box
                                                                 sx={{
@@ -196,7 +230,7 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
                                                                         'row',
                                                                     alignItems:
                                                                         'center',
-                                                                    gap: '8px',
+                                                                    gap: '24px',
                                                                 }}
                                                             >
                                                                 {TypeImageObject[
@@ -210,16 +244,29 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
                                                                             ]
                                                                         }
                                                                         style={{
-                                                                            height: '12px',
-                                                                            width: '12px',
+                                                                            height: '24px',
+                                                                            width: '24px',
                                                                         }}
                                                                     />
                                                                 ) : (
-                                                                    <PeopleAltIcon />
+                                                                    <StyledIcon />
                                                                 )}
-                                                                {p.name}
+                                                                <>{p.name}</>
+                                                                {p.description && (
+                                                                    <StyledMenuItemDesc
+                                                                        variant={
+                                                                            'caption'
+                                                                        }
+                                                                    >
+                                                                        <em>
+                                                                            {
+                                                                                p.description
+                                                                            }
+                                                                        </em>
+                                                                    </StyledMenuItemDesc>
+                                                                )}
                                                             </Box>
-                                                        </Select.Item>
+                                                        </StyledSelectItem>
                                                     );
                                                 })}
                                         </Select>
@@ -228,9 +275,6 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
                             />
                         </Box>
                         <Box>
-                            <StyledFormLabel variant="subtitle1">
-                                Team Name
-                            </StyledFormLabel>
                             <Controller
                                 name={'TEAM_NAME'}
                                 control={control}
@@ -238,7 +282,7 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
                                 render={({ field }) => {
                                     return (
                                         <TextField
-                                            label=""
+                                            label="Name"
                                             value={
                                                 field.value ? field.value : ''
                                             }
@@ -253,9 +297,6 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
                         </Box>
 
                         <Box>
-                            <StyledFormLabel variant="subtitle1">
-                                Team Description
-                            </StyledFormLabel>
                             <Controller
                                 name={'TEAM_DESCRIPTION'}
                                 control={control}
@@ -263,7 +304,7 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
                                 render={({ field }) => {
                                     return (
                                         <TextField
-                                            label=""
+                                            label="Description"
                                             value={
                                                 field.value ? field.value : ''
                                             }
@@ -294,7 +335,7 @@ export const AddTeamModal = (props: AddTeamModalProps) => {
                             Cancel
                         </Button>
                         <Button type="submit" variant={'contained'}>
-                            Save
+                            Add
                         </Button>
                     </Stack>
                 </Modal.Actions>

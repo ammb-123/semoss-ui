@@ -18,6 +18,7 @@ import { useRootStore, useAPI } from '@/hooks';
 import { useSettings } from '@/hooks/useSettings';
 import { TeamTileCard } from './GenericTeamCard';
 import { AddTeamModal } from '@/components/teams/AddTeamModal';
+import { Add } from '@mui/icons-material';
 
 export interface DBMember {
     ID: string;
@@ -76,7 +77,7 @@ const initialState = {
 
 const StyledSearchbarDiv = styled('div')({
     display: 'flex',
-    gap: '4px',
+    gap: '16px',
 });
 
 const StyledAddButton = styled(Button)({
@@ -178,9 +179,10 @@ export const TeamsSettingsPage = observer(() => {
                         />
                         <StyledAddButton
                             variant="contained"
+                            startIcon={<Add />}
                             onClick={() => setAddModal(true)}
                         >
-                            + Add New
+                            Add New
                         </StyledAddButton>
                     </StyledSearchbarDiv>
                 </StyledSearchbarContainer>
