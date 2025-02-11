@@ -209,12 +209,24 @@ export const TeamsSettingsPage = observer(() => {
                                                   `${team.id
                                                       .toLowerCase()
                                                       .replace(/['"]+/g, '')
-                                                      .replace(/\s/g, '-')}${
-                                                      team.type
-                                                          ? `?type=${team.type}`
-                                                          : ''
-                                                  }`,
+                                                      .replace(/\s/g, '-')}`,
+                                                  {
+                                                      state: {
+                                                          id: team.id,
+                                                          type: team.type,
+                                                      },
+                                                  },
                                               );
+                                              //   navigate(
+                                              //       `${team.id
+                                              //           .toLowerCase()
+                                              //           .replace(/['"]+/g, '')
+                                              //           .replace(/\s/g, '-')}${
+                                              //           team.type
+                                              //               ? `?type=${team.type}`
+                                              //               : ''
+                                              //       }`,
+                                              //   );
                                           }}
                                       />
                                   </Grid>

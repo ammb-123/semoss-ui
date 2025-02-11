@@ -27,10 +27,11 @@ const StyledContent = styled('div')(({ theme }) => ({
 }));
 
 export const TeamSettingsDetailPage = () => {
-    const { id } = useParams();
-    const [searchParams] = useSearchParams();
+    const { state } = useLocation();
 
-    const type = searchParams.get('type');
+    
+    const type = state.type;
+    const id = state.id;
 
     return (
         <StyledContainer>
@@ -41,11 +42,12 @@ export const TeamSettingsDetailPage = () => {
                     <TeamMembersProviderBanner type={type} />
                 )}
 
-                {/* <TeamProjectsTable
+                <TeamProjectsTable
                     groupId={id}
                     groupType={type}
                     name="PROJECTS"
-                /> */}
+                />
+
                 <TeamEnginesTable
                     groupId={id}
                     groupType={type}
