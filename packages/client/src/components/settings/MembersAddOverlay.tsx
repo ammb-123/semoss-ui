@@ -225,7 +225,7 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                   offset, // offset
                   debouncedSearch ? debouncedSearch : undefined,
               ]
-            : type;
+            : null;
 
     const getMembers = useAPI(open ? getMembersApi : null);
 
