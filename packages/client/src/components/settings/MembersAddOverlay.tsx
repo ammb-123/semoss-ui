@@ -62,6 +62,12 @@ const StyledOuterBox = styled('div')(({ theme }) => ({
     gap: theme.spacing(1),
 }));
 
+const Setting_Role_Values: SETTINGS_ROLE[] = ['Author', 'Editor', 'Read-Only'];
+
+const validSetting = (value: unknown) => {
+    return Setting_Role_Values.includes(value as SETTINGS_ROLE);
+};
+
 const AUTOCOMPLETE_OFFSET = 0;
 const AUTOCOMPLETE_LIMIT = 10;
 
@@ -145,8 +151,7 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
     /** Add Member State */
     const [selectedMembers, setSelectedMembers] = useState([]);
 
-    const [selectedRole, setSelectedRole] =
-        useState<SETTINGS_ROLE>('Read-Only');
+    const [selectedRole, setSelectedRole] = useState<SETTINGS_ROLE>(null);
     const [search, setSearch] = useState<string>('');
     const [restriction, setRestriction] = useState<string>('');
     const [maxTokens, setMaxTokens] = useState<string>('');
@@ -259,8 +264,9 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
             const requests = members.map((m) => {
                 const json = {
                     userid: m.id,
-                    permission:
-                        permissionPriorityMapper(selectedRole)?.permission,
+                    permission: validSetting(selectedRole)
+                        ? permissionPriorityMapper(selectedRole)?.permission
+                        : selectedRole,
                 };
 
                 // FOR MODELS
