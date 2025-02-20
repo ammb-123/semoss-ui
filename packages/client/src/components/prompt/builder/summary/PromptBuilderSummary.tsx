@@ -184,12 +184,6 @@ export const PromptBuilderSummary = (props: {
                                 }
                             />
                         </StyledStepListItem>
-                        <Collapse in={isActive}>
-                            <PromptBuilderSummaryStepItem
-                                builder={props.builder}
-                                currentBuilderStep={i + 1}
-                            />
-                        </Collapse>
                     </span>
                 );
             })}
