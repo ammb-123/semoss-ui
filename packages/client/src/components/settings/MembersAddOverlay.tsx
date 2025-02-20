@@ -153,7 +153,7 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
 
     const [selectedRole, setSelectedRole] = useState<SETTINGS_ROLE>(null);
     const [search, setSearch] = useState<string>('');
-    const [restriction, setRestriction] = useState<string>('');
+    const [restriction, setRestriction] = useState<string>('null');
     const [maxTokens, setMaxTokens] = useState<string>('');
     const [maxTime, setMaxTime] = useState<string>('');
     const [frequency, setFrequency] = useState<string>('');
@@ -187,7 +187,11 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                 permissionPriorityMapper(user?.permission)
                     ?.permission as SETTINGS_ROLE,
             );
-            setRestriction(user?.usage_restriction);
+            setRestriction(
+                user?.usage_restriction !== 'null'
+                    ? user?.usage_restriction
+                    : 'null',
+            );
             setMaxTokens(user?.max_tokens?.toString());
             setMaxTime(user?.max_response_time?.toString());
             setFrequency(user?.usage_frequency);
@@ -480,7 +484,7 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
 
     const closeOverlay = (type: ALL_TYPES, isSuccess: boolean) => {
         if (type === 'MODEL') {
-            setRestriction('');
+            setRestriction('null');
             setFrequency('');
             setMaxTime('');
             setMaxTokens('');
@@ -788,6 +792,7 @@ export const MembersAddOverlay = (props: MembersAddOverlayProps) => {
                         <Stack direction={'column'} gap={1}>
                             <Select
                                 label="Limit Type"
+                                defaultValue={restriction}
                                 value={restriction}
                                 onChange={(e) => {
                                     setRestriction(e.target.value);
