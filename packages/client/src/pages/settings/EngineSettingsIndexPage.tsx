@@ -146,7 +146,7 @@ export const EngineSettingsIndexPage = (
     const getFavoritedDatabases = usePixel(`
     MyEngines(metaKeys = ${JSON.stringify(
         metaKeys,
-    )}, filterWord=["${search}"], onlyFavorites=[true], engineTypes=["${type}"]);
+    )}, filterWord=["${search}"], sort=["${sort}"], onlyFavorites=[true], engineTypes=["${type}"]);
     `);
 
     useEffect(() => {
@@ -181,7 +181,7 @@ export const EngineSettingsIndexPage = (
             field: 'databases',
             value: [],
         });
-    }, [adminMode, search]);
+    }, [adminMode, search, sort]);
 
     //** append data through infinite scroll */
     useEffect(() => {
@@ -400,7 +400,7 @@ export const EngineSettingsIndexPage = (
                 >
                     <CircularProgress />
                     <Typography variant="body2">Loading</Typography>
-                    <Typography variant="caption">Databases</Typography>
+                    <Typography variant="caption">Databases TEST</Typography>
                 </Stack>
             </Backdrop>
             <StyledContainer>
