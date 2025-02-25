@@ -6,7 +6,6 @@ import {
     useLocation,
 } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import { useEffect, useState } from 'react';
 
 import { useRootStore } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
@@ -45,7 +44,6 @@ export const Router = observer(() => {
         if (theme && theme['THEME_MAP']) {
             try {
                 const map = JSON.parse(theme['THEME_MAP'] as string);
-                console.log('THEME MAP', map);
 
                 return !!map['cookiePolicyNoticePage'];
             } catch {
