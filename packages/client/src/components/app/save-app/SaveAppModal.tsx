@@ -112,8 +112,6 @@ export const SaveAppModal = (props: SaveAppProps) => {
         }
     });
 
-    console.log({ steps });
-
     return (
         <Modal open={open} fullWidth>
             <Modal.Title>
