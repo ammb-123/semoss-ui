@@ -26,6 +26,7 @@ import { config as GridBlockConfig, GridBlockDef } from "./grid-block";
 
 import { config as HTMLBlockConfig, HTMLBlockDef } from "./html-block";
 
+import { config as IconBlockConfig, IconBlockDef } from "./Icon_block";
 import { config as IframeBlockConfig, IframeBlockDef } from "./iframe-block";
 import { config as ImageBlockConfig, ImageBlockDef } from "./image-block";
 import { config as InputBlockConfig, InputBlockDef } from "./input-block";
@@ -90,6 +91,7 @@ export type DefaultBlockDefinitions =
     | ContainerBlockDef
     | GridBlockDef
     | HTMLBlockDef
+    | IconBlockDef
     | IframeBlockDef
     | ImageBlockDef
     | InputBlockDef
@@ -126,6 +128,7 @@ export const DefaultBlocks: Registry<DefaultBlockDefinitions> = {
     [CheckboxBlockConfig.widget]: CheckboxBlockConfig,
     [ContainerBlockConfig.widget]: ContainerBlockConfig,
     [GridBlockConfig.widget]: GridBlockConfig,
+    [IconBlockConfig.widget]: IconBlockConfig,
     [IframeBlockConfig.widget]: IframeBlockConfig,
     [ImageBlockConfig.widget]: ImageBlockConfig,
     [InputBlockConfig.widget]: InputBlockConfig,
@@ -158,6 +161,7 @@ export {
     CheckboxBlockConfig,
     ContainerBlockConfig,
     GridBlockConfig,
+    IconBlockConfig,
     IframeBlockConfig,
     ImageBlockConfig,
     InputBlockConfig,
