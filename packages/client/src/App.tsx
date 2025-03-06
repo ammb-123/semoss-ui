@@ -8,7 +8,7 @@ import { AppWrapper } from './AppWrapper';
 // add interceptors
 let token = '';
 axios.interceptors.request.use(
-    (config) => {
+    async (config) => {
         // Check if the request is a GET request
         if (config.method === 'get' && config.params) {
             config.paramsSerializer = (params) => {
@@ -35,13 +35,11 @@ axios.interceptors.request.use(
 
         // Check if CSRF is enabled
         if (config.method === 'post' && _store.configStore.store.config.csrf) {
-            if (!config.headers['X-CSRF-Token'] && !token) {
-                if (token) {
-                    config.headers['X-CSRF-Token'] = token;
-                } else {
-                    token = getCsrfToken();
-                    config.headers['X-CSRF-Token'] = token;
-                }
+            if (token) {
+                config.headers['X-CSRF-Token'] = token;
+            } else {
+                token = await getCsrfToken();
+                config.headers['X-CSRF-Token'] = token;
             }
         }
         return config;
