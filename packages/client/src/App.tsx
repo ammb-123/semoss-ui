@@ -6,6 +6,7 @@ import { RootStoreContext } from '@/contexts';
 import { AppWrapper } from './AppWrapper';
 
 // add interceptors
+let token = '';
 axios.interceptors.request.use(
     (config) => {
         // Check if the request is a GET request
@@ -31,6 +32,18 @@ axios.interceptors.request.use(
                     .join('&');
             };
         }
+
+        // Check if CSRF is enabled
+        if (config.method === 'post' && _store.configStore.store.config.csrf) {
+            if (!config.headers['X-CSRF-Token'] && !token) {
+                if (token) {
+                    config.headers['X-CSRF-Token'] = token;
+                } else {
+                    token = getCsrfToken();
+                    config.headers['X-CSRF-Token'] = token;
+                }
+            }
+        }
         return config;
     },
     (error) => {
@@ -52,7 +65,7 @@ axios.interceptors.response.use(
 const _store = new RootStore();
 
 //get and set CSRF Token
-async function getCsrfToken() {
+async function getCsrfToken(): Promise<any> {
     const url = `${Env.MODULE}/api/config/fetchCsrf`;
     const csrfHeaders = { headers: { 'X-CSRF-Token': 'fetch' } };
 
@@ -100,24 +113,6 @@ function getError(error) {
         return Promise.reject('Error');
     }
 }
-
-// add request interceptors
-axios.interceptors.request.use(
-    async function (config) {
-        if (_store.configStore.store.config.csrf) {
-            if (!config.headers['X-CSRF-Token']) {
-                const token = await getCsrfToken();
-                if (token) {
-                    config.headers['X-CSRF-Token'] = token;
-                }
-            }
-        }
-        return config;
-    },
-    function (error) {
-        getError(error);
-    },
-);
 
 export const App = () => {
     useEffect(() => {
