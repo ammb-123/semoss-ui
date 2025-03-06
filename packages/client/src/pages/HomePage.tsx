@@ -450,7 +450,6 @@ export const HomePage = observer((): JSX.Element => {
                             )}
                         </StyledSection>
                     )}
-
                     {mode != 'System' && apps.length > 0 ? (
                         <StyledSectionLabel variant="subtitle1">
                             All Apps
