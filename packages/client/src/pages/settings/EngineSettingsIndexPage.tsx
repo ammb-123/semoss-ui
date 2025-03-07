@@ -13,6 +13,7 @@ import {
     CircularProgress,
     Stack,
     Typography,
+    Tooltip,
 } from '@semoss/ui';
 
 import {
@@ -440,14 +441,18 @@ export const EngineSettingsIndexPage = (
                             value={'DESC'}
                             aria-label={'Descending Order'}
                         >
-                            <ArrowDownward />
+                            <Tooltip title={'Descending Order'}>
+                                <ArrowDownward />
+                            </Tooltip>
                         </ToggleButton>
                         <ToggleButton
                             onClick={(e, v) => setSortOrder(v)}
                             value={'ASC'}
                             aria-label={'Ascending Order'}
                         >
-                            <ArrowUpward />
+                            <Tooltip title={'Ascending Order'}>
+                                <ArrowUpward />
+                            </Tooltip>
                         </ToggleButton>
                     </ToggleButtonGroup>
 
@@ -460,13 +465,17 @@ export const EngineSettingsIndexPage = (
                             onClick={(e, v) => setView(v)}
                             value={'tile'}
                         >
-                            <SpaceDashboardOutlined />
+                            <Tooltip title={'Tile View'}>
+                                <SpaceDashboardOutlined />
+                            </Tooltip>
                         </ToggleButton>
                         <ToggleButton
                             onClick={(e, v) => setView(v)}
                             value={'list'}
                         >
-                            <FormatListBulletedOutlined />
+                            <Tooltip title={'List View'}>
+                                <FormatListBulletedOutlined />
+                            </Tooltip>
                         </ToggleButton>
                     </ToggleButtonGroup>
                 </StyledSearchbarContainer>
