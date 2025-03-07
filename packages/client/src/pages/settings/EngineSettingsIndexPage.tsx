@@ -18,6 +18,8 @@ import {
 import {
     SpaceDashboardOutlined,
     FormatListBulletedOutlined,
+    ArrowUpward,
+    ArrowDownward,
 } from '@mui/icons-material';
 
 import { ALL_TYPES } from '@/types';
@@ -112,7 +114,8 @@ export const EngineSettingsIndexPage = (
 
     const [view, setView] = useState('tile');
     const [search, setSearch] = useState('');
-    const [sort, setSort] = useState('Name');
+    const [sort, setSort] = useState('ENGINENAME');
+    const [sortOrder, setSortOrder] = useState('ASC');
     const [canCollect, setCanCollect] = useState(true);
     const [offset, setOffset] = useState(0);
 
@@ -146,7 +149,7 @@ export const EngineSettingsIndexPage = (
     const getFavoritedDatabases = usePixel(`
     MyEngines(metaKeys = ${JSON.stringify(
         metaKeys,
-    )}, filterWord=["${search}"], sort=["${sort}"], onlyFavorites=[true], engineTypes=["${type}"]);
+    )}, filterWord=["${search}"], sort=[{"${sort}" : "${sortOrder}"}], onlyFavorites=[true], engineTypes=["${type}"]);
     `);
 
     useEffect(() => {
@@ -400,7 +403,7 @@ export const EngineSettingsIndexPage = (
                 >
                     <CircularProgress />
                     <Typography variant="body2">Loading</Typography>
-                    <Typography variant="caption">Databases TEST</Typography>
+                    <Typography variant="caption">Databases</Typography>
                 </Stack>
             </Backdrop>
             <StyledContainer>
@@ -418,15 +421,41 @@ export const EngineSettingsIndexPage = (
                         size={'small'}
                         value={sort}
                         onChange={(e) => setSort(e.target.value)}
+                        label={'Sort By'}
                     >
-                        <MenuItem value="Name">Name</MenuItem>
-                        <MenuItem value="Date Created">Date Created</MenuItem>
-                        <MenuItem value="Views">Views</MenuItem>
+                        <MenuItem value="ENGINENAME">Name</MenuItem>
+                        <MenuItem value="DATECREATED">Date Created</MenuItem>
+                        {/* <MenuItem value="Views">Views</MenuItem>
                         <MenuItem value="Trending">Trending</MenuItem>
-                        <MenuItem value="Upvotes">Upvotes</MenuItem>
+                        <MenuItem value="Upvotes">Upvotes</MenuItem> */}
                     </StyledSort>
 
-                    <ToggleButtonGroup size={'small'} value={view}>
+                    <ToggleButtonGroup
+                        size={'small'}
+                        value={sortOrder}
+                        color="primary"
+                    >
+                        <ToggleButton
+                            onClick={(e, v) => setSortOrder(v)}
+                            value={'DESC'}
+                            aria-label={'Descending Order'}
+                        >
+                            <ArrowDownward />
+                        </ToggleButton>
+                        <ToggleButton
+                            onClick={(e, v) => setSortOrder(v)}
+                            value={'ASC'}
+                            aria-label={'Ascending Order'}
+                        >
+                            <ArrowUpward />
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+
+                    <ToggleButtonGroup
+                        size={'small'}
+                        value={view}
+                        color="primary"
+                    >
                         <ToggleButton
                             onClick={(e, v) => setView(v)}
                             value={'tile'}
