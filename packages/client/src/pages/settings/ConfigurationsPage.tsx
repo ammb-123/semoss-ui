@@ -473,7 +473,6 @@ const SocialProperty = (props) => {
                                 }}
                             />
                         </StyledKeyValue>
-                        <TextField placeholder="Description"></TextField>
                     </StyledPropContainer>
                 );
             })}
