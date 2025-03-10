@@ -275,12 +275,8 @@ export const AppSettings = (props: AppSettingsProps) => {
         compiledBy?: string;
     }>(
         adminMode
-            ? `
-        AdminGetProjectPortalDetails('${id}');
-    `
-            : `
-        GetProjectPortalDetails('${id}');
-    `,
+            ? `AdminGetProjectPortalDetails('${id}');`
+            : `GetProjectPortalDetails('${id}');`,
     );
 
     useEffect(() => {
@@ -351,9 +347,9 @@ export const AppSettings = (props: AppSettingsProps) => {
     const recompileReactors = ({ release }) => {
         let pixelString;
         if (release == null) {
-            pixelString = `ReloadInsightClasses('${id}');`;
+            pixelString = `ReloadInsightClasses(project='${id}');`;
         } else {
-            pixelString = `ReloadInsightClasses('${id}', release = true );`;
+            pixelString = `ReloadInsightClasses(project='${id}', release=true);`;
         }
 
         monolithStore
@@ -398,7 +394,7 @@ export const AppSettings = (props: AppSettingsProps) => {
      * @desc Publishes Portal
      */
     const publish = () => {
-        const pixelString = `PublishProject('${id}', release=true);`;
+        const pixelString = `PublishProject(project='${id}', release=true);`;
 
         monolithStore
             .runQuery(pixelString)
@@ -505,14 +501,16 @@ export const AppSettings = (props: AppSettingsProps) => {
             );
 
             // Load the insight classes
-            await monolithStore.runQuery(`ReloadInsightClasses('${id}');`);
+            await monolithStore.runQuery(
+                `ReloadInsightClasses(project='${id}', release=true);`,
+            );
 
             // set the app portal
             await monolithStore.setProjectPortal(false, id, true, 'public');
 
             // Publish the app the insight classes
             await monolithStore.runQuery(
-                `PublishProject('${id}', release=true);`,
+                `PublishProject(project='${id}', release=true);`,
             );
 
             notification.add({
