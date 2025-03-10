@@ -6,7 +6,7 @@ import {
 import { IconBlockDef, IconBlock } from "./IconBlock";
 import { InsertEmoticon } from "@mui/icons-material";
 import { BLOCK_TYPE_DISPLAY } from "../block-defaults.constants";
-import { SelectInputSettings } from "../../block-settings";
+import { ColorSettings, SelectInputSettings } from "../../block-settings";
 import {
     inputOptions,
     IconSelectSettings,
@@ -22,11 +22,8 @@ export const config: BlockConfig<IconBlockDef> = {
             alignItems: "center",
             width: "100%",
             height: "200px",
-            //position: "relative",
-            //variant: "Outlined",
+            color: "black",
         },
-
-        color: "primary",
         icon: "Default",
 
         src: "",
@@ -68,32 +65,10 @@ export const config: BlockConfig<IconBlockDef> = {
                 {
                     description: "Color",
                     render: ({ id }) => (
-                        <SelectInputSettings
+                        <ColorSettings
                             id={id}
                             label="Color"
-                            path="color"
-                            options={[
-                                {
-                                    value: "primary",
-                                    display: "primary",
-                                },
-                                {
-                                    value: "secondary",
-                                    display: "secondary",
-                                },
-                                {
-                                    value: "success",
-                                    display: "success",
-                                },
-                                {
-                                    value: "warning",
-                                    display: "warning",
-                                },
-                                {
-                                    value: "error",
-                                    display: "error",
-                                },
-                            ]}
+                            path="style.color"
                         />
                     ),
                 },
