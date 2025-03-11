@@ -27,6 +27,7 @@ import { NewCellAction } from '@/stores';
 import {
     ChangeCircleOutlined,
     Code,
+    EmailOutlined,
     ImportExport,
     KeyboardArrowDown,
     KeyboardArrowUp,
@@ -159,6 +160,11 @@ const AddCellOptions: Record<string, AddCellOption> = {
         display: 'LLM',
         defaultCellType: 'llm',
         icon: <ModelBrain color={'#666666'} width={'20'} height={'20'} />,
+    },
+    'send-email': {
+        display: 'Email',
+        icon: <EmailOutlined />,
+        defaultCellType: 'send-email',
     },
 };
 

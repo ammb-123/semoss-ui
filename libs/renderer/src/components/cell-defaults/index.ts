@@ -2,6 +2,7 @@ import { CellRegistry } from "../../store";
 
 import { CodeCellConfig, CodeCellDef } from "./code-cell";
 import { QueryImportCellConfig, QueryImportCellDef } from "./query-import-cell";
+import { SendEmailCellConfig, SendEmailCellDef } from "./send-email-cell";
 // import { DataImportCellConfig, DataImportCellDef } from "./data-import-cell";
 import {
     UppercaseTransformationCellConfig,
@@ -63,7 +64,8 @@ export type DefaultCellDefinitions =
     | JoinTransformationCellDef
     | CumulativeSumTransformationCellDef
     | EncodeColumnTransformationCellDef
-    | CollapseTransformationCellDef;
+    | CollapseTransformationCellDef
+    | SendEmailCellDef;
 
 export const DefaultCells: CellRegistry<DefaultCellDefinitions> = {
     [CodeCellConfig.widget]: CodeCellConfig,
@@ -86,6 +88,7 @@ export const DefaultCells: CellRegistry<DefaultCellDefinitions> = {
         EncodeColumnTransformationCellConfig,
     [CollapseTransformationCellConfig.widget]: CollapseTransformationCellConfig,
     [LLMCellConfig.widget]: LLMCellConfig,
+    [SendEmailCellConfig.widget]: SendEmailCellConfig,
 } as const;
 
 const filteredTransformations: Partial<CellRegistry<DefaultCellDefinitions>> =
