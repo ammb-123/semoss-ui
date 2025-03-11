@@ -1,12 +1,13 @@
+import { InsertEmoticon } from "@mui/icons-material";
+
 import { BlockConfig } from "../../../store";
+import { ColorSettings, SelectInputSettings } from "../../block-settings";
+import { BLOCK_TYPE_DISPLAY } from "../block-defaults.constants";
+import { IconBlockDef, IconBlock } from "./IconBlock";
 import {
     buildDimensionsSection,
     buildListener,
 } from "../block-defaults.shared";
-import { IconBlockDef, IconBlock } from "./IconBlock";
-import { InsertEmoticon } from "@mui/icons-material";
-import { BLOCK_TYPE_DISPLAY } from "../block-defaults.constants";
-import { ColorSettings, SelectInputSettings } from "../../block-settings";
 import {
     inputOptions,
     IconSelectSettings,
@@ -29,13 +30,10 @@ export const config: BlockConfig<IconBlockDef> = {
         src: "",
         title: "",
     },
-    listeners: {
-        //onClick: [],
-    },
+    listeners: {},
     slots: {},
     render: IconBlock,
     icon: InsertEmoticon,
-
     contentMenu: [
         {
             name: "Select Icon",
@@ -53,14 +51,10 @@ export const config: BlockConfig<IconBlockDef> = {
                 },
             ],
         },
-        {
-            name: "on Click",
-            children: [...buildListener("onClick")],
-        },
     ],
     styleMenu: [
         {
-            name: "",
+            name: "Color",
             children: [
                 {
                     description: "Color",

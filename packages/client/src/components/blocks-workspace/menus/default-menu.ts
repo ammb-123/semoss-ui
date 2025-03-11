@@ -872,14 +872,14 @@ export const DEFAULT_MENU: DesignerMenuItem[] = [
         activeImage: BLOCK_IMAGES['ICON_ACTIVE'],
         hoverImage: BLOCK_IMAGES['ICON_HOVER'],
         json: {
-            widget: 'icon', //icon widget not recognized
+            widget: 'icon',
             data: {
                 style: {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    width: '100%',
-                    height: '200px',
+                    width: '50px',
+                    height: '50px',
                     backgroundSize: 'contain',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center center',
@@ -887,9 +887,7 @@ export const DEFAULT_MENU: DesignerMenuItem[] = [
                 src: '',
                 title: '',
             },
-            listeners: {
-                //onClick: [],
-            },
+            listeners: {},
             slots: {} as BlockJSON['slots'],
         },
     },

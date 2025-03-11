@@ -16,7 +16,7 @@ export interface IconBlockDef extends BlockDef<"icon"> {
 }
 
 export const IconBlock: BlockComponent = observer(({ id }) => {
-    const { attrs, data /* listeners */ } = useBlock<IconBlockDef>(id);
+    const { attrs, data } = useBlock<IconBlockDef>(id);
 
     const displayIcon = (key: string) => {
         const Icon = iconMap[key] || iconMap["Default"];
