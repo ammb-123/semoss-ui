@@ -94,6 +94,7 @@ export const DefaultCells: CellRegistry<DefaultCellDefinitions> = {
 const filteredTransformations: Partial<CellRegistry<DefaultCellDefinitions>> =
     {};
 
+const filteredOtherCells: Partial<CellRegistry<DefaultCellDefinitions>> = {};
 // Iterate through the data object and filter out the cell types that have 'transformation' key
 Object.entries(DefaultCells).forEach(([key, value]) => {
     const val = value;
@@ -103,4 +104,14 @@ Object.entries(DefaultCells).forEach(([key, value]) => {
     }
 });
 
+Object.entries(DefaultCells).forEach(([key, value]) => {
+    const val = value;
+
+    if (val.parameters && val.parameters.others) {
+        filteredTransformations[key] = value;
+    }
+});
+
 export const TransformationCells = filteredTransformations;
+
+export const OtherCells = filteredOtherCells;

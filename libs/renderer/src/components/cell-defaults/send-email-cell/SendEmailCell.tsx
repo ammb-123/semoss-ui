@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { useBlocks } from "../../../hooks";
 import { ActionMessages, CellComponent, CellDef } from "../../../store";
 import { styled, TextField, Stack } from "@semoss/ui";
@@ -8,7 +9,9 @@ import { Controller, useForm } from "react-hook-form";
 const StyledStack = styled(Stack)(({ theme }) => ({
     width: "100%",
 }));
-
+const MarginTop = styled(Box)(({ theme }) => ({
+    marginTop: "50px",
+}));
 type SendEmailFormValues = {
     smtpHost: string;
     smtpPort: string;
@@ -61,216 +64,282 @@ export const SendEmailCell: CellComponent<SendEmailCellDef> = observer(
             });
         };
         return (
-            <StyledStack id={`${cell.query.id} - ${cell.id}`}>
-                <Controller
-                    name="smtpHost"
-                    control={control}
-                    defaultValue="localhost"
-                    rules={{ required: "Host is required" }}
-                    render={({ field }) => (
-                        <TextField
-                            label={"smtpHost"}
-                            variant="outlined"
-                            defaultValue={"localhost"}
-                            fullWidth
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                field.onChange(newValue);
-                                handleChange(newValue, "parameters.smtpHost");
+            <StyledStack>
+                <Box
+                    display={"flex"}
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    gap={1}
+                >
+                    <Controller
+                        name="smtpHost"
+                        control={control}
+                        defaultValue="localhost"
+                        rules={{ required: "Host is required" }}
+                        render={({ field }) => (
+                            <TextField
+                                label={"smtpHost"}
+                                variant="outlined"
+                                defaultValue={"localhost"}
+                                fullWidth
+                                onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    field.onChange(newValue);
+                                    handleChange(
+                                        newValue,
+                                        "parameters.smtpHost",
+                                    );
+                                }}
+                                sx={{ margin: 0, padding: 0 }}
+                            />
+                        )}
+                    />
+
+                    <Controller
+                        name="smtpPort"
+                        control={control}
+                        defaultValue="1025"
+                        rules={{ required: "Port is required" }}
+                        render={({ field }) => (
+                            <TextField
+                                label={"smtpPort"}
+                                variant="outlined"
+                                defaultValue={"1025"}
+                                fullWidth
+                                onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    field.onChange(newValue);
+                                    handleChange(
+                                        newValue,
+                                        "parameters.smtpPort",
+                                    );
+                                }}
+                                sx={{ margin: 0, padding: 0 }}
+                            />
+                        )}
+                    />
+                </Box>
+                <MarginTop>
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        alignItems={"center"}
+                        gap={1}
+                    >
+                        <Controller
+                            name="username"
+                            control={control}
+                            defaultValue=""
+                            rules={{
+                                required: "Username is required",
                             }}
+                            render={({ field }) => (
+                                <TextField
+                                    label={"username"}
+                                    variant="outlined"
+                                    fullWidth
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        field.onChange(newValue);
+                                        handleChange(
+                                            newValue,
+                                            "parameters.username",
+                                        );
+                                    }}
+                                />
+                            )}
                         />
-                    )}
-                />
-                <Controller
-                    name="smtpPort"
-                    control={control}
-                    defaultValue="1025"
-                    rules={{ required: "Port is required" }}
-                    render={({ field }) => (
-                        <TextField
-                            label={"smtpPort"}
-                            variant="outlined"
-                            defaultValue={"1025"}
-                            fullWidth
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                field.onChange(newValue);
-                                handleChange(newValue, "parameters.smtpPort");
+                        <Controller
+                            name="password"
+                            control={control}
+                            defaultValue=""
+                            rules={{
+                                required: "Password is required",
                             }}
+                            render={({ field }) => (
+                                <TextField
+                                    label={"password"}
+                                    variant="outlined"
+                                    fullWidth
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        field.onChange(newValue);
+                                        handleChange(
+                                            newValue,
+                                            "parameters.password",
+                                        );
+                                    }}
+                                />
+                            )}
                         />
-                    )}
-                />
-                <Controller
-                    name="subject"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: "Subject is required" }}
-                    render={({ field }) => (
-                        <TextField
-                            label={"subject"}
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                field.onChange(newValue);
-                                handleChange(newValue, "parameters.subject");
+                    </Box>
+                </MarginTop>
+                <MarginTop>
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        alignItems={"center"}
+                        gap={1}
+                    >
+                        <Controller
+                            name="from"
+                            control={control}
+                            defaultValue=""
+                            rules={{
+                                pattern: {
+                                    value: /^S+@\S+\.\S+$/,
+                                    message: "Invalid email format",
+                                },
                             }}
+                            render={({ field }) => (
+                                <TextField
+                                    label={"from"}
+                                    variant="outlined"
+                                    fullWidth
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        field.onChange(newValue);
+                                        handleChange(
+                                            newValue,
+                                            "parameters.from",
+                                        );
+                                    }}
+                                />
+                            )}
                         />
-                    )}
-                />
-                <Controller
-                    name="to"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                        required: "To is required",
-                        pattern: {
-                            value: /^S+@\S+\.\S+$/,
-                            message: "Invalid email format",
-                        },
-                    }}
-                    render={({ field }) => (
-                        <TextField
-                            label={"to"}
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                field.onChange(newValue);
-                                handleChange(newValue, "parameters.to");
+                        <Controller
+                            name="to"
+                            control={control}
+                            defaultValue=""
+                            rules={{
+                                required: "To is required",
+                                pattern: {
+                                    value: /^S+@\S+\.\S+$/,
+                                    message: "Invalid email format",
+                                },
                             }}
+                            render={({ field }) => (
+                                <TextField
+                                    label={"to"}
+                                    variant="outlined"
+                                    fullWidth
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        field.onChange(newValue);
+                                        handleChange(newValue, "parameters.to");
+                                    }}
+                                />
+                            )}
                         />
-                    )}
-                />
-                <Controller
-                    name="cc"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                        pattern: {
-                            value: /^S+@\S+\.\S+$/,
-                            message: "Invalid email format",
-                        },
-                    }}
-                    render={({ field }) => (
-                        <TextField
-                            label={"cc"}
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                field.onChange(newValue);
-                                handleChange(newValue, "parameters.cc");
+                    </Box>
+                </MarginTop>
+                <MarginTop>
+                    <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        alignItems={"center"}
+                        gap={1}
+                    >
+                        <Controller
+                            name="cc"
+                            control={control}
+                            defaultValue=""
+                            rules={{
+                                pattern: {
+                                    value: /^S+@\S+\.\S+$/,
+                                    message: "Invalid email format",
+                                },
                             }}
+                            render={({ field }) => (
+                                <TextField
+                                    label={"cc"}
+                                    variant="outlined"
+                                    fullWidth
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        field.onChange(newValue);
+                                        handleChange(newValue, "parameters.cc");
+                                    }}
+                                />
+                            )}
                         />
-                    )}
-                />
-                <Controller
-                    name="bcc"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                        pattern: {
-                            value: /^S+@\S+\.\S+$/,
-                            message: "Invalid email format",
-                        },
-                    }}
-                    render={({ field }) => (
-                        <TextField
-                            label={"bcc"}
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                field.onChange(newValue);
-                                handleChange(newValue, "parameters.bcc");
+                        <Controller
+                            name="bcc"
+                            control={control}
+                            defaultValue=""
+                            rules={{
+                                pattern: {
+                                    value: /^S+@\S+\.\S+$/,
+                                    message: "Invalid email format",
+                                },
                             }}
+                            render={({ field }) => (
+                                <TextField
+                                    label={"bcc"}
+                                    variant="outlined"
+                                    fullWidth
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        field.onChange(newValue);
+                                        handleChange(
+                                            newValue,
+                                            "parameters.bcc",
+                                        );
+                                    }}
+                                />
+                            )}
                         />
-                    )}
-                />
-                <Controller
-                    name="from"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                        pattern: {
-                            value: /^S+@\S+\.\S+$/,
-                            message: "Invalid email format",
-                        },
-                    }}
-                    render={({ field }) => (
-                        <TextField
-                            label={"from"}
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                field.onChange(newValue);
-                                handleChange(newValue, "parameters.from");
-                            }}
-                        />
-                    )}
-                />
-                <Controller
-                    name="message"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                        required: "Subject is required",
-                    }}
-                    render={({ field }) => (
-                        <TextField
-                            label={"message"}
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                field.onChange(newValue);
-                                handleChange(newValue, "parameters.message");
-                            }}
-                        />
-                    )}
-                />
-                <Controller
-                    name="username"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                        required: "Username is required",
-                    }}
-                    render={({ field }) => (
-                        <TextField
-                            label={"username"}
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                field.onChange(newValue);
-                                handleChange(newValue, "parameters.username");
-                            }}
-                        />
-                    )}
-                />
-                <Controller
-                    name="password"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                        required: "Password is required",
-                    }}
-                    render={({ field }) => (
-                        <TextField
-                            label={"password"}
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e) => {
-                                const newValue = e.target.value;
-                                field.onChange(newValue);
-                                handleChange(newValue, "parameters.password");
-                            }}
-                        />
-                    )}
-                />
+                    </Box>
+                </MarginTop>
+                <MarginTop>
+                    <Controller
+                        name="subject"
+                        control={control}
+                        defaultValue=""
+                        rules={{ required: "Subject is required" }}
+                        render={({ field }) => (
+                            <TextField
+                                label={"subject"}
+                                variant="outlined"
+                                fullWidth
+                                onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    field.onChange(newValue);
+                                    handleChange(
+                                        newValue,
+                                        "parameters.subject",
+                                    );
+                                }}
+                            />
+                        )}
+                    />
+                </MarginTop>
+                <MarginTop>
+                    <Controller
+                        name="message"
+                        control={control}
+                        defaultValue=""
+                        rules={{
+                            required: "Message is required",
+                        }}
+                        render={({ field }) => (
+                            <TextField
+                                label={"message"}
+                                variant="outlined"
+                                fullWidth
+                                onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    field.onChange(newValue);
+                                    handleChange(
+                                        newValue,
+                                        "parameters.message",
+                                    );
+                                }}
+                                multiline
+                            />
+                        )}
+                    />
+                </MarginTop>
             </StyledStack>
         );
     },
