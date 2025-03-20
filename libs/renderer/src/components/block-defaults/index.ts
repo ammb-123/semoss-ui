@@ -22,6 +22,8 @@ import {
     ContainerBlockDef,
 } from "./container-block";
 
+import { config as DividerBlockConfig, DividerBlockDef } from "./divider-block";
+
 import {
     config as EchartVisualizationBlockConfig,
     EchartVisualizationBlockDef,
@@ -63,6 +65,9 @@ import {
 import { config as RadioBlockConfig, RadioBlockDef } from "./radio-block";
 
 import { config as SelectBlockConfig, SelectBlockDef } from "./select-block";
+import { config as SidebarBlockConfig, SidebarBlockDef } from "./sidebar-block";
+import { config as SliderBlockConfig, SliderBlockDef } from "./slider-block";
+import { config as SwitchBlockConfig, SwitchBlockDef } from "./switch-block";
 
 import { config as TextBlockConfig, TextBlockDef } from "./text-block";
 import { config as ThemeBlockConfig, ThemeBlockDef } from "./theme-block";
@@ -76,9 +81,6 @@ import {
     config as VegaVisualizationBlockConfig,
     VegaVisualizationBlockDef,
 } from "./vega-visualization-block";
-import { config as SidebarBlockConfig, SidebarBlockDef } from "./sidebar-block";
-import { config as DividerBlockConfig, DividerBlockDef } from "./divider-block";
-import { config as SliderBlockConfig, SliderBlockDef } from "./slider-block";
 
 // import { config as SectionBlockConfig, SectionBlockDef } from "./section-block";
 
@@ -123,6 +125,7 @@ export type DefaultBlockDefinitions =
     | RadioBlockDef
     | ThemeBlockDef
     | EchartVisualizationBlockDef
+    | SwitchBlockDef
     | DividerBlockDef;
 // | BodyBlockDef
 // | DividerBlockDef
@@ -140,6 +143,7 @@ export const DefaultBlocks: Registry<DefaultBlockDefinitions> = {
     [ButtonBlockConfig.widget]: ButtonBlockConfig,
     [CheckboxBlockConfig.widget]: CheckboxBlockConfig,
     [ContainerBlockConfig.widget]: ContainerBlockConfig,
+    [DividerBlockConfig.widget]: DividerBlockConfig,
     [EchartVisualizationBlockConfig.widget]: EchartVisualizationBlockConfig,
     [GridBlockConfig.widget]: GridBlockConfig,
     [IconBlockConfig.widget]: IconBlockConfig,
@@ -156,16 +160,16 @@ export const DefaultBlocks: Registry<DefaultBlockDefinitions> = {
     [PageBlockConfig.widget]: PageBlockConfig,
     [PDFViewerBlockConfig.widget]: PDFViewerBlockConfig,
     [ProgressBlockConfig.widget]: ProgressBlockConfig,
+    [RadioBlockConfig.widget]: RadioBlockConfig,
     [SelectBlockConfig.widget]: SelectBlockConfig,
     [SidebarBlockConfig.widget]: SidebarBlockConfig,
     [SliderBlockConfig.widget]: SliderBlockConfig,
+    [SwitchBlockConfig.widget]: SwitchBlockConfig,
     [TextBlockConfig.widget]: TextBlockConfig,
     [ThemeBlockConfig.widget]: ThemeBlockConfig,
     [ToggleButtonBlockConfig.widget]: ToggleButtonBlockConfig,
     [UploadBlockConfig.widget]: UploadBlockConfig,
     [VegaVisualizationBlockConfig.widget]: VegaVisualizationBlockConfig,
-    [RadioBlockConfig.widget]: RadioBlockConfig,
-    [DividerBlockConfig.widget]: DividerBlockConfig,
     // [StepperBlockConfig.widget]: StepperBlockConfig,
     // [QueryBlockConfig.widget]: QueryBlockConfig,
 };
@@ -200,5 +204,6 @@ export {
     ModalBlockConfig,
     RadioBlockConfig,
     PDFViewerBlockConfig,
+    SwitchBlockConfig,
     DividerBlockConfig,
 };
