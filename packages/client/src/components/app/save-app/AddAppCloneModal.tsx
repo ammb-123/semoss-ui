@@ -20,7 +20,6 @@ import { Control } from 'react-hook-form';
 type AddAppForm = {
     [ADD_APP_FORM_FIELD_NAME]: string;
     [ADD_APP_FORM_FIELD_APP_TYPE]: string;
-    [ADD_APP_FORM_FIELD_UPLOAD]: File;
     [ADD_APP_FORM_FIELD_IS_GLOBAL]: boolean;
     [ADD_APP_FORM_FIELD_TYPE]: string;
 };
@@ -75,7 +74,6 @@ export const AddAppCloneModal = (props: AddAppProps) => {
     const defaultFormValues: AddAppForm = {
         [ADD_APP_FORM_FIELD_NAME]: '',
         [ADD_APP_FORM_FIELD_APP_TYPE]: 'CODE',
-        [ADD_APP_FORM_FIELD_UPLOAD]: null,
         [ADD_APP_FORM_FIELD_IS_GLOBAL]: false,
         [ADD_APP_FORM_FIELD_TYPE]: 'Assets Copy',
     };
@@ -84,26 +82,34 @@ export const AddAppCloneModal = (props: AddAppProps) => {
      * Method that is called to clone the app
      */
     const cloneApp = async (data: AddAppForm) => {
-        const clonePorjectResponse = await monolithStore.runQuery(
-            `CreateAppFromTemplate(project=["${data[ADD_APP_FORM_FIELD_NAME]}"], projectTemplate=["${appId}"], global=["${data[ADD_APP_FORM_FIELD_IS_GLOBAL]}"]);`,
-        );
-        let output = undefined;
-        let type = undefined;
+        try {
+            const cloneProjectResponse = await monolithStore.runQuery(
+                `CreateAppFromTemplate(project=["${data[ADD_APP_FORM_FIELD_NAME]}"], projectTemplate=["${appId}"], global=["${data[ADD_APP_FORM_FIELD_IS_GLOBAL]}"]);`,
+            );
+            let output = undefined;
+            let type = undefined;
 
-        output = clonePorjectResponse.pixelReturn[0].output;
-        type = clonePorjectResponse.pixelReturn[0].operationType[0];
+            output = cloneProjectResponse.pixelReturn[0].output;
+            type = cloneProjectResponse.pixelReturn[0].operationType[0];
 
-        if (type.indexOf('ERROR') > -1) {
+            if (type.indexOf('ERROR') > -1) {
+                notification.add({
+                    color: 'error',
+                    message: output,
+                });
+
+                return;
+            }
+            // close it
+
+            handleClose(output.project_id);
+        } catch (error) {
             notification.add({
                 color: 'error',
-                message: output,
+                message:
+                    'There was an error cloning your app. Please check your template files and try again.',
             });
-
-            return;
         }
-        // close it
-
-        handleClose(output.project_id);
     };
 
     return (
