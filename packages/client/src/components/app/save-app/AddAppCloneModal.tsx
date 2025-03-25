@@ -84,7 +84,7 @@ export const AddAppCloneModal = (props: AddAppProps) => {
     const cloneApp = async (data: AddAppForm) => {
         try {
             const cloneProjectResponse = await monolithStore.runQuery(
-                `CreateAppFromTemplate(project=["${data[ADD_APP_FORM_FIELD_NAME]}"], projectTemplate=["${appId}"], global=["${data[ADD_APP_FORM_FIELD_IS_GLOBAL]}"]);`,
+                `CreateAppFromTemplate(project=["${data[ADD_APP_FORM_FIELD_NAME]}"], projectTemplateId=["${appId}"], global=["${data[ADD_APP_FORM_FIELD_IS_GLOBAL]}"]);`,
             );
             let output = undefined;
             let type = undefined;
