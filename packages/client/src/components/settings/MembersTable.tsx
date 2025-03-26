@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useState, useRef, useLayoutEffect } from 'react';
+import { Add, Delete, Edit } from '@mui/icons-material';
+import SearchIcon from '@mui/icons-material/Search';
+import { AxiosResponse } from 'axios';
+
 import {
     styled,
     Button,
@@ -15,21 +19,17 @@ import {
     Badge,
     Stack,
 } from '@semoss/ui';
-import { Add, Delete, Edit } from '@mui/icons-material';
-import { AxiosResponse } from 'axios';
 
 import { ALL_TYPES } from '@/types';
-import { useRootStore, useAPI, useSettings, useDebounceValue } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
+import { useRootStore, useAPI, useSettings, useDebounceValue } from '@/hooks';
 import { SETTINGS_PROVISIONED_USER, SETTINGS_ROLE } from './settings.types';
 import {
     getAdminOnlyModulesFlagMapper,
     permissionPriorityMapper,
 } from '@/utility/general';
-
 import { MembersDeleteOverlay } from './MembersDeleteOverlay';
 import { MembersAddOverlay } from './MembersAddOverlay';
-import SearchIcon from '@mui/icons-material/Search';
 
 const AvatarWrapper = styled('div')({
     display: 'inline-block',
@@ -539,6 +539,7 @@ export const MembersTable = (props: MembersTableProps) => {
                         <StyledSearchButtonContainer>
                             {isSearch ? (
                                 <Search
+                                    autoFocus={true}
                                     inputRef={memberSearchRef}
                                     placeholder="Search Members"
                                     size="small"
@@ -549,7 +550,9 @@ export const MembersTable = (props: MembersTableProps) => {
                                 />
                             ) : (
                                 <IconButton
-                                    onClick={() => setIsSearch(!isSearch)}
+                                    onClick={() => {
+                                        setIsSearch(!isSearch);
+                                    }}
                                 >
                                     <SearchIcon />
                                 </IconButton>
