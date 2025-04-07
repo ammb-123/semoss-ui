@@ -27,11 +27,10 @@ import { NewCellAction } from '@/stores';
 import {
     ChangeCircleOutlined,
     Code,
-    EmailOutlined,
     ImportExport,
     KeyboardArrowDown,
     KeyboardArrowUp,
-    OtherHouses,
+    MoreHoriz,
     TextFields,
 } from '@mui/icons-material';
 
@@ -171,7 +170,7 @@ const AddCellOptions: Record<string, AddCellOption> = {
     },
     others: {
         display: 'Others',
-        icon: <OtherHouses />,
+        icon: <MoreHoriz />,
         options: OtherOptions,
     },
 };
