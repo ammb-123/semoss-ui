@@ -29,7 +29,7 @@ import github from '../../assets/img/github.png';
 import other from '../../assets/img/other.png';
 
 import { useNavigate } from 'react-router-dom';
-import { KeyboardArrowDown, SearchOutlined } from '@mui/icons-material';
+import { KeyboardArrowDown } from '@mui/icons-material';
 
 const Editor = lazy(() => import('@monaco-editor/react'));
 
@@ -67,10 +67,6 @@ const StyledAccordion = styled(Accordion)({
 const StyledBox = styled(Box)({
     padding: '0px 12px 12px 12px',
 });
-
-// const StyledSearchIcon = styled(SearchOutlined)({
-//     color: '#5c5c5c',
-// });
 
 const StyledAccordionContent = styled(Accordion.Content)({
     fontSize: '14px',
