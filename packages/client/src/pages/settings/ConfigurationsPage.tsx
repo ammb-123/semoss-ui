@@ -170,7 +170,6 @@ export const ConfigurationsPage = () => {
     const [authentication, setAuthentication] = useState(
         Object.keys(socialProps),
     );
-    // const [authExpanded, setAuthExpanded] = useState(true);
 
     const [tabValue, setTabValue] = useState(0);
 
