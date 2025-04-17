@@ -130,7 +130,7 @@ export const EngineAccessButton = () => {
                                                 sx={{
                                                     width: '20px',
                                                     height: '20px',
-                                                    mt: '6px',
+                                                    mt: '2px',
                                                     marginRight: '12px',
                                                     fontSize: '12px',
                                                     fontWeight: 'bold',
@@ -173,11 +173,12 @@ export const EngineAccessButton = () => {
                                                 sx={{
                                                     width: '20px',
                                                     height: '20px',
-                                                    mt: '6px',
+                                                    mt: '2px',
                                                     marginRight: '12px',
                                                     fontSize: '12px',
                                                     fontWeight: 'bold',
                                                     color: 'rgba(0, 0, 0, .5)',
+                                                    maxWidth: '20px',
                                                 }}
                                             >
                                                 <EditRounded />
@@ -215,11 +216,12 @@ export const EngineAccessButton = () => {
                                                 sx={{
                                                     width: '20px',
                                                     height: '20px',
-                                                    mt: '6px',
+                                                    mt: '2px',
                                                     marginRight: '12px',
                                                     fontSize: '12px',
                                                     fontWeight: 'bold',
                                                     color: 'rgba(0, 0, 0, .5)',
+                                                    maxWidth: '20px',
                                                 }}
                                             >
                                                 <RemoveRedEyeRounded />
