@@ -19,7 +19,7 @@ import {
     Stack,
     useNotification,
 } from '@semoss/ui';
-import { Delete, ClearRounded, Padding } from '@mui/icons-material';
+import { Delete, ClearRounded } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 
 import { useRootStore } from '@/hooks';
