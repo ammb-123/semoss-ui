@@ -656,7 +656,7 @@ export const TeamEnginesTable = (props: EnginesTableProps) => {
                                     <Table.Cell size="small">Name</Table.Cell>
                                     <Table.Cell size="small">Access</Table.Cell>
                                     <Table.Cell size="small">
-                                        Added Date1
+                                        Added Date
                                     </Table.Cell>
                                     <Table.Cell size="small">Action</Table.Cell>
                                 </Table.Row>
