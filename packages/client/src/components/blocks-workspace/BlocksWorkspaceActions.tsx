@@ -138,7 +138,7 @@ export const BlocksWorkspaceActions = observer(() => {
      * Trigger save on ctrl+s
      */
     const onDocumentKeydown = useCallback((event: KeyboardEvent) => {
-        if (event.key === 's' && event.ctrlKey) {
+        if (event.key === 's' && (event.ctrlKey || event.metaKey)) {
             event.preventDefault();
             saveApp();
         }
