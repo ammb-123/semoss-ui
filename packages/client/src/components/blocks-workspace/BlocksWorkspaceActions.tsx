@@ -8,6 +8,7 @@ import { useBlocks } from '@semoss/renderer';
 import { useWorkspace, useRootStore } from '@/hooks';
 import { PreviewOverlay } from '@/components/workspace';
 import { ShareOverlay } from '@/components/ui';
+import { usePlatform } from '@/hooks/usePlatform';
 
 export const BlocksWorkspaceActions = observer(() => {
     const { state } = useBlocks();
@@ -15,6 +16,8 @@ export const BlocksWorkspaceActions = observer(() => {
     const { monolithStore } = useRootStore();
     const notification = useNotification();
     const { workspace } = useWorkspace();
+
+    const platform = usePlatform()
 
     /**
      * Preview the current App
@@ -135,14 +138,22 @@ export const BlocksWorkspaceActions = observer(() => {
     };
 
     /**
-     * Trigger save on ctrl+s
+     * Trigger save on ctrl+s or command + s
      */
     const onDocumentKeydown = useCallback((event: KeyboardEvent) => {
-        if (event.key === 's' && (event.ctrlKey || event.metaKey)) {
-            event.preventDefault();
-            saveApp();
+        if(platform === "Windows" || platform === "Linux" || platform === "Unknown OS"){
+            if (event.key === 's' && event.ctrlKey) {
+                event.preventDefault();
+                saveApp();
+            }
+        }else if(platform === "MacOS"){
+            if (event.key === 's' && event.metaKey) {
+                event.preventDefault();
+                saveApp();
+            }
         }
-    }, []);
+        // ⌘
+    }, [platform]);
 
     useEffect(() => {
         // attach the event listener
@@ -178,7 +189,7 @@ export const BlocksWorkspaceActions = observer(() => {
                     <ShareRounded fontSize="inherit" />
                 </IconButton>
             </Tooltip>
-            <Tooltip title={'Save App (ctrl + s)'}>
+            <Tooltip title={platform === "MacOS" ? "Save App (⌘ + s)" : 'Save App (ctrl + s)'}>
                 <IconButton
                     size={'small'}
                     color={'primary'}
