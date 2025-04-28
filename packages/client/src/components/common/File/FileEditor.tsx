@@ -17,6 +17,7 @@ import prettier from 'prettier';
 import { styled, useNotification } from '@semoss/ui';
 import { LoadingScreen } from '@/components/ui';
 import { runPixelTwo } from '../../../runPixelTwo';
+import { usePlatform } from '@/hooks/usePlatform';
 
 const Editor = lazy(() => import('@monaco-editor/react'));
 
@@ -84,6 +85,7 @@ export const FileEditor = forwardRef<FileEditorRefDef, FileEditorProps>(
         } = props;
 
         const notification = useNotification();
+        const platform = usePlatform()
         const [content, setContent] = useState('');
         const [initialContent, setInitialContent] = useState('');
         const [isLoading, setIsLoading] = useState(false);
@@ -124,11 +126,17 @@ export const FileEditor = forwardRef<FileEditorRefDef, FileEditorProps>(
          * Listen for Keyboard Shortcuts, save and --> etc down the road
          */
         useEffect(() => {
-            const handleKeyPress = async (e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                    e.preventDefault(); // Prevent the default browser save dialog
-                    console.log('Ctrl + S pressed');
-                    saveFile();
+            const handleKeyPress = async (event) => {
+                if(platform === "Windows" || platform === "Linux" || platform === "Unknown OS"){
+                    if (event.key === 's' && event.ctrlKey) {
+                        event.preventDefault();
+                        saveFile();
+                    }
+                }else if(platform === "MacOS"){
+                    if (event.key === 's' && event.metaKey) {
+                        event.preventDefault();
+                        saveFile();
+                    }
                 }
             };
 
@@ -138,7 +146,7 @@ export const FileEditor = forwardRef<FileEditorRefDef, FileEditorProps>(
                 // Cleanup: Remove the event listener when the component unmounts
                 window.removeEventListener('keydown', handleKeyPress);
             };
-        });
+        }, [platform]);
 
         const fileLanguage = useMemo<
             | 'typescript'
