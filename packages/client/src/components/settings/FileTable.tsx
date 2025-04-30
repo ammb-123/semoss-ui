@@ -16,6 +16,19 @@ import {
 } from '@semoss/ui';
 import { Add, Delete, SimCardDownload } from '@mui/icons-material';
 import { usePixel, useRootStore } from '@/hooks';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import Box from '@mui/material/Box';
+const customVisuallyHidden = {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    whiteSpace: 'nowrap',
+    width: 1,
+};
 
 const StyledTableContainer = styled(Table.Container)({
     borderRadius: '12px',
@@ -99,6 +112,29 @@ export const FileTable = (props: FileTableProps) => {
     //download multiple files modal
     const [exportLoading, setExportLoading] = useState(false);
 
+    const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+    const [orderBy, setOrderBy] = useState<string>('name');
+    const headCell = [
+        {
+            id: 'name',
+            numeric: false,
+            disablePadding: true,
+            label: 'Name',
+        },
+        {
+            id: 'date',
+            numeric: true,
+            disablePadding: false,
+            label: 'Date Uploaded',
+        },
+        {
+            id: 'size',
+            numeric: true,
+            disablePadding: false,
+            label: 'Size',
+        },
+    ];
+
     //grabbing ID out of props
     const { id } = props;
 
@@ -152,6 +188,13 @@ export const FileTable = (props: FileTableProps) => {
         const filteredFiles = files.filter((file) =>
             file.fileName.toLowerCase().includes(searchFilter.toLowerCase()),
         );
+
+        filteredFiles.sort(
+            (a, b) =>
+                new Date(a.lastModified).getTime() -
+                new Date(b.lastModified).getTime(),
+        );
+
         setValue('FILES', filteredFiles);
 
         if (!didMount.current) {
@@ -333,6 +376,33 @@ export const FileTable = (props: FileTableProps) => {
         setExportLoading(false);
     };
 
+    const createSortHandler = (property) => (event) => {
+        const isAsc = orderBy === property && order === 'asc';
+        const newOrder = isAsc ? 'desc' : 'asc';
+        setOrder(newOrder);
+        setOrderBy(property);
+
+        const sortedFiles = [...verifiedFiles].sort((a, b) => {
+            if (property === 'name') {
+                return newOrder === 'asc'
+                    ? a.fileName.localeCompare(b.fileName)
+                    : b.fileName.localeCompare(a.fileName);
+            } else if (property === 'size') {
+                return newOrder === 'asc'
+                    ? a.fileSize - b.fileSize
+                    : b.fileSize - a.fileSize;
+            } else if (property === 'date') {
+                return newOrder === 'asc'
+                    ? new Date(a.lastModified).getTime() -
+                          new Date(b.lastModified).getTime()
+                    : new Date(b.lastModified).getTime() -
+                          new Date(a.lastModified).getTime();
+            }
+            return 0; // Default case (should not be reached)
+        });
+        setValue('FILES', sortedFiles);
+    };
+
     return (
         <StyledFileContent>
             <StyledTableContainer>
@@ -412,9 +482,69 @@ export const FileTable = (props: FileTableProps) => {
                                 }}
                             />
                         </Table.Cell>
-                        <Table.Cell size="small">Name</Table.Cell>
-                        <Table.Cell size="small">Date Uploaded</Table.Cell>
-                        <Table.Cell size="small">Size</Table.Cell>
+                        <Table.Cell size="small">
+                            <TableSortLabel
+                                active={orderBy === headCell[0].id}
+                                direction={
+                                    orderBy === headCell[0].id ? order : 'asc'
+                                }
+                                onClick={createSortHandler(headCell[0].id)}
+                            >
+                                {headCell[0].label}
+                                {orderBy === headCell[0].id ? (
+                                    <Box
+                                        component="span"
+                                        sx={customVisuallyHidden}
+                                    >
+                                        {order === 'desc'
+                                            ? 'sorted descending'
+                                            : 'sorted ascending'}
+                                    </Box>
+                                ) : null}
+                            </TableSortLabel>
+                        </Table.Cell>
+                        <Table.Cell size="small">
+                            <TableSortLabel
+                                active={orderBy === headCell[1].id}
+                                direction={
+                                    orderBy === headCell[1].id ? order : 'asc'
+                                }
+                                onClick={createSortHandler(headCell[1].id)}
+                            >
+                                {headCell[1].label}
+                                {orderBy === headCell[1].id ? (
+                                    <Box
+                                        component="span"
+                                        sx={customVisuallyHidden}
+                                    >
+                                        {order === 'desc'
+                                            ? 'sorted descending'
+                                            : 'sorted ascending'}
+                                    </Box>
+                                ) : null}
+                            </TableSortLabel>
+                        </Table.Cell>
+                        <Table.Cell size="small">
+                            <TableSortLabel
+                                active={orderBy === headCell[2].id}
+                                direction={
+                                    orderBy === headCell[2].id ? order : 'asc'
+                                }
+                                onClick={createSortHandler(headCell[2].id)}
+                            >
+                                {headCell[2].label}
+                                {orderBy === headCell[2].id ? (
+                                    <Box
+                                        component="span"
+                                        sx={customVisuallyHidden}
+                                    >
+                                        {order === 'desc'
+                                            ? 'sorted descending'
+                                            : 'sorted ascending'}
+                                    </Box>
+                                ) : null}
+                            </TableSortLabel>
+                        </Table.Cell>
                         <Table.Cell size="small">Action</Table.Cell>
                     </Table.Head>
                     <Table.Body>
