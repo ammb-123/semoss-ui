@@ -18,17 +18,7 @@ import { Add, Delete, SimCardDownload } from '@mui/icons-material';
 import { usePixel, useRootStore } from '@/hooks';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Box from '@mui/material/Box';
-const customVisuallyHidden = {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    whiteSpace: 'nowrap',
-    width: 1,
-};
+import { visuallyHidden } from '@mui/utils';
 
 const StyledTableContainer = styled(Table.Container)({
     borderRadius: '12px',
@@ -490,18 +480,15 @@ export const FileTable = (props: FileTableProps) => {
                                 }
                                 onClick={createSortHandler(headCell[0].id)}
                             >
-                                {headCell[0].label}
                                 {orderBy === headCell[0].id ? (
-                                    <Box
-                                        component="span"
-                                        sx={customVisuallyHidden}
-                                    >
+                                    <Box component="span" sx={visuallyHidden}>
                                         {order === 'desc'
                                             ? 'sorted descending'
                                             : 'sorted ascending'}
                                     </Box>
                                 ) : null}
                             </TableSortLabel>
+                            {headCell[0].label}
                         </Table.Cell>
                         <Table.Cell size="small">
                             <TableSortLabel
@@ -511,18 +498,15 @@ export const FileTable = (props: FileTableProps) => {
                                 }
                                 onClick={createSortHandler(headCell[1].id)}
                             >
-                                {headCell[1].label}
                                 {orderBy === headCell[1].id ? (
-                                    <Box
-                                        component="span"
-                                        sx={customVisuallyHidden}
-                                    >
+                                    <Box component="span" sx={visuallyHidden}>
                                         {order === 'desc'
                                             ? 'sorted descending'
                                             : 'sorted ascending'}
                                     </Box>
                                 ) : null}
                             </TableSortLabel>
+                            {headCell[1].label}
                         </Table.Cell>
                         <Table.Cell size="small">
                             <TableSortLabel
@@ -532,18 +516,15 @@ export const FileTable = (props: FileTableProps) => {
                                 }
                                 onClick={createSortHandler(headCell[2].id)}
                             >
-                                {headCell[2].label}
                                 {orderBy === headCell[2].id ? (
-                                    <Box
-                                        component="span"
-                                        sx={customVisuallyHidden}
-                                    >
+                                    <Box component="span" sx={visuallyHidden}>
                                         {order === 'desc'
                                             ? 'sorted descending'
                                             : 'sorted ascending'}
                                     </Box>
                                 ) : null}
                             </TableSortLabel>
+                            {headCell[2].label}
                         </Table.Cell>
                         <Table.Cell size="small">Action</Table.Cell>
                     </Table.Head>
