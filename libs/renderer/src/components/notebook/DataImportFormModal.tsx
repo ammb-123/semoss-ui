@@ -17,7 +17,9 @@ import {
     styled,
 } from "@semoss/ui";
 import { useBlocks } from "../../hooks";
-import { runPixel, usePixel } from "@semoss/sdk";
+import { runPixel } from "@semoss/sdk";
+import { usePixel } from "@semoss/sdk/react";
+
 import {
     ActionMessages,
     CellStateConfig,

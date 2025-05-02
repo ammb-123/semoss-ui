@@ -12,13 +12,13 @@ import { terser } from "rollup-plugin-terser";
 export default defineConfig({
     input: {
         index: "src/index.ts",
-        react: "src/js-frameworks/react/index.ts",
+        "js-frameworks/react/index": "src/js-frameworks/react/index.ts",
     },
     output: {
         dir: "dist",
         format: "esm",
         sourcemap: true,
-        // plugins: [terser()],
+        plugins: [terser()],
         entryFileNames: "[name].mjs",
     },
     plugins: [

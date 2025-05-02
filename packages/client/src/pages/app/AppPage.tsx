@@ -24,7 +24,6 @@ import { CodeRenderer } from '@/components/code-workspace';
 import { Link } from 'react-router-dom';
 
 import { Renderer } from '@semoss/renderer';
-import { InsightProvider } from '@semoss/sdk';
 
 const StyledViewport = styled('div')(() => ({
     height: '100%',

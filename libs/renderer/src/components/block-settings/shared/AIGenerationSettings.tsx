@@ -6,7 +6,8 @@ import { useBlockSettings, useBlocks } from "../../../hooks";
 import { Block, BlockDef } from "../../../store";
 import { AutoAwesome } from "@mui/icons-material";
 import { Autocomplete } from "@mui/material";
-import { runPixel, usePixel } from "@semoss/sdk";
+import { runPixel } from "@semoss/sdk";
+import { usePixel } from "@semoss/sdk/react";
 
 type CfgLibraryEngineState = {
     loading: boolean;

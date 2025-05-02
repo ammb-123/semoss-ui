@@ -1,13 +1,19 @@
 {
     "name": "@semoss/sdk",
-    "version": "1.0.0-beta.27",
+    "version": "1.0.0-beta.28",
     "type": "module",
     "main": "./dist/index.mjs",
     "module": "./dist/index.mjs",
     "types": "./dist/types/index.d.ts",
     "exports": {
-        ".": "./dist/index.mjs",
-        "./react": "./dist/react.mjs"
+        ".": {
+            "default":"./dist/index.mjs",
+            "types": "./dist/types/index.d.ts"
+        },
+        "./react": {
+            "default":"./dist/js-frameworks/react/index.mjs",
+            "types": "./dist/types/js-frameworks/react/index.d.ts"
+        }
     },
     "files": [
         "src",
