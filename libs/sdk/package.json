@@ -2,9 +2,13 @@
     "name": "@semoss/sdk",
     "version": "1.0.0-beta.27",
     "type": "module",
-    "main": "dist/index.js",
-    "module": "dist/index.esm.js",
-    "types": "dist/index.d.ts",
+    "main": "./dist/index.mjs",
+    "module": "./dist/index.mjs",
+    "types": "./dist/types/index.d.ts",
+    "exports": {
+        ".": "./dist/index.mjs",
+        "./react": "./dist/react.mjs"
+    },
     "files": [
         "src",
         "dist"

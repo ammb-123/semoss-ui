@@ -15,9 +15,9 @@
 
         /* Emit */
         "declaration": true,
-        "declarationDir": ".",
+        "declarationDir": "./dist/types",
         "emitDeclarationOnly": true,
-        "outDir": "dist",
+        // "outDir": "dist",
 
         /* Skip */
         "skipLibCheck": true,
