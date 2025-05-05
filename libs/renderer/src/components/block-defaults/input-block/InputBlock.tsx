@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
 import { useBlock } from "../../../hooks";
@@ -30,11 +30,22 @@ export interface InputBlockDef extends BlockDef<"input"> {
         disabled: boolean;
         hint?: string;
         loading?: boolean;
+        show: string;
+    };
+    listeners: {
+        preProcess: true;
+        onChange: true;
     };
 }
 
 export const InputBlock: BlockComponent = observer(({ id }) => {
     const { attrs, data, setData, listeners } = useBlock<InputBlockDef>(id);
+
+    useEffect(() => {
+        if (listeners.preProcess) {
+            listeners.preProcess();
+        }
+    }, []);
 
     const debouncedCallback = debounced(() => {
         listeners.onChange();

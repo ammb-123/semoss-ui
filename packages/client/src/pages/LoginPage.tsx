@@ -284,6 +284,7 @@ export const LoginPage = observer(() => {
         string,
         {
             provider: string;
+            label: string;
             name: string;
             isOauth: boolean;
         }
@@ -574,6 +575,9 @@ export const LoginPage = observer(() => {
                                                 setError('');
                                             }}
                                             selected={loginType === 'native'}
+                                            data-testid={
+                                                'loginPage-button-native'
+                                            }
                                         >
                                             Native
                                         </StyledButtonGroupItem>
@@ -586,6 +590,9 @@ export const LoginPage = observer(() => {
                                                 setError('');
                                             }}
                                             selected={loginType === 'ldap'}
+                                            data-testid={
+                                                'loginPage-button-ldap'
+                                            }
                                         >
                                             LDAP
                                         </StyledButtonGroupItem>
@@ -598,6 +605,9 @@ export const LoginPage = observer(() => {
                                                 setError('');
                                             }}
                                             selected={loginType === 'linotp'}
+                                            data-testid={
+                                                'loginPage-button-linotp'
+                                            }
                                         >
                                             LinOTP
                                         </StyledButtonGroupItem>
@@ -643,6 +653,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-firstNameRegister',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -676,6 +690,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-lastNameRegister',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -709,6 +727,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-usernameRegister',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -751,6 +773,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-emailRegister',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -784,6 +810,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-phone',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -817,6 +847,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-extension',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -850,6 +884,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-countryCode',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -925,6 +963,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-passwordRegister',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -984,6 +1026,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-passwordConfirm',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -997,6 +1043,9 @@ export const LoginPage = observer(() => {
                                                                     false,
                                                                 )
                                                             }
+                                                            data-testid={
+                                                                'loginPage-button-back'
+                                                            }
                                                         >
                                                             Go Back
                                                         </Button>
@@ -1007,6 +1056,9 @@ export const LoginPage = observer(() => {
                                                             }
                                                             onClick={
                                                                 registerAccount
+                                                            }
+                                                            data-testid={
+                                                                'loginPage-button-register'
                                                             }
                                                         >
                                                             Register
@@ -1042,6 +1094,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-username',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -1073,6 +1129,10 @@ export const LoginPage = observer(() => {
                                                                                 .value,
                                                                         )
                                                                     }
+                                                                    inputProps={{
+                                                                        'data-testid':
+                                                                            'loginPage-textField-password',
+                                                                    }}
                                                                 />
                                                             );
                                                         }}
@@ -1103,6 +1163,10 @@ export const LoginPage = observer(() => {
                                                                             .value,
                                                                     )
                                                                 }
+                                                                inputProps={{
+                                                                    'data-testid':
+                                                                        'loginPage-textField-otpCode',
+                                                                }}
                                                             />
                                                         );
                                                     }}
@@ -1115,6 +1179,9 @@ export const LoginPage = observer(() => {
                                                         variant={'contained'}
                                                         onClick={login}
                                                         type="submit"
+                                                        data-testid={
+                                                            'loginPage-button-login'
+                                                        }
                                                     >
                                                         Login
                                                     </Button>
@@ -1129,6 +1196,9 @@ export const LoginPage = observer(() => {
                                                                     setRegister(
                                                                         true,
                                                                     )
+                                                                }
+                                                                data-testid={
+                                                                    'loginPage-button-registerPage'
                                                                 }
                                                             >
                                                                 Register Now

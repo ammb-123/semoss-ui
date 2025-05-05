@@ -1,14 +1,15 @@
-import { BlockConfig } from "../../../store";
-
-import { ProgressBlockDef, ProgressBlock } from "./ProgressBlock";
 import { BlurLinear } from "@mui/icons-material";
+
+import { BlockConfig } from "../../../store";
+import { ProgressBlockDef, ProgressBlock } from "./ProgressBlock";
 import { BLOCK_TYPE_CHART } from "../block-defaults.constants";
+import { SwitchSettings } from "../../block-settings/shared/SwitchSettings";
+import { buildShowField, buildListener } from "../block-defaults.shared";
 import {
     InputSettings,
     SelectInputSettings,
     SizeSettings,
 } from "../../block-settings";
-import { SwitchSettings } from "../../block-settings/shared/SwitchSettings";
 
 // export the config for the block
 export const config: BlockConfig<ProgressBlockDef> = {
@@ -19,8 +20,11 @@ export const config: BlockConfig<ProgressBlockDef> = {
         value: 50,
         includeLabel: true,
         size: "300px",
+        show: "true",
     },
-    listeners: {},
+    listeners: {
+        preProcess: [],
+    },
     slots: {},
     render: ProgressBlock,
     icon: BlurLinear,
@@ -28,6 +32,7 @@ export const config: BlockConfig<ProgressBlockDef> = {
         {
             name: "General",
             children: [
+                ...buildShowField(),
                 {
                     description: "Type",
                     render: ({ id }) => {
@@ -73,6 +78,10 @@ export const config: BlockConfig<ProgressBlockDef> = {
                     ),
                 },
             ],
+        },
+        {
+            name: "Pre Process",
+            children: [...buildListener("preProcess")],
         },
     ],
     styleMenu: [

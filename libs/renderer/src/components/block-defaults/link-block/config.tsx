@@ -2,8 +2,10 @@ import { BlockConfig } from "../../../store";
 import { InputSettings } from "../../block-settings";
 
 import {
+    buildShowField,
     buildTextAlignSection,
     buildTypographySection,
+    buildListener,
 } from "../block-defaults.shared";
 
 import { LinkBlockDef, LinkBlock } from "./LinkBlock";
@@ -22,8 +24,11 @@ export const config: BlockConfig<LinkBlockDef> = {
         },
         href: "",
         text: "Insert text",
+        show: "true",
     },
-    listeners: {},
+    listeners: {
+        preProcess: [],
+    },
     slots: {},
     render: LinkBlock,
     icon: Link,
@@ -31,6 +36,7 @@ export const config: BlockConfig<LinkBlockDef> = {
         {
             name: "General",
             children: [
+                ...buildShowField(),
                 {
                     description: "Destination",
                     render: ({ id }) => (
@@ -48,6 +54,10 @@ export const config: BlockConfig<LinkBlockDef> = {
                     ),
                 },
             ],
+        },
+        {
+            name: "Pre Process",
+            children: [...buildListener("preProcess")],
         },
     ],
     styleMenu: [buildTypographySection(), buildTextAlignSection()],

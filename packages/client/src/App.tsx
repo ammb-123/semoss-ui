@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import axios, { isAxiosError } from 'axios';
-import { Env } from '@/env';
+
+import { Env } from '@semoss/sdk';
+
 import { RootStore } from '@/stores';
 import { RootStoreContext } from '@/contexts';
 import { AppWrapper } from './AppWrapper';
@@ -122,6 +124,7 @@ export const App = () => {
                 MODULE: string;
             };
 
+            // debugger;
             // update the enviornment variables with the module
             if (env) {
                 Env.update({
@@ -143,6 +146,13 @@ export const App = () => {
             '$1#',
         );
     }
+
+    // TODO: John I have to do this
+    // My env does not get updated above in useEffect ^
+    Env.update({
+        MODULE: process.env.MODULE || '',
+    });
+
     return (
         <RootStoreContext.Provider value={_store}>
             <AppWrapper />
