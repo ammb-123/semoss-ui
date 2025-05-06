@@ -13,11 +13,9 @@ import {
     Table,
     Typography,
     useNotification,
-    Box,
 } from '@semoss/ui';
 import { Add, Delete, SimCardDownload } from '@mui/icons-material';
 import { usePixel, useRootStore } from '@/hooks';
-import { visuallyHidden } from '@mui/utils';
 
 const StyledTableContainer = styled(Table.Container)({
     borderRadius: '12px',
@@ -480,13 +478,6 @@ export const FileTable = (props: FileTableProps) => {
                                 onClick={createSortHandler(headCell[0].id)}
                             >
                                 Name
-                                {orderBy === headCell[0].id ? (
-                                    <Box sx={visuallyHidden}>
-                                        {order === 'desc'
-                                            ? 'sorted descending'
-                                            : 'sorted ascending'}
-                                    </Box>
-                                ) : null}
                             </Table.Sort>
                         </Table.Cell>
                         <Table.Cell size="small">
@@ -498,13 +489,6 @@ export const FileTable = (props: FileTableProps) => {
                                 onClick={createSortHandler(headCell[1].id)}
                             >
                                 Date Uploaded
-                                {orderBy === headCell[1].id ? (
-                                    <Box sx={visuallyHidden}>
-                                        {order === 'desc'
-                                            ? 'sorted descending'
-                                            : 'sorted ascending'}
-                                    </Box>
-                                ) : null}
                             </Table.Sort>
                         </Table.Cell>
                         <Table.Cell size="small">
@@ -516,13 +500,6 @@ export const FileTable = (props: FileTableProps) => {
                                 onClick={createSortHandler(headCell[2].id)}
                             >
                                 Size
-                                {orderBy === headCell[2].id ? (
-                                    <Box sx={visuallyHidden}>
-                                        {order === 'desc'
-                                            ? 'sorted descending'
-                                            : 'sorted ascending'}
-                                    </Box>
-                                ) : null}
                             </Table.Sort>
                         </Table.Cell>
                         <Table.Cell size="small">Action</Table.Cell>
