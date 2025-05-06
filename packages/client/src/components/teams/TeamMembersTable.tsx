@@ -290,7 +290,7 @@ export const TeamMembersTable = (props: MembersTableProps) => {
         }
         const timer = setTimeout(() => {
             if (!offset) {
-                getUsersNonGroup(false);
+                getUsersNonGroup(true);
             } else {
                 if (canCollect) {
                     getUsersNonGroup(false);
@@ -364,6 +364,7 @@ export const TeamMembersTable = (props: MembersTableProps) => {
         } finally {
             // refresh the members
             setCount(count + 1);
+            setOffset(0);
         }
     };
 
@@ -815,7 +816,7 @@ export const TeamMembersTable = (props: MembersTableProps) => {
                     <StyledModalContentText>
                         <Autocomplete
                             label="Search"
-                            loading={isLoading || searchLoading}
+                            loading={searchLoading}
                             multiple={true}
                             freeSolo={false}
                             filterOptions={(x) => x}
@@ -851,7 +852,6 @@ export const TeamMembersTable = (props: MembersTableProps) => {
                             onInputChange={(event, newValue) => {
                                 setSearchMemberInput(newValue);
                                 setOffset(0);
-                                setNonCredentialedUsers([]);
                             }}
                         />
 
