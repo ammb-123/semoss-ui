@@ -26,19 +26,18 @@
 
 2. Build legacy and client, run `pnpm run build`.
 
-3. Build sdk: cd into ./lib/sdk, run `pnpm run build`. After completion, cd back into root folder.
-
-4. For local development on our new ui (./packages/client) and the component library (./libs)  run `pnpm run dev:client`
+3. For local development on our new ui (./packages/client) and the component library (./libs)  run `pnpm run dev:client`
 
 Application will be accesible at: `http://localhost:9090/semoss-ui/packages/client/dist/#/`
 
-5. Component library development through storybook. Change directories into libs `cd .\libs\` and run `pnpm run storybook`
+4. Component library development through storybook. Change directories into libs `cd .\libs\` and run `pnpm run storybook`
 
-6. For local development on the legacy application, run `pnpm run dev:legacy`
+5. For local development on the legacy application, run `pnpm run dev:legacy`
 
 Legacy application will be accesible at: `http://localhost:9090/semoss-ui/#!/`
 
 ## Common Errors
+ 1. The following issue may error may appear if nx does not build correctly: Cannot find module '@semoss/sdk/react' or its corresponding type declarations. To fix, cd directly into .\libs\sdk and run `pnpm run build`.
  2. `404` on REST calls to the BE, usually points to an issue with the MODULE you have specified in your `.env.local` and/or `.packages/legacy/app.constants` file.  Ask your client project lead what endpoint you hit to ensure you have the right pointer specified for MODULE.
 
  ### Must be on a version of Node 18
