@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { ShareRounded, SaveOutlined, PlayArrow } from '@mui/icons-material';
 
@@ -8,7 +8,6 @@ import { useBlocks } from '@semoss/renderer';
 import { useWorkspace, useRootStore } from '@/hooks';
 import { PreviewOverlay } from '@/components/workspace';
 import { ShareOverlay } from '@/components/ui';
-import { usePlatform } from '@/hooks/usePlatform';
 
 export const BlocksWorkspaceActions = observer(() => {
     const { state } = useBlocks();
@@ -16,8 +15,6 @@ export const BlocksWorkspaceActions = observer(() => {
     const { monolithStore } = useRootStore();
     const notification = useNotification();
     const { workspace } = useWorkspace();
-
-    const platform = usePlatform()
 
     /**
      * Preview the current App
@@ -137,25 +134,17 @@ export const BlocksWorkspaceActions = observer(() => {
         }
     };
 
-    /**
-     * Trigger save on ctrl+s or command + s
-     */
-    const onDocumentKeydown = useCallback((event: KeyboardEvent) => {
-        if(platform === "Windows" || platform === "Linux" || platform === "Unknown OS"){
-            if (event.key === 's' && event.ctrlKey) {
-                event.preventDefault();
-                saveApp();
-            }
-        }else if(platform === "MacOS"){
-            if (event.key === 's' && event.metaKey) {
-                event.preventDefault();
-                saveApp();
-            }
-        }
-        // ⌘
-    }, [platform]);
-
     useEffect(() => {
+        /**
+         * Trigger save on ctrl + s or command + s
+         */
+        const onDocumentKeydown = (event: KeyboardEvent) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+                event.preventDefault();
+                saveApp();
+            }
+        };
+
         // attach the event listener
         document.addEventListener('keydown', onDocumentKeydown);
 
@@ -163,7 +152,7 @@ export const BlocksWorkspaceActions = observer(() => {
         return () => {
             document.removeEventListener('keydown', onDocumentKeydown);
         };
-    }, [onDocumentKeydown]);
+    }, []);
 
     return (
         <Stack direction="row" spacing={1} alignItems={'center'}>
@@ -189,7 +178,7 @@ export const BlocksWorkspaceActions = observer(() => {
                     <ShareRounded fontSize="inherit" />
                 </IconButton>
             </Tooltip>
-            <Tooltip title={platform === "MacOS" ? "Save App (⌘ + s)" : 'Save App (ctrl + s)'}>
+            <Tooltip title={'Save App (ctrl/command + s)'}>
                 <IconButton
                     size={'small'}
                     color={'primary'}
