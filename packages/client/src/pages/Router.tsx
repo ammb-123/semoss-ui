@@ -71,8 +71,8 @@ export const Router = observer(() => {
         }
 
         const isRestricted = type
-            ? configStore.isEngineOperationAvailable(type, 'add')
-            : true;
+            ? !configStore.isEngineOperationAvailable(type, 'add')
+            : false;
 
         return isRestricted ? <Navigate to="/" replace /> : <>{children}</>;
     };
