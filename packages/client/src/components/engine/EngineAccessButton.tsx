@@ -112,6 +112,7 @@ export const EngineAccessButton = () => {
                 <Modal.Content>
                     <RadioGroup
                         label={''}
+                        defaultValue={role}
                         onChange={(e) => {
                             setRequestedRole(e.target.value as Role);
                         }}
@@ -269,7 +270,7 @@ export const EngineAccessButton = () => {
                     </Button>
                     <Button
                         variant={'contained'}
-                        disabled={!requestedRole}
+                        disabled={!requestedRole || requestedRole === role}
                         onClick={() => {
                             requestAccess();
                         }}
