@@ -7,8 +7,36 @@ import { RootStore } from '@/stores';
 import { RootStoreContext } from '@/contexts';
 import { AppWrapper } from './AppWrapper';
 
+const CSRF = {
+    isEnabled: false,
+    token: '',
+};
+
+/**
+ * Get the CSRF Token
+ * @returns token
+ */
+async function getToken(): Promise<string> {
+    try {
+        const response = await axios.get(`${Env.MODULE}/api/config/fetchCsrf`, {
+            headers: {
+                'X-CSRF-Token': 'fetch',
+            },
+        });
+
+        // not sure why the server is sending it as lowercase, preserving headers doesn't fix it
+        const token =
+            response.headers['X-CSRF-Token'] ||
+            response.headers['x-csrf-token'] ||
+            '';
+
+        return token;
+    } catch (error) {
+        return '';
+    }
+}
+
 // add interceptors
-let token = '';
 axios.interceptors.request.use(
     async (config) => {
         // Check if the request is a GET request
@@ -35,13 +63,14 @@ axios.interceptors.request.use(
             };
         }
 
-        // Check if CSRF is enabled
-        if (config.method === 'post' && _store.configStore.store.config.csrf) {
-            if (token) {
-                config.headers['X-CSRF-Token'] = token;
-            } else {
-                token = await getCsrfToken();
-                config.headers['X-CSRF-Token'] = token;
+        // Check if CSRF is enabled and add the token
+        if (CSRF.isEnabled) {
+            if (config.method === 'post') {
+                if (!CSRF.token) {
+                    CSRF.token = await getToken();
+                }
+
+                config.headers['X-CSRF-Token'] = CSRF.token;
             }
         }
         return config;
@@ -63,26 +92,6 @@ axios.interceptors.response.use(
 
 // create a new root store
 const _store = new RootStore();
-
-//get and set CSRF Token
-async function getCsrfToken(): Promise<any> {
-    const url = `${Env.MODULE}/api/config/fetchCsrf`;
-    const csrfHeaders = { headers: { 'X-CSRF-Token': 'fetch' } };
-
-    try {
-        const response = await axios.get(url, csrfHeaders);
-
-        // not sure why the server is sending it as lowercase, preserving headers doesn't fix it
-        const token =
-            response.headers['X-CSRF-Token'] ||
-            response.headers['x-csrf-token'] ||
-            '';
-
-        return token;
-    } catch (error) {
-        return null;
-    }
-}
 
 //get error from request or response
 function getError(error) {
@@ -136,7 +145,10 @@ export const App = () => {
         }
 
         // intialize it
-        _store.configStore.initialize();
+        _store.configStore.initialize().then(() => {
+            // set as enabled
+            CSRF.isEnabled = _store.configStore.store.config.csrf;
+        });
     }, []);
 
     //  NCRT ASK - (https://play.semoss.org/ncrt/SemossWeb/packages/client/dist/#!/)
