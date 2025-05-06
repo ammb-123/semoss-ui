@@ -26,13 +26,15 @@
 
 2. Build legacy and client, run `pnpm run build`.
 
-3. For local development on our new ui (./packages/client) and the component library (./libs)  run `pnpm run dev:client`
+3. Build sdk: cd into ./lib/sdk, run 'pnpm run build'. After completion, cd back into root folder.
+
+4. For local development on our new ui (./packages/client) and the component library (./libs)  run `pnpm run dev:client`
 
 Application will be accesible at: `http://localhost:9090/semoss-ui/packages/client/dist/#/`
 
-4. Component library development through storybook. Change directories into libs `cd .\libs\` and run `pnpm run storybook`
+5. Component library development through storybook. Change directories into libs `cd .\libs\` and run `pnpm run storybook`
 
-5. For local development on the legacy application, run `pnpm run dev:legacy`
+6. For local development on the legacy application, run `pnpm run dev:legacy`
 
 Legacy application will be accesible at: `http://localhost:9090/semoss-ui/#!/`
 
