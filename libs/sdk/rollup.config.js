@@ -1,13 +1,11 @@
+import { defineConfig } from "rollup";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 
 import postcss from "rollup-plugin-postcss";
 import del from "rollup-plugin-delete";
-import { defineConfig } from "rollup";
 import { terser } from "rollup-plugin-terser";
-
-"src/index.ts", "src/js-frameworks/react/index.ts";
 
 export default defineConfig({
     input: {
@@ -31,5 +29,5 @@ export default defineConfig({
         }),
         postcss(),
     ],
-    external: ["react", "react-dom"],
+    external: ["react"],
 });
