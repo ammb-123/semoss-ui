@@ -26,7 +26,7 @@
 
 2. Build legacy and client, run `pnpm run build`.
 
-3. Build sdk: cd into ./lib/sdk, run 'pnpm run build'. After completion, cd back into root folder.
+3. Build sdk: cd into ./lib/sdk, run `pnpm run build`. After completion, cd back into root folder.
 
 4. For local development on our new ui (./packages/client) and the component library (./libs)  run `pnpm run dev:client`
 
