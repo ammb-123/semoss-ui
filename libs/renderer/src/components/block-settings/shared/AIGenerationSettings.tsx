@@ -6,7 +6,7 @@ import { useBlockSettings, useBlocks } from "../../../hooks";
 import { Block, BlockDef } from "../../../store";
 import { AutoAwesome } from "@mui/icons-material";
 import { Autocomplete } from "@mui/material";
-import { runPixel, usePixel } from "@semoss/sdk";
+import { runPixel, usePixel } from "@semoss/sdk/react";
 
 type CfgLibraryEngineState = {
     loading: boolean;
@@ -88,8 +88,8 @@ export const AIGenerationSettings = observer(
                 return;
             }
 
-            let modelIds: string[] = [];
-            let modelDisplay = {};
+            const modelIds: string[] = [];
+            const modelDisplay = {};
             myModels.data.forEach((model) => {
                 // embeddings models are not set up for response generation
                 if (model.tag !== "embeddings") {

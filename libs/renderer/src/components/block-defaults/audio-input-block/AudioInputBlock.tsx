@@ -23,6 +23,11 @@ export interface AudioInputBlockDef extends BlockDef<"audio-input"> {
         color: "primary" | "secondary" | "success" | "warning" | "error";
         value: string;
         mode: "transcribe" | "record";
+        show: string;
+    };
+    listeners: {
+        preProcess: true;
+        onComplete: true;
     };
 }
 

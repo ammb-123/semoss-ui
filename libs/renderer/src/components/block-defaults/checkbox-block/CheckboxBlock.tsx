@@ -1,11 +1,9 @@
-import React from "react";
-
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 import { observer } from "mobx-react-lite";
+import { Checkbox, styled } from "@mui/material";
 
-import { useBlock, useDebounce } from "../../../hooks";
+import { useBlock } from "../../../hooks";
 import { BlockComponent, BlockDef } from "../../../store";
-import { Checkbox, FormControlLabel, styled } from "@mui/material";
 import { debounced } from "../../../utility";
 
 export interface CheckboxBlockDef extends BlockDef<"checkbox"> {
@@ -16,9 +14,11 @@ export interface CheckboxBlockDef extends BlockDef<"checkbox"> {
         label: string;
         required: boolean;
         disabled: boolean;
+        show: string;
     };
     listeners: {
         onChange: true;
+        preProcess: true;
     };
 }
 
@@ -32,6 +32,12 @@ const StyledCheckbox = styled(Checkbox)(({ theme }) => ({
 
 export const CheckboxBlock: BlockComponent = observer(({ id }) => {
     const { attrs, data, setData, listeners } = useBlock<CheckboxBlockDef>(id);
+
+    useEffect(() => {
+        if (listeners.preProcess) {
+            listeners.preProcess();
+        }
+    }, []);
 
     const debouncedCallback = debounced(() => {
         listeners.onChange();

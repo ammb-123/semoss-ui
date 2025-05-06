@@ -1,4 +1,4 @@
-import { CSSProperties, useMemo } from "react";
+import { CSSProperties, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
 import { useBlock, useDebounce } from "../../../hooks";
@@ -24,12 +24,23 @@ export interface UploadBlockDef extends BlockDef<"upload"> {
         hint?: string;
         extensions?: string[];
         multiple?: boolean;
+        show: string;
+    };
+    listeners: {
+        preProcess: true;
+        onChange: true;
     };
 }
 
 export const UploadBlock: BlockComponent = observer(({ id }) => {
     const { attrs, data, setData, uploadFile, listeners } =
         useBlock<UploadBlockDef>(id);
+
+    useEffect(() => {
+        if (listeners.preProcess) {
+            listeners.preProcess();
+        }
+    }, []);
 
     /**
      * Upload a file to the server

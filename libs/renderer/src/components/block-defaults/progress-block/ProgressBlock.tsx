@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-
+import { useEffect } from "react";
 import {
     Box,
     CircularProgress,
@@ -50,12 +50,22 @@ export interface ProgressBlockDef extends BlockDef<"progress"> {
         value: number;
         includeLabel: boolean;
         size: string;
+        show: string;
+    };
+    listeners: {
+        preProcess: true;
     };
     slots: never;
 }
 
 export const ProgressBlock: BlockComponent = observer(({ id }) => {
-    const { data, attrs } = useBlock<ProgressBlockDef>(id);
+    const { data, attrs, listeners } = useBlock<ProgressBlockDef>(id);
+
+    useEffect(() => {
+        if (listeners.preProcess) {
+            listeners.preProcess();
+        }
+    }, []);
 
     if (data.type === "circular") {
         return (

@@ -6,7 +6,7 @@ import { AudioBlockDef, AudioBlock } from "./AudioBlock";
 import HeadsetIcon from "@mui/icons-material/Headset";
 import { BLOCK_TYPE_ACTION } from "../block-defaults.constants";
 import { SwitchSettings } from "../../block-settings/shared/SwitchSettings";
-
+import { buildShowField, buildListener } from "../block-defaults.shared";
 export const DefaultStyles: CSSProperties = {};
 
 // export the config for the block
@@ -19,9 +19,10 @@ export const config: BlockConfig<AudioBlockDef> = {
         controls: true,
         loop: false,
         source: "",
+        show: "true",
     },
     listeners: {
-        onClick: [],
+        preProcess: [],
     },
     slots: {},
     render: AudioBlock,
@@ -30,6 +31,7 @@ export const config: BlockConfig<AudioBlockDef> = {
         {
             name: "General",
             children: [
+                ...buildShowField(),
                 {
                     description: "Label",
                     render: ({ id }) => (
@@ -80,6 +82,10 @@ export const config: BlockConfig<AudioBlockDef> = {
                     ),
                 },
             ],
+        },
+        {
+            name: "Pre Process",
+            children: [...buildListener("preProcess")],
         },
     ],
     styleMenu: [],

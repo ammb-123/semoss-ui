@@ -1,5 +1,6 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 import { observer } from "mobx-react-lite";
+
 import { useBlock } from "../../../hooks";
 import { BlockDef, BlockComponent } from "../../../store";
 // import ImageSkeleton from "../../../assets/ImageSkeleton.png";
@@ -10,12 +11,22 @@ export interface ImageBlockDef extends BlockDef<"image"> {
         style: CSSProperties;
         src: string;
         title: string;
+        show: string;
     };
     slots: never;
+    listeners: {
+        preProcess: true;
+    };
 }
 
 export const ImageBlock: BlockComponent = observer(({ id }) => {
-    const { attrs, data } = useBlock<ImageBlockDef>(id);
+    const { attrs, data, listeners } = useBlock<ImageBlockDef>(id);
+
+    useEffect(() => {
+        if (listeners.preProcess) {
+            listeners.preProcess();
+        }
+    }, []);
 
     return (
         <div

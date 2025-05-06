@@ -1,13 +1,24 @@
 import { useState, useEffect, useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
+import { ReportRounded } from '@mui/icons-material';
 
-import { ActionMessages, useBlocks } from '@semoss/renderer';
-import { styled, Card, Tooltip, Stack, Typography } from '@semoss/ui';
+import { ActionMessages, INPUT_BLOCK_TYPES, useBlocks } from '@semoss/renderer';
+import {
+    styled,
+    Card,
+    Tooltip,
+    Stack,
+    Typography,
+    useNotification,
+    Icon,
+} from '@semoss/ui';
 
 import { useDesigner } from '@/hooks';
-import { DesignerMenuItem } from '../blocks-workspace/menus/menu-types';
 import { BlockCardContent, blockCardWidth } from './BlockMenuCardContent';
-import * as BLOCK_IMAGES from '@/assets/blocks';
+import {
+    BlockLocalStorageData,
+    DesignerMenuItem,
+} from '../blocks-workspace/menus/menu-types';
 
 const StyledCard = styled(Card)({
     cursor: 'grab',
@@ -35,6 +46,7 @@ export const AddBlocksMenuCard = observer((props: AddBlocksMenuItemProps) => {
     const { item } = props;
     const { state } = useBlocks();
     const { designer } = useDesigner();
+    const notification = useNotification();
 
     // track if it is this one that is dragging
     const [local, setLocal] = useState(false);
@@ -77,8 +89,41 @@ export const AddBlocksMenuCard = observer((props: AddBlocksMenuItemProps) => {
         // ID of newly added block
         let id = '';
 
+        // Track block in session storage
+        localStorage.setItem(
+            'blocks--frequently-used',
+            (() => {
+                const map: Record<string, BlockLocalStorageData> =
+                    JSON.parse(
+                        localStorage.getItem('blocks--frequently-used'),
+                    ) ?? {};
+                map[item.json.widget] = {
+                    widget: item.json.widget,
+                    name: item.name,
+                    use_count: (map[item.json.widget]?.use_count ?? 0) + 1,
+                    last_used: Date.now(),
+                };
+                return JSON.stringify(map);
+            })(),
+        );
+
         // apply the action
         const placeholderAction = designer.drag.placeholderAction;
+        const sw = state.getBlock(placeholderAction.id);
+
+        // TODO: Add logic to prevent adding block it iter block if one is already present
+
+        if (sw.widget === 'iteration') {
+            if (sw.slots.children.children.length) {
+                notification.add({
+                    color: 'error',
+                    message:
+                        'Please delete block within iterator before adding another child',
+                });
+                return;
+            }
+        }
+
         if (placeholderAction) {
             if (
                 placeholderAction.type === 'before' ||
@@ -87,6 +132,18 @@ export const AddBlocksMenuCard = observer((props: AddBlocksMenuItemProps) => {
                 const siblingWidget = state.getBlock(placeholderAction.id);
 
                 if (siblingWidget?.parent) {
+                    const parent = state.getBlock(sw.parent.id);
+                    if (parent.widget === 'iteration') {
+                        if (parent.slots.children.children.length) {
+                            notification.add({
+                                color: 'error',
+                                message:
+                                    'Please delete block within iterator before adding another child',
+                            });
+                            designer.deactivateDrag();
+                            return;
+                        }
+                    }
                     id = state.dispatch({
                         message: ActionMessages.ADD_BLOCK,
                         payload: {
@@ -111,7 +168,32 @@ export const AddBlocksMenuCard = observer((props: AddBlocksMenuItemProps) => {
                         },
                     },
                 }) as string;
+
+                if (sw.widget === 'iteration') {
+                    state.dispatch({
+                        message: ActionMessages.SET_BLOCK_DATA,
+                        payload: {
+                            id: placeholderAction.id,
+                            path: 'child',
+                            value: state.getBlock(id),
+                        },
+                    });
+                }
             }
+        }
+
+        // TODO: REFACTOR
+        // Add variables for all blocks that are inputs from user
+        if (INPUT_BLOCK_TYPES.indexOf(item.json.widget) > -1) {
+            state.dispatch({
+                message: ActionMessages.ADD_VARIABLE,
+                payload: {
+                    id: id,
+                    type: 'block',
+                    to: id,
+                    isInput: true,
+                },
+            });
         }
 
         // clear the drag
@@ -126,6 +208,7 @@ export const AddBlocksMenuCard = observer((props: AddBlocksMenuItemProps) => {
         // set as active
         setLocal(false);
     }, [
+        item.name,
         item.json,
         designer.drag.active,
         designer.drag.placeholderAction,
@@ -146,8 +229,6 @@ export const AddBlocksMenuCard = observer((props: AddBlocksMenuItemProps) => {
         };
     }, [designer.drag.active, local, handleDocumentMouseUp]);
 
-    console.log(item);
-
     return (
         <Stack
             spacing={1}
@@ -160,7 +241,24 @@ export const AddBlocksMenuCard = observer((props: AddBlocksMenuItemProps) => {
                 fontWeight="medium"
                 align="center"
             >
-                {item.name}
+                <Stack
+                    direction={'row'}
+                    gap={1}
+                    alignContent={'center'}
+                    justifyContent={'center'}
+                >
+                    {item.name}
+                    {item.isBeta && (
+                        <Tooltip
+                            title={'This block is currently in beta'}
+                            children={
+                                <Icon color={'warning'} fontSize="small">
+                                    <ReportRounded />
+                                </Icon>
+                            }
+                        />
+                    )}
+                </Stack>
             </StyledTypography>
             <StyledCard onMouseDown={handleMouseDown}>
                 <Tooltip
