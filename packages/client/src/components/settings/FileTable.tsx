@@ -13,11 +13,10 @@ import {
     Table,
     Typography,
     useNotification,
+    Box,
 } from '@semoss/ui';
 import { Add, Delete, SimCardDownload } from '@mui/icons-material';
 import { usePixel, useRootStore } from '@/hooks';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Box from '@mui/material/Box';
 import { visuallyHidden } from '@mui/utils';
 
 const StyledTableContainer = styled(Table.Container)({
@@ -367,7 +366,7 @@ export const FileTable = (props: FileTableProps) => {
     };
 
     const createSortHandler = (property) => (event) => {
-        const isAsc = orderBy === property && order === 'asc';
+        const isAsc = order === 'asc';
         const newOrder = isAsc ? 'desc' : 'asc';
         setOrder(newOrder);
         setOrderBy(property);
@@ -473,58 +472,58 @@ export const FileTable = (props: FileTableProps) => {
                             />
                         </Table.Cell>
                         <Table.Cell size="small">
-                            <TableSortLabel
-                                active={orderBy === headCell[0].id}
+                            <Table.Sort
+                                active={true} // sort icon is always visible
                                 direction={
                                     orderBy === headCell[0].id ? order : 'asc'
                                 }
                                 onClick={createSortHandler(headCell[0].id)}
                             >
+                                Name
                                 {orderBy === headCell[0].id ? (
-                                    <Box component="span" sx={visuallyHidden}>
+                                    <Box sx={visuallyHidden}>
                                         {order === 'desc'
                                             ? 'sorted descending'
                                             : 'sorted ascending'}
                                     </Box>
                                 ) : null}
-                            </TableSortLabel>
-                            {headCell[0].label}
+                            </Table.Sort>
                         </Table.Cell>
                         <Table.Cell size="small">
-                            <TableSortLabel
-                                active={orderBy === headCell[1].id}
+                            <Table.Sort
+                                active={true} // sort icon is always visible
                                 direction={
                                     orderBy === headCell[1].id ? order : 'asc'
                                 }
                                 onClick={createSortHandler(headCell[1].id)}
                             >
+                                Date Uploaded
                                 {orderBy === headCell[1].id ? (
-                                    <Box component="span" sx={visuallyHidden}>
+                                    <Box sx={visuallyHidden}>
                                         {order === 'desc'
                                             ? 'sorted descending'
                                             : 'sorted ascending'}
                                     </Box>
                                 ) : null}
-                            </TableSortLabel>
-                            {headCell[1].label}
+                            </Table.Sort>
                         </Table.Cell>
                         <Table.Cell size="small">
-                            <TableSortLabel
-                                active={orderBy === headCell[2].id}
+                            <Table.Sort
+                                active={true} // sort icon is always visible
                                 direction={
                                     orderBy === headCell[2].id ? order : 'asc'
                                 }
                                 onClick={createSortHandler(headCell[2].id)}
                             >
+                                Size
                                 {orderBy === headCell[2].id ? (
-                                    <Box component="span" sx={visuallyHidden}>
+                                    <Box sx={visuallyHidden}>
                                         {order === 'desc'
                                             ? 'sorted descending'
                                             : 'sorted ascending'}
                                     </Box>
                                 ) : null}
-                            </TableSortLabel>
-                            {headCell[2].label}
+                            </Table.Sort>
                         </Table.Cell>
                         <Table.Cell size="small">Action</Table.Cell>
                     </Table.Head>
