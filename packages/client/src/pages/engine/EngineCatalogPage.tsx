@@ -24,7 +24,7 @@ import { EngineLandscapeCard } from '@/components/engine';
 import { Filterbox, Page } from '@/components/ui';
 import { Help } from '@/components/help';
 import { ENGINE_ROUTES } from './engine.constants';
-import { getAdminOnlyModulesFlagMapper, removeUnderscores } from '@/utility';
+import { removeUnderscores } from '@/utility';
 
 const StyledContainer = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -507,14 +507,9 @@ export const EngineCatalogPage = observer(
                                     }}
                                 />
                             </Stack>
-                            {!(
-                                !configStore.store.user.admin &&
-                                configStore.store.config[
-                                    getAdminOnlyModulesFlagMapper(
-                                        route.name,
-                                        'Add',
-                                    )
-                                ]
+                            {configStore.isEngineOperationAvailable(
+                                route.type,
+                                'add',
                             ) && (
                                 <Stack
                                     direction="row"

@@ -24,10 +24,7 @@ import { ALL_TYPES } from '@/types';
 import { LoadingScreen } from '@/components/ui';
 import { useRootStore, useAPI, useSettings, useDebounceValue } from '@/hooks';
 import { SETTINGS_PROVISIONED_USER, SETTINGS_ROLE } from './settings.types';
-import {
-    getAdminOnlyModulesFlagMapper,
-    permissionPriorityMapper,
-} from '@/utility/general';
+import { permissionPriorityMapper } from '@/utility/general';
 import { MembersDeleteOverlay } from './MembersDeleteOverlay';
 import { MembersAddOverlay } from './MembersAddOverlay';
 
@@ -295,14 +292,14 @@ export const MembersTable = (props: MembersTableProps) => {
      */
     const setUserDetails = (members: SETTINGS_PROVISIONED_USER[]) => {
         if (members.length > 0) {
-            let data = members.filter(
+            const data = members.filter(
                 (member) => member.name === configStore.store.user.name,
             );
             if (data.length > 0) {
                 setUserData(data[0]);
                 if (adminMode) {
                     // if logged in admin, need to provide all Author option previledges
-                    let adminPermissionPriority = 'Author';
+                    const adminPermissionPriority = 'Author';
                     setUserPermission(
                         permissionPriorityMapper(adminPermissionPriority)
                             ?.permission as SETTINGS_ROLE,
@@ -517,7 +514,11 @@ export const MembersTable = (props: MembersTableProps) => {
                 Editor: 2,
                 'Read-Only': 3,
             };
-            return permissionOrder[permissionPriorityMapper(permission)?.permission] || 0;
+            return (
+                permissionOrder[
+                    permissionPriorityMapper(permission)?.permission
+                ] || 0
+            );
         };
         return [...renderedMembers].sort((a, b) => {
             // sort by permission
@@ -537,6 +538,7 @@ export const MembersTable = (props: MembersTableProps) => {
             return permissionComparison;
         });
     }, [renderedMembers, nameOrder, permissionOrder]);
+
     /**
      * Handle Table Sorting Logic for Names
      *
@@ -627,11 +629,9 @@ export const MembersTable = (props: MembersTableProps) => {
                                 </IconButton>
                             )}
                         </StyledSearchButtonContainer>
-                        {!(
-                            !configStore.store.user.admin &&
-                            configStore.store.config[
-                                getAdminOnlyModulesFlagMapper(type, 'AddAccess')
-                            ]
+                        {configStore.isEngineOperationAvailable(
+                            type,
+                            'access',
                         ) && (
                             <>
                                 <StyledDeleteSelectedContainer>
@@ -859,19 +859,10 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                     value="Author"
                                                                     label="Author"
                                                                     disabled={
-                                                                        (!configStore
-                                                                            .store
-                                                                            .user
-                                                                            .admin &&
-                                                                            configStore
-                                                                                .store
-                                                                                .config[
-                                                                                getAdminOnlyModulesFlagMapper(
-                                                                                    type,
-                                                                                    'AddAccess',
-                                                                                )
-                                                                            ]) ===
-                                                                            true ||
+                                                                        !configStore.isEngineOperationAvailable(
+                                                                            type,
+                                                                            'access',
+                                                                        ) ||
                                                                         permissionPriorityMapper(
                                                                             userPermission,
                                                                         )
@@ -883,19 +874,10 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                     value="Editor"
                                                                     label="Editor"
                                                                     disabled={
-                                                                        (!configStore
-                                                                            .store
-                                                                            .user
-                                                                            .admin &&
-                                                                            configStore
-                                                                                .store
-                                                                                .config[
-                                                                                getAdminOnlyModulesFlagMapper(
-                                                                                    type,
-                                                                                    'AddAccess',
-                                                                                )
-                                                                            ]) ===
-                                                                            true ||
+                                                                        !configStore.isEngineOperationAvailable(
+                                                                            type,
+                                                                            'access',
+                                                                        ) ||
                                                                         permissionPriorityMapper(
                                                                             userPermission,
                                                                         )
@@ -907,19 +889,10 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                     value="Read-Only"
                                                                     label="Read-Only"
                                                                     disabled={
-                                                                        (!configStore
-                                                                            .store
-                                                                            .user
-                                                                            .admin &&
-                                                                            configStore
-                                                                                .store
-                                                                                .config[
-                                                                                getAdminOnlyModulesFlagMapper(
-                                                                                    type,
-                                                                                    'AddAccess',
-                                                                                )
-                                                                            ]) ===
-                                                                            true ||
+                                                                        !configStore.isEngineOperationAvailable(
+                                                                            type,
+                                                                            'access',
+                                                                        ) ||
                                                                         permissionPriorityMapper(
                                                                             userPermission,
                                                                         )
@@ -975,19 +948,10 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                     );
                                                                 }}
                                                                 disabled={
-                                                                    (!configStore
-                                                                        .store
-                                                                        .user
-                                                                        .admin &&
-                                                                        configStore
-                                                                            .store
-                                                                            .config[
-                                                                            getAdminOnlyModulesFlagMapper(
-                                                                                type,
-                                                                                'AddAccess',
-                                                                            )
-                                                                        ]) ===
-                                                                    true
+                                                                    !configStore.isEngineOperationAvailable(
+                                                                        type,
+                                                                        'access',
+                                                                    )
                                                                 }
                                                             >
                                                                 <Edit />
@@ -999,19 +963,10 @@ export const MembersTable = (props: MembersTableProps) => {
                                                                     );
                                                                 }}
                                                                 disabled={
-                                                                    (!configStore
-                                                                        .store
-                                                                        .user
-                                                                        .admin &&
-                                                                        configStore
-                                                                            .store
-                                                                            .config[
-                                                                            getAdminOnlyModulesFlagMapper(
-                                                                                type,
-                                                                                'AddAccess',
-                                                                            )
-                                                                        ]) ===
-                                                                    true
+                                                                    !configStore.isEngineOperationAvailable(
+                                                                        type,
+                                                                        'access',
+                                                                    )
                                                                 }
                                                             >
                                                                 <Delete></Delete>
@@ -1054,14 +1009,9 @@ export const MembersTable = (props: MembersTableProps) => {
                                     <Typography variant={'body2'}>
                                         No members
                                     </Typography>
-                                    {!(
-                                        !configStore.store.user.admin &&
-                                        configStore.store.config[
-                                            getAdminOnlyModulesFlagMapper(
-                                                type,
-                                                'AddAccess',
-                                            )
-                                        ]
+                                    {configStore.isEngineOperationAvailable(
+                                        type,
+                                        'access',
                                     ) && (
                                         <Button
                                             disabled={isLoading}

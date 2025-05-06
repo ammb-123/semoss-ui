@@ -27,9 +27,9 @@ import { CookieNotice } from './legal/CookieNotice';
 import { PrivacyNotice } from './legal/PrivacyNotice';
 
 import { WorkspacePage } from './WorkspacePage';
-import { getAdminOnlyModulesFlagMapper } from '@/utility';
 
 import { PlatformMessages } from './PlatformMessages';
+import { ALL_TYPES } from '@/types';
 
 export const Router = observer(() => {
     const { configStore } = useRootStore();
@@ -62,18 +62,17 @@ export const Router = observer(() => {
     const RestrictedRoute = ({ routeType, children }) => {
         const [searchParams] = useSearchParams();
         const location = useLocation();
-        const check =
-            routeType === 'app' && location.pathname === '/app/new'
-                ? 'APP'
-                : routeType === 'import'
-                ? searchParams.get('type')?.toUpperCase() || ''
-                : '';
 
-        const isRestricted =
-            !configStore.store.user.admin &&
-            configStore.store.config[
-                getAdminOnlyModulesFlagMapper(check, 'Add')
-            ];
+        let type: ALL_TYPES | '' = '';
+        if (routeType === 'app' && location.pathname === '/app/new') {
+            type = 'APP';
+        } else if (searchParams.get('type')) {
+            type = searchParams.get('type').toUpperCase() as ALL_TYPES;
+        }
+
+        const isRestricted = type
+            ? configStore.isEngineOperationAvailable(type, 'add')
+            : true;
 
         return isRestricted ? <Navigate to="/" replace /> : <>{children}</>;
     };

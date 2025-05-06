@@ -18,7 +18,6 @@ import { AxiosResponse } from 'axios';
 import { ALL_TYPES } from '@/types';
 import { useRootStore, usePixel, useSettings } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
-import { getAdminOnlyModulesFlagMapper } from '@/utility';
 
 const StyledAlert = styled(Alert, {
     shouldForwardProp: (prop) => prop !== 'setBounds',
@@ -390,12 +389,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                 }
                                 checked={global}
                                 disabled={
-                                    configStore.store.config[
-                                        getAdminOnlyModulesFlagMapper(
-                                            type,
-                                            'SetPublic',
-                                        )
-                                    ] && !configStore.store.user.admin
+                                    !configStore.isEngineOperationAvailable(
+                                        type,
+                                        'public',
+                                    )
                                 }
                                 onChange={() => {
                                     changeGlobal();
@@ -426,13 +423,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                         }
                                         disabled={
                                             global ||
-                                            (configStore.store.config[
-                                                getAdminOnlyModulesFlagMapper(
-                                                    type,
-                                                    'SetDiscoverable',
-                                                )
-                                            ] &&
-                                                !configStore.store.user.admin)
+                                            !configStore.isEngineOperationAvailable(
+                                                type,
+                                                'discoverable',
+                                            )
                                         }
                                         checked={discoverable}
                                         onChange={() => {
@@ -471,13 +465,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                     }
                                     disabled={
                                         global ||
-                                        (configStore.store.config[
-                                            getAdminOnlyModulesFlagMapper(
-                                                type,
-                                                'SetDiscoverable',
-                                            )
-                                        ] &&
-                                            !configStore.store.user.admin)
+                                        !configStore.isEngineOperationAvailable(
+                                            type,
+                                            'discoverable',
+                                        )
                                     }
                                     checked={discoverable}
                                     onChange={() => {
@@ -511,12 +502,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                 variant="contained"
                                 color="error"
                                 disabled={
-                                    configStore.store.config[
-                                        getAdminOnlyModulesFlagMapper(
-                                            type,
-                                            'Delete',
-                                        )
-                                    ] && !configStore.store.user.admin
+                                    !configStore.isEngineOperationAvailable(
+                                        type,
+                                        'delete',
+                                    )
                                 }
                                 onClick={() => setDeleteModal(true)}
                             >
@@ -608,12 +597,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                 }
                                 checked={global}
                                 disabled={
-                                    configStore.store.config[
-                                        getAdminOnlyModulesFlagMapper(
-                                            type,
-                                            'SetPublic',
-                                        )
-                                    ] && !configStore.store.user.admin
+                                    !configStore.isEngineOperationAvailable(
+                                        type,
+                                        'public',
+                                    )
                                 }
                                 onChange={() => {
                                     changeGlobal();
@@ -642,13 +629,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                     <Switch
                                         disabled={
                                             global ||
-                                            (configStore.store.config[
-                                                getAdminOnlyModulesFlagMapper(
-                                                    type,
-                                                    'SetDiscoverable',
-                                                )
-                                            ] &&
-                                                !configStore.store.user.admin)
+                                            !configStore.isEngineOperationAvailable(
+                                                type,
+                                                'discoverable',
+                                            )
                                         }
                                         title={
                                             discoverable
@@ -688,13 +672,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                 <Switch
                                     disabled={
                                         global ||
-                                        (configStore.store.config[
-                                            getAdminOnlyModulesFlagMapper(
-                                                type,
-                                                'SetDiscoverable',
-                                            )
-                                        ] &&
-                                            !configStore.store.user.admin)
+                                        !configStore.isEngineOperationAvailable(
+                                            type,
+                                            'discoverable',
+                                        )
                                     }
                                     title={
                                         discoverable
@@ -736,12 +717,10 @@ export const SettingsTiles = (props: SettingsTilesProps) => {
                                     color="error"
                                     onClick={() => setDeleteModal(true)}
                                     disabled={
-                                        configStore.store.config[
-                                            getAdminOnlyModulesFlagMapper(
-                                                type,
-                                                'Delete',
-                                            )
-                                        ] && !configStore.store.user.admin
+                                        !configStore.isEngineOperationAvailable(
+                                            type,
+                                            'delete',
+                                        )
                                     }
                                 >
                                     Delete

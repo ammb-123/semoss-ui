@@ -19,7 +19,6 @@ import { Search } from '@mui/icons-material';
 import { Help } from '@/components/help';
 
 import { Filterbox } from '@/components/ui';
-import { getAdminOnlyModulesFlagMapper } from '@/utility';
 
 const StyledContainer = styled('div')(({ theme }) => ({
     width: '100%',
@@ -329,12 +328,7 @@ export const HomePage = observer((): JSX.Element => {
                                 }}
                             />
                         </Stack>
-                        {!(
-                            !configStore.store.user.admin &&
-                            configStore.store.config[
-                                getAdminOnlyModulesFlagMapper('APP', 'Add')
-                            ]
-                        ) && (
+                        {configStore.isEngineOperationAvailable('APP', 'add') && (
                             <Button
                                 size={'large'}
                                 variant={'contained'}

@@ -27,7 +27,6 @@ import { usePixel, useRootStore, useSettings } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
 
 import { Java } from '@/assets/img/Java';
-import { getAdminOnlyModulesFlagMapper } from '@/utility';
 
 const StyledAppSettings = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -683,13 +682,10 @@ export const AppSettings = (props: AppSettingsProps) => {
                                             enablePublishing();
                                         }}
                                         disabled={
-                                            (!configStore.store.user.admin &&
-                                                configStore.store.config[
-                                                    getAdminOnlyModulesFlagMapper(
-                                                        'APP',
-                                                        'AddAccess',
-                                                    )
-                                                ]) === true
+                                            !configStore.isEngineOperationAvailable(
+                                                'APP',
+                                                'access',
+                                            )
                                         }
                                     ></StyledRightSwitch>
                                 </StyledSubRow>
@@ -717,14 +713,10 @@ export const AppSettings = (props: AppSettingsProps) => {
                                             startIcon={<StyledPublishedIcon />}
                                             disabled={
                                                 !portalDetails.project_has_portal ||
-                                                (!configStore.store.user
-                                                    .admin &&
-                                                    configStore.store.config[
-                                                        getAdminOnlyModulesFlagMapper(
-                                                            'APP',
-                                                            'AddAccess',
-                                                        )
-                                                    ]) === true
+                                                !configStore.isEngineOperationAvailable(
+                                                    'APP',
+                                                    'access',
+                                                )
                                             }
                                             onClick={() => {
                                                 publish();
@@ -856,13 +848,10 @@ export const AppSettings = (props: AppSettingsProps) => {
                                 control={control}
                                 rules={{}}
                                 disabled={
-                                    (!configStore.store.user.admin &&
-                                        configStore.store.config[
-                                            getAdminOnlyModulesFlagMapper(
-                                                'APP',
-                                                'AddAccess',
-                                            )
-                                        ]) === true
+                                    !configStore.isEngineOperationAvailable(
+                                        'APP',
+                                        'access',
+                                    )
                                 }
                                 render={({ field }) => {
                                     return (
