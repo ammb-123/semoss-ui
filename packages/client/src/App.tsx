@@ -1,11 +1,16 @@
 import { useEffect } from 'react';
 import axios, { isAxiosError } from 'axios';
 
-import { Env } from '@semoss/sdk';
+import { Env } from '@semoss/sdk/react';
 
 import { RootStore } from '@/stores';
 import { RootStoreContext } from '@/contexts';
 import { AppWrapper } from './AppWrapper';
+
+// set it from the process if it exists
+Env.update({
+    MODULE: process.env.MODULE || '',
+});
 
 // add interceptors
 axios.interceptors.request.use(
@@ -84,25 +89,6 @@ const _store = new RootStore();
 
 export const App = () => {
     useEffect(() => {
-        // load the environment from the document (production)
-        try {
-            const env = JSON.parse(
-                document.getElementById('semoss-env')?.textContent || '',
-            ) as {
-                MODULE: string;
-            };
-
-            // debugger;
-            // update the enviornment variables with the module
-            if (env) {
-                Env.update({
-                    MODULE: env.MODULE,
-                });
-            }
-        } catch (e) {
-            // noop
-        }
-
         // intialize it
         _store.configStore.initialize();
     }, []);
@@ -114,12 +100,6 @@ export const App = () => {
             '$1#',
         );
     }
-
-    // TODO: John I have to do this
-    // My env does not get updated above in useEffect ^
-    Env.update({
-        MODULE: process.env.MODULE || '',
-    });
 
     return (
         <RootStoreContext.Provider value={_store}>
