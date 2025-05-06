@@ -14,8 +14,7 @@ import {
     Warning,
 } from "@mui/icons-material";
 
-import { runPixel } from "@semoss/sdk";
-import { usePixel } from "@semoss/sdk/react";
+import { runPixel, usePixel } from "@semoss/sdk/react";
 import {
     Checkbox,
     useNotification,

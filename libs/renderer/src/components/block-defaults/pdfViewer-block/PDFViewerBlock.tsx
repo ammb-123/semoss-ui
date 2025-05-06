@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useParams } from "react-router-dom";
-import { Env, runPixel } from "@semoss/sdk";
+import { Env, runPixel } from "@semoss/sdk/react";
 
 export interface PDFViewerBlockDef extends BlockDef<"pdfViewer"> {
     widget: "pdfViewer";

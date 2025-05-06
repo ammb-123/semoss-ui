@@ -48,9 +48,8 @@ const config = {
             babelConfig: 'packages/client/.babelrc',
             // index: './src/template.html',
             baseHref: '/',
-            outputHashing:
-                process.env['NODE_ENV'] == 'production' ? 'all' : 'none',
-            watch: process.env['NODE_ENV'] == 'production' ? false : true,
+            outputHashing: isProduction ? 'all' : 'none',
+            watch: isProduction ? false : true,
             memoryLimit: 8192,
         }),
         new NxReactWebpackPlugin({
@@ -73,7 +72,11 @@ const config = {
         }),
         new webpack.DefinePlugin({
             'process.env': JSON.stringify({
-                ...process.env,
+                NODE_ENV: isProduction ? 'production' : 'development',
+                MODULE: process.env.MODULE || '',
+                THEME_TITLE: process.env.THEME_TITLE || '',
+                THEME_FAVICON: process.env.THEME_FAVICON || '',
+                DOCUMENTATION_URL: process.env.DOCUMENTATION_URL || '',
             }),
         }),
         new MiniCssExtractPlugin({

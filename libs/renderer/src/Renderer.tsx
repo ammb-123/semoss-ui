@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useSearchParams, useLocation } from "react-router-dom";
 
-import { runPixel } from "@semoss/sdk";
+import { runPixel } from "@semoss/sdk/react";
 import { Backdrop, Notification, Typography } from "@semoss/ui";
 
 import { Blocks, RendererEngine } from "./components/blocks";

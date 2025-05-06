@@ -10,8 +10,7 @@ import { DefaultBlocks } from "../../block-defaults";
 import { BLOCK_TYPE_INPUT } from "../../block-defaults/block-defaults.constants";
 // import { LoadingScreen } from "@/components/ui";
 import { useNotification } from "@semoss/ui";
-import { runPixel } from "@semoss/sdk";
-import { usePixel } from "@semoss/sdk/react";
+import { runPixel, usePixel } from "@semoss/sdk/react";
 
 // Reduce Initial Bundle
 const Editor = lazy(() => import("@monaco-editor/react"));

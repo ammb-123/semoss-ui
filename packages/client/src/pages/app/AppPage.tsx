@@ -15,7 +15,7 @@ import {
 } from '@semoss/ui';
 import { EditOutlined, ShareRounded } from '@mui/icons-material';
 
-import { Env } from '@semoss/sdk';
+import { Env } from '@semoss/sdk/react';
 import { WorkspaceStore } from '@/stores';
 import { useRootStore } from '@/hooks';
 import { LoadingScreen, ShareOverlay } from '@/components/ui';

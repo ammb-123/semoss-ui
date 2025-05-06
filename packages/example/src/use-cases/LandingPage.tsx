@@ -1,4 +1,4 @@
-import { Env } from '@semoss/sdk';
+import { Env } from '@semoss/sdk/react';
 import { Renderer, SerializedState } from '@semoss/renderer';
 
 const state: SerializedState = {

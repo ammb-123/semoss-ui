@@ -12,8 +12,7 @@
 3. create a `.env.local` file and populate with the following. **Do not change the .env**
 
 ```
-    ENDPOINT=../../..
-    MODULE=/Monolith_Dev
+    MODULE=http://localhost:9090/Monolith_Dev
 
     THEME_TITLE=SEMOSS
     THEME_FAVICON=./src/assets/favicon.svg
