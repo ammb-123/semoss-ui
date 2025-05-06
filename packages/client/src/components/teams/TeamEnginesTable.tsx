@@ -294,7 +294,7 @@ export const TeamEnginesTable = (props: EnginesTableProps) => {
         }
         const timer = setTimeout(() => {
             if (!offset) {
-                getEngines(false);
+                getEngines(true);
             } else {
                 if (canCollect) {
                     getEngines(false);
@@ -368,6 +368,7 @@ export const TeamEnginesTable = (props: EnginesTableProps) => {
         } finally {
             // refresh the engines
             setCount(count + 1);
+            setOffset(0);
         }
     };
 
@@ -899,7 +900,6 @@ export const TeamEnginesTable = (props: EnginesTableProps) => {
                             onInputChange={(event, newValue) => {
                                 setSearchEngineInput(newValue);
                                 setOffset(0);
-                                setNonCredentialedEngines([]);
                             }}
                         />
 

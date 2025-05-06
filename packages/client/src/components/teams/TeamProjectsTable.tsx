@@ -298,7 +298,7 @@ export const TeamProjectsTable = (props: ProjectsTableProps) => {
         }
         const timer = setTimeout(() => {
             if (!offset) {
-                getProjects(false);
+                getProjects(true);
             } else {
                 if (canCollect) {
                     getProjects(false);
@@ -372,6 +372,7 @@ export const TeamProjectsTable = (props: ProjectsTableProps) => {
         } finally {
             // refresh the projects
             setCount(count + 1);
+            setOffset(0);
         }
     };
 
@@ -914,7 +915,6 @@ export const TeamProjectsTable = (props: ProjectsTableProps) => {
                             onInputChange={(event, newValue) => {
                                 setSearchProjectInput(newValue);
                                 setOffset(0);
-                                setNonCredentialedProjects([]);
                             }}
                         />
 
