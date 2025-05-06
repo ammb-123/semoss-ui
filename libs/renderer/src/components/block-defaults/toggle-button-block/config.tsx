@@ -1,16 +1,16 @@
 import { CSSProperties } from "react";
+import { SmartButton } from "@mui/icons-material";
+
 import { BlockConfig } from "../../../store";
+import { ToggleButtonBlockDef, ToggleButtonBlock } from "./ToggleButtonBlock";
+import { buildListener, buildShowField } from "../block-defaults.shared";
+import { BLOCK_TYPE_ACTION } from "../block-defaults.constants";
+import { SwitchSettings } from "../../block-settings/shared/SwitchSettings";
 import {
     QuerySelectionSettings,
     SelectInputSettings,
     OptionsSettings,
 } from "../../block-settings";
-
-import { ToggleButtonBlockDef, ToggleButtonBlock } from "./ToggleButtonBlock";
-import { SmartButton } from "@mui/icons-material";
-import { buildListener } from "../block-defaults.shared";
-import { BLOCK_TYPE_ACTION } from "../block-defaults.constants";
-import { SwitchSettings } from "../../block-settings/shared/SwitchSettings";
 
 export const DefaultStyles: CSSProperties = {};
 
@@ -35,9 +35,11 @@ export const config: BlockConfig<ToggleButtonBlockDef> = {
         value: null,
         mandatory: true,
         multiple: false,
+        show: "true",
     },
     listeners: {
         onChange: [],
+        preProcess: [],
     },
     slots: {},
     render: ToggleButtonBlock,
@@ -46,6 +48,7 @@ export const config: BlockConfig<ToggleButtonBlockDef> = {
         {
             name: "General",
             children: [
+                ...buildShowField(),
                 {
                     description: "Options",
                     render: ({ id }) => (
@@ -74,6 +77,10 @@ export const config: BlockConfig<ToggleButtonBlockDef> = {
                     ),
                 },
             ],
+        },
+        {
+            name: "Pre Process",
+            children: [...buildListener("preProcess")],
         },
         {
             name: "on Change",

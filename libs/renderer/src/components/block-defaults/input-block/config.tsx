@@ -3,7 +3,7 @@ import { BlockConfig } from "../../../store";
 import { InputSettings, QuerySelectionSettings } from "../../block-settings";
 
 import { InputBlockDef, InputBlock } from "./InputBlock";
-import { buildListener } from "../block-defaults.shared";
+import { buildListener, buildShowField } from "../block-defaults.shared";
 import { FormatShapes } from "@mui/icons-material";
 import { BLOCK_TYPE_INPUT } from "../block-defaults.constants";
 import { SelectInputSettings } from "../../block-settings/shared/SelectInputSettings";
@@ -29,8 +29,10 @@ export const config: BlockConfig<InputBlockDef> = {
         disabled: false,
         required: false,
         loading: false,
+        show: "true",
     },
     listeners: {
+        preProcess: [],
         onChange: [],
     },
     slots: {
@@ -42,6 +44,7 @@ export const config: BlockConfig<InputBlockDef> = {
         {
             name: "General",
             children: [
+                ...buildShowField(),
                 {
                     description: "Value",
                     render: ({ id }) => (
@@ -134,6 +137,10 @@ export const config: BlockConfig<InputBlockDef> = {
                     ),
                 },
             ],
+        },
+        {
+            name: "Pre Process",
+            children: [...buildListener("preProcess")],
         },
         {
             name: "on Change",

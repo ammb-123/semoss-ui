@@ -1,12 +1,7 @@
-// config.tsx
 import { useState, useRef, useEffect } from "react";
-import { Block, BlockDef, BlockConfig } from "../../../store";
-import { InputSettings } from "../../block-settings";
-import { RadioBlock, RadioBlockDef } from "./RadioBlock";
 import RadioButtonCheckedOutlinedIcon from "@mui/icons-material/RadioButtonCheckedOutlined";
-import { buildListener } from "../block-defaults.shared";
-import { BLOCK_TYPE_INPUT } from "../block-defaults.constants";
-import { SwitchSettings } from "../../block-settings/shared/SwitchSettings";
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import {
     Autocomplete,
     Stack,
@@ -15,11 +10,17 @@ import {
     Box,
     Typography,
 } from "@mui/material";
+
+import { TextField } from "@semoss/ui";
+
+import { Block, BlockDef, BlockConfig } from "../../../store";
+import { InputSettings } from "../../block-settings";
+import { RadioBlock, RadioBlockDef } from "./RadioBlock";
+import { buildListener, buildShowField } from "../block-defaults.shared";
+import { BLOCK_TYPE_INPUT } from "../block-defaults.constants";
+import { SwitchSettings } from "../../block-settings/shared/SwitchSettings";
 import { BaseSettingSection } from "../../block-settings/BaseSettingSection";
 import { useBlockSettings } from "../../../hooks";
-import { TextField } from "@semoss/ui";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
 import { Paths, PathValue } from "../../../types";
 
 // Define options
@@ -166,8 +167,10 @@ export const config: BlockConfig<RadioBlockDef> = {
         labelPlacement: "end",
         required: false,
         disabled: false,
+        show: "true",
     },
     listeners: {
+        preProcess: [],
         onChange: [],
     },
     slots: {
@@ -179,6 +182,7 @@ export const config: BlockConfig<RadioBlockDef> = {
         {
             name: "General",
             children: [
+                ...buildShowField(),
                 {
                     description: "Options Management",
                     render: ({ id }) => {
@@ -508,6 +512,10 @@ export const config: BlockConfig<RadioBlockDef> = {
                     ),
                 },
             ],
+        },
+        {
+            name: "Pre Process",
+            children: [...buildListener("preProcess")],
         },
         {
             name: "on Change",

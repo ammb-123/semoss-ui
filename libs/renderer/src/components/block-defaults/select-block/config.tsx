@@ -1,17 +1,16 @@
+import { ViewList } from "@mui/icons-material";
+
 import { BlockConfig } from "../../../store";
+import { SelectBlockDef, SelectBlock } from "./SelectBlock";
+import { buildListener, buildShowField } from "../block-defaults.shared";
+import { BLOCK_TYPE_INPUT } from "../block-defaults.constants";
+import { SelectInputValueSettings } from "../../block-settings/custom/SelectInputValueSettings";
+import { SwitchSettings } from "../../block-settings/shared/SwitchSettings";
 import {
     InputSettings,
     QuerySelectionSettings,
     SelectOptionsSettings,
 } from "../../block-settings";
-
-import { SelectBlockDef, SelectBlock } from "./SelectBlock";
-import { ViewList } from "@mui/icons-material";
-
-import { buildListener } from "../block-defaults.shared";
-import { BLOCK_TYPE_INPUT } from "../block-defaults.constants";
-import { SelectInputValueSettings } from "../../block-settings/custom/SelectInputValueSettings";
-import { SwitchSettings } from "../../block-settings/shared/SwitchSettings";
 
 // export the config for the block
 export const config: BlockConfig<SelectBlockDef> = {
@@ -32,9 +31,11 @@ export const config: BlockConfig<SelectBlockDef> = {
         optionSublabel: "",
         optionValue: "",
         multiple: false,
+        show: true,
     },
     listeners: {
         onChange: [],
+        preProcess: [],
     },
     slots: {
         content: [],
@@ -45,6 +46,7 @@ export const config: BlockConfig<SelectBlockDef> = {
         {
             name: "General",
             children: [
+                ...buildShowField(),
                 {
                     description: "Multi Select",
                     render: ({ id }) => (
@@ -108,6 +110,10 @@ export const config: BlockConfig<SelectBlockDef> = {
                     ),
                 },
             ],
+        },
+        {
+            name: "Pre Process",
+            children: [...buildListener("preProcess")],
         },
         {
             name: "on Change",

@@ -39,4 +39,22 @@ export interface DesignerMenuItem {
      *  Hover Image of block
      */
     hoverImage?: string;
+
+    /**
+     * is the block fully fleshed out
+     */
+    isBeta?: boolean;
+}
+
+export interface FilterCategory {
+    id: string;
+    enabled: boolean;
+    type: 'SECTION' | 'MOST_USED_COMPONENTS';
+}
+
+export interface BlockLocalStorageData {
+    widget: string;
+    name: string;
+    use_count: number;
+    last_used: number; // timestamp
 }

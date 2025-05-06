@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { ExpandMore } from "@mui/icons-material";
 
@@ -46,15 +46,25 @@ export interface AccordionBlockDef extends BlockDef<"accordion"> {
         triggerBgColor: string;
         contentBgColor: string;
         showExpandIcon: boolean;
+        show: string;
     };
     slots: {
         header: true;
         content: true;
     };
+    listeners: {
+        preProcess: true;
+    };
 }
 
 export const AccordionBlock: BlockComponent = observer(({ id }) => {
-    const { attrs, data, slots } = useBlock<AccordionBlockDef>(id);
+    const { attrs, data, slots, listeners } = useBlock<AccordionBlockDef>(id);
+
+    useEffect(() => {
+        if (listeners.preProcess) {
+            listeners.preProcess();
+        }
+    }, []);
 
     return (
         <StyledAccordion

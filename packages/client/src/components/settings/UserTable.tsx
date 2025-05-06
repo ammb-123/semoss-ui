@@ -13,11 +13,15 @@ import {
     Search,
     Box,
     Stack,
+    Popover,
+    Grid,
 } from '@semoss/ui';
 import { useRootStore, useAPI, useSettings, useDebounceValue } from '@/hooks';
 import { LoadingScreen } from '@/components/ui';
 import { UserAddOverlay } from './UserAddOverlay';
 import SearchIcon from '@mui/icons-material/Search';
+import CopyAllIcon from '@mui/icons-material/CopyAll';
+import { UserTablePopover } from './UserTablePopover';
 
 const AvatarWrapper = styled('div')({
     display: 'inline-block',
@@ -170,8 +174,6 @@ const formatValue = (input: string) => {
             DAY: 'Daily',
             WEEK: 'Weekly',
             MONTH: 'Monthly',
-            NULL: 'None',
-            NATIVE: 'Native',
         };
         return mappings[input.toUpperCase()] || input;
     }
@@ -212,7 +214,7 @@ export const UserTable = (props: UserTableProps) => {
     const notification = useNotification();
 
     const [page, setPage] = useState<number>(0);
-    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+    const [rowsPerPage, setRowsPerPage] = useState<number>(25);
     const [isSearch, setIsSearch] = useState<boolean>(false);
     const [search, setSearch] = useState<string>('');
 
@@ -221,8 +223,11 @@ export const UserTable = (props: UserTableProps) => {
 
     /** Member Table State */
     const [selectedMembers, setSelectedMembers] = useState([]);
-    const [count, setCount] = useState(0);
 
+    /** Utility for Popover */
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const [hoveredUser, setHoveredUser] = useState<User | null>(null);
+    const isPopoverOpen = Boolean(anchorEl);
     /** Add User State */
     const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
     const [addModalUser, setAddModalUser] = useState<User | null>(null);
@@ -234,7 +239,7 @@ export const UserTable = (props: UserTableProps) => {
         adminMode,
         debouncedSearch ? debouncedSearch : '',
         (page + 1) * rowsPerPage - rowsPerPage, // offset
-        rowsPerPage, // limit
+        0, // limit
     ]);
 
     // track if the page is loading
@@ -378,11 +383,33 @@ export const UserTable = (props: UserTableProps) => {
                 }
             }
         } finally {
-            setCount(count + 1);
             setSelectedMembers([]);
         }
     };
+    /**
+     * Handle user popover open
+     * @param event
+     * @param user
+     */
+    const handlePopoverOpen = (
+        event: React.MouseEvent<HTMLElement>,
+        user: User,
+    ) => {
+        setAnchorEl(event.currentTarget);
+        setHoveredUser(user);
+    };
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
 
+        setHoveredUser(null);
+    };
+    const handleCopy = (text: string) => {
+        navigator.clipboard.writeText(text);
+        notification.add({
+            color: 'success',
+            message: 'Copied to clipboard',
+        });
+    };
     // Avatars rendered
     const Avatars = useMemo(() => {
         if (!renderedMembers.length) {
@@ -526,9 +553,6 @@ export const UserTable = (props: UserTableProps) => {
                                                 Name
                                             </Table.Cell>
                                             <Table.Cell size="small">
-                                                Email
-                                            </Table.Cell>
-                                            <Table.Cell size="small">
                                                 Type
                                             </Table.Cell>
                                             <Table.Cell size="small">
@@ -617,6 +641,17 @@ export const UserTable = (props: UserTableProps) => {
                                                                     }
                                                                     spacing={0}
                                                                     flex={1}
+                                                                    onMouseEnter={(
+                                                                        event,
+                                                                    ) =>
+                                                                        handlePopoverOpen(
+                                                                            event,
+                                                                            user,
+                                                                        )
+                                                                    }
+                                                                    onMouseLeave={() =>
+                                                                        handlePopoverClose()
+                                                                    }
                                                                 >
                                                                     <StyledPrimaryText
                                                                         variant="body1"
@@ -631,52 +666,11 @@ export const UserTable = (props: UserTableProps) => {
                                                                             </>
                                                                         )}
                                                                     </StyledPrimaryText>
-                                                                    <Stack
-                                                                        direction={
-                                                                            'row'
-                                                                        }
-                                                                        alignItems={
-                                                                            'center'
-                                                                        }
-                                                                        spacing={
-                                                                            1
-                                                                        }
-                                                                        width={
-                                                                            '150px'
-                                                                        }
-                                                                        title={`Id: ${user.id}`}
-                                                                    >
-                                                                        <StyledSecondaryText
-                                                                            variant="body2"
-                                                                            noWrap={
-                                                                                true
-                                                                            }
-                                                                        >
-                                                                            ID:
-                                                                        </StyledSecondaryText>
-                                                                        <StyledPrimaryText
-                                                                            variant="body2"
-                                                                            noWrap={
-                                                                                true
-                                                                            }
-                                                                        >
-                                                                            {user.id || (
-                                                                                <>
-                                                                                    &nbsp;
-                                                                                </>
-                                                                            )}
-                                                                        </StyledPrimaryText>
-                                                                    </Stack>
                                                                 </Stack>
                                                             </StyledCenteredBox>
                                                         </Table.Cell>
                                                         <Table.Cell>
-                                                            {user.email}
-                                                        </Table.Cell>
-                                                        <Table.Cell>
-                                                            {formatValue(
-                                                                user.type,
-                                                            )}
+                                                            {user.type}
                                                         </Table.Cell>
                                                         <Table.Cell>
                                                             {formatValue(
@@ -787,7 +781,9 @@ export const UserTable = (props: UserTableProps) => {
                                                 }}
                                                 page={page}
                                                 rowsPerPage={rowsPerPage}
-                                                rowsPerPageOptions={[5, 10, 20]}
+                                                rowsPerPageOptions={[
+                                                    25, 50, 100,
+                                                ]}
                                                 onRowsPerPageChange={(e) => {
                                                     // set the new limit
                                                     setRowsPerPage(
@@ -801,6 +797,24 @@ export const UserTable = (props: UserTableProps) => {
                                             />
                                         </Table.Row>
                                     </Table.Footer>
+                                    <UserTablePopover
+                                        hoveredUser={
+                                            hoveredUser
+                                                ? {
+                                                      id: hoveredUser.id,
+                                                      name:
+                                                          hoveredUser.name ||
+                                                          'Unknown',
+                                                      email:
+                                                          hoveredUser.email ||
+                                                          '',
+                                                  }
+                                                : null
+                                        }
+                                        isPopoverOpen={isPopoverOpen}
+                                        anchorEl={anchorEl}
+                                        handlePopoverClose={handlePopoverClose}
+                                    />
                                 </StyledMemberTable>
                             ) : (
                                 <StyledNoUsersDiv>

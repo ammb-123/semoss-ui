@@ -7,6 +7,8 @@ import {
     buildDimensionsSection,
     buildBorderSection,
     buildColorSection,
+    buildPositionSection,
+    buildListener,
 } from "../block-defaults.shared";
 
 import { ContainerBlockDef, ContainerBlock } from "./ContainerBlock";
@@ -25,16 +27,25 @@ export const config: BlockConfig<ContainerBlockDef> = {
             gap: "8px",
             flexWrap: "wrap",
         },
+        show: "true",
     },
-    listeners: {},
+    listeners: {
+        preProcess: [],
+    },
     slots: {
         children: [],
     },
     render: ContainerBlock,
     icon: HighlightAlt,
-    contentMenu: [],
+    contentMenu: [
+        {
+            name: "Pre Process",
+            children: [...buildListener("preProcess")],
+        },
+    ],
     styleMenu: [
         buildLayoutSection(),
+        buildPositionSection(),
         buildSpacingSection(),
         buildDimensionsSection(),
         buildColorSection(),
