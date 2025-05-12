@@ -126,7 +126,7 @@ export class StateStore {
         // set the initial state after reactive to invoke it
         this.setState(config.state, config.initialParams);
 
-        console.log(this.toJSON())
+        // console.log(this.toJSON())
         // const r = this.buildDependencyGraph(this._store, {}, [])
         // console.log(r);
     }
