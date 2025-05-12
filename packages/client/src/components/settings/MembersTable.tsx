@@ -290,6 +290,11 @@ export const MembersTable = (props: MembersTableProps) => {
             : null;
     const getMembers = useAPI(getMembersApi);
 
+    //Below UseEffect has been added so that search supersedes pagination , when the user goes to a different page and searches any user the pagination is set 0 and the user is being displayed.
+    useEffect(() => {
+        setPage(0);
+    }, [debouncedSearch]);
+
     /**
      * Sets the user details based on the current user in the members array.
      * If the user is an admin, it sets the user permission to 'Author'.
