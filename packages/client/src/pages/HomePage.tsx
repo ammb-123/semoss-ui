@@ -349,7 +349,7 @@ export const HomePage = observer((): JSX.Element => {
         >
             <StyledContainer>
                 <div>
-                     {configStore.isEngineOperationAvailable(
+                     { configStore.store.config.coreAdminFlag && configStore.isEngineOperationAvailable(
                             'APP',
                             'add',
                         ) && (
