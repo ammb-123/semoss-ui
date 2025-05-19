@@ -94,7 +94,7 @@ interface ConfigStoreInterface {
         /*
         * CoreAI flag is enabled
         */
-        coreAdminFlag: boolean;
+         adminOnlyViewMenuBarFlag: boolean;
         /**
          * Flags
          */
@@ -165,7 +165,7 @@ export class ConfigStore {
             r: true,
             python: true,
             csrf: false,
-            coreAdminFlag:false,
+            adminOnlyViewMenuBarFlag: boolean;
             adminOnlyDbAdd: false,
             adminOnlyDbAddAccess: false,
             adminOnlyDbDelete: false,
