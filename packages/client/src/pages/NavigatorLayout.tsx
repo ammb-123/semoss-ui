@@ -85,7 +85,8 @@ export const NavigatorLayout = observer(() => {
     const { pathname } = useLocation();
     const  { configStore } = useRootStore();
     const [admingOnlyFlag ,setAdmingOnlyFlag ] = useState(false);
-    const [coreApiFlag ,setCoreApiFlag ] = useState(configStore.store.config.coreAdminFlag);
+    const [coreApiFlag ,setCoreApiFlag ] = useState(configStore.store.config.adminOnlyViewMenuBarFlag);
+ 
      if(configStore.store.user.admin && coreApiFlag){
         setAdmingOnlyFlag(true);
     }
